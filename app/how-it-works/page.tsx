@@ -48,7 +48,7 @@ export default function HowItWorksPage() {
 
       <main className="flex-1">
         {/* Hero */}
-        <section className="container py-16 md:py-24">
+        <section className="container mx-auto px-4 py-16 md:py-24">
           <div className="mx-auto max-w-3xl text-center space-y-6">
             <Badge className="mb-4" variant="secondary">
               First Month Free
@@ -64,7 +64,7 @@ export default function HowItWorksPage() {
 
         {/* Process Steps */}
         <section className="border-t border-border bg-muted/30 py-24">
-          <div className="container">
+          <div className="container mx-auto px-4">
             <div className="mx-auto max-w-3xl text-center space-y-4 mb-16">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-balance">
                 Your Journey with Us
@@ -94,11 +94,11 @@ export default function HowItWorksPage() {
                     Select the service that fits your needs. Your first month is completely free—no credit card required upfront.
                   </p>
                   <div className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 className="h-4 w-4 text-green-600" />
+                    <CheckCircle2 className="h-4 w-4 text-green-600 flex-shrink-0" />
                     <span>No commitment during trial period</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
-                    <CheckCircle2 className="h-4 w-4 text-green-600" />
+                    <CheckCircle2 className="h-4 w-4 text-green-600 flex-shrink-0" />
                     <span>Cancel anytime before billing starts</span>
                   </div>
                 </CardContent>
@@ -126,19 +126,19 @@ export default function HowItWorksPage() {
                     <p className="font-semibold text-sm">Required Documents Include:</p>
                     <ul className="space-y-1 text-sm text-muted-foreground">
                       <li className="flex items-center gap-2">
-                        <FileText className="h-3 w-3" />
+                        <FileText className="h-3 w-3 flex-shrink-0" />
                         Prior year tax returns
                       </li>
                       <li className="flex items-center gap-2">
-                        <FileText className="h-3 w-3" />
+                        <FileText className="h-3 w-3 flex-shrink-0" />
                         Income statements (W-2, 1099, etc.)
                       </li>
                       <li className="flex items-center gap-2">
-                        <FileText className="h-3 w-3" />
+                        <FileText className="h-3 w-3 flex-shrink-0" />
                         Business records (if applicable)
                       </li>
                       <li className="flex items-center gap-2">
-                        <FileText className="h-3 w-3" />
+                        <FileText className="h-3 w-3 flex-shrink-0" />
                         Bank statements and receipts
                       </li>
                     </ul>
@@ -165,7 +165,7 @@ export default function HowItWorksPage() {
                     Our team reviews your documents, sets up your account structure, and prepares everything for your dedicated onboarding call.
                   </p>
                   <div className="flex items-center gap-2 text-sm">
-                    <Clock className="h-4 w-4 text-blue-600" />
+                    <Clock className="h-4 w-4 text-blue-600 flex-shrink-0" />
                     <span>Typically completed within 3-5 business days</span>
                   </div>
                 </CardContent>
@@ -232,7 +232,7 @@ export default function HowItWorksPage() {
                     After onboarding, you're fully set up and ready to go. Your first month is free, and billing only starts after you confirm you're happy with our service.
                   </p>
                   <div className="flex items-center gap-2 text-sm">
-                    <Rocket className="h-4 w-4 text-green-600" />
+                    <Rocket className="h-4 w-4 text-green-600 flex-shrink-0" />
                     <span className="font-semibold">Start receiving professional tax and bookkeeping services</span>
                   </div>
                 </CardContent>
@@ -242,7 +242,7 @@ export default function HowItWorksPage() {
         </section>
 
         {/* Comparison Table */}
-        <section className="container py-24">
+        <section className="container mx-auto px-4 py-24">
           <div className="mx-auto max-w-3xl text-center space-y-4 mb-16">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-balance">
               Why Choose Us Over TurboTax?
@@ -357,7 +357,7 @@ export default function HowItWorksPage() {
 
         {/* Document Checklist Preview */}
         <section className="border-t border-border bg-muted/30 py-24">
-          <div className="container">
+          <div className="container mx-auto px-4">
             <div className="mx-auto max-w-3xl text-center space-y-4 mb-16">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-balance">
                 Document Checklist
@@ -371,7 +371,7 @@ export default function HowItWorksPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Upload className="h-5 w-5 text-primary" />
+                    <Upload className="h-5 w-5 text-primary flex-shrink-0" />
                     Personal Tax Documents
                   </CardTitle>
                 </CardHeader>
@@ -404,7 +404,7 @@ export default function HowItWorksPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Upload className="h-5 w-5 text-primary" />
+                    <Upload className="h-5 w-5 text-primary flex-shrink-0" />
                     Business Documents
                   </CardTitle>
                 </CardHeader>
@@ -444,7 +444,7 @@ export default function HowItWorksPage() {
         </section>
 
         {/* CTA */}
-        <section className="container py-24">
+        <section className="container mx-auto px-4 py-24">
           <div className="mx-auto max-w-2xl text-center space-y-6">
             <h2 className="text-3xl font-bold tracking-tight text-balance">
               Ready to Get Started?
@@ -476,3 +476,5 @@ export default function HowItWorksPage() {
     </div>
   )
 }
+
+
