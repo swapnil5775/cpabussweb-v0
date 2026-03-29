@@ -68,7 +68,7 @@ export function SiteFooter() {
             <ul className="space-y-3.5 text-sm text-muted-foreground">
               {[
                 { href: "/faqs", label: "FAQs" },
-                { href: "/client-portal", label: "Client Portal" },
+                { href: "/client-portal", label: "Platform" },
                 { href: "/privacy", label: "Privacy Policy" },
                 { href: "/terms", label: "Terms of Service" },
               ].map(({ href, label }) => (
@@ -86,7 +86,7 @@ export function SiteFooter() {
             © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
           </p>
           <p className="text-xs text-muted-foreground text-center md:text-right">
-            Client portal access is included with all service plans.
+            Platform access — no separate subscriptions required.
           </p>
         </div>
       </div>

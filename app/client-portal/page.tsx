@@ -1,229 +1,434 @@
 import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
-import {
-  Smartphone,
-  Globe,
-  FolderLock,
-  MessageSquare,
-  Bell,
-  CheckSquare,
-  PenTool,
-  FileCheck,
+  Users,
+  Upload,
   CreditCard,
+  FileText,
+  RefreshCw,
+  ClipboardList,
   Receipt,
-  Activity,
-  Clock,
+  Send,
+  Building2,
+  UserCheck,
+  Briefcase,
   ArrowRight,
+  Check,
+  X,
+  Shield,
+  Smartphone,
+  Link2,
+  Tag,
+  FileBadge,
+  AlertCircle,
+  Landmark,
 } from "lucide-react"
 import Link from "next/link"
 
 export const metadata: Metadata = {
-  title: "Client Portal & Mobile App - Secure Document Management | BookKeeping.business",
+  title: "All-in-One Business Financial Platform | BookKeeping.business",
   description:
-    "Upload documents, track progress, message your team, e-sign, and pay invoices — all in one secure portal. Access via web or mobile app. Bank-level encryption included.",
+    "One platform for your entire financial operation. Team access, payroll, W-2 & 1099 issuance, invoice management, bank feeds, bookkeeping, quarterly filings — no QuickBooks, Gusto, or TurboTax subscriptions required.",
   keywords: [
-    "secure client portal",
-    "bookkeeping portal",
-    "document upload portal",
-    "mobile bookkeeping app",
-    "e-sign documents",
-    "secure file sharing",
-    "client accounting portal",
-    "tax document storage",
+    "all-in-one bookkeeping platform",
+    "payroll service small business",
+    "W-2 1099 filing service",
+    "invoice management",
+    "bank feed reconciliation",
+    "no QuickBooks needed",
+    "team bookkeeping access",
+    "quarterly payroll filings",
   ],
   openGraph: {
-    title: "Client Portal & Mobile App | BookKeeping.business",
+    title: "All-in-One Business Financial Platform | BookKeeping.business",
     description:
-      "Upload documents, track progress, message your team, e-sign, and pay invoices — all in one secure portal.",
+      "One platform replaces QuickBooks, Gusto, TurboTax, and more. Your whole team, all your documents, all your financials — in one place.",
     url: "https://bookkeeping.business/client-portal",
   },
 }
 
-const features = [
-  {
-    title: "Secure Access (Web + Mobile)",
-    description: "Access your portal anytime, anywhere",
-    icon: Globe,
-    items: [
-      "Client Portal Login (web)",
-      "Mobile App Access (iOS/Android)",
-      "One place for tasks, documents, invoices",
-    ],
-  },
-  {
-    title: "Document Vault",
-    description: "Your files, organized and protected",
-    icon: FolderLock,
-    items: [
-      "Encrypted document upload & storage",
-      "Organized folders (year/month/category)",
-      "Always-available access to your files",
-    ],
-  },
-  {
-    title: "Communication & Collaboration",
-    description: "Stay connected with your team",
-    icon: MessageSquare,
-    items: [
-      "Secure messaging with your team",
-      "Notifications and reminders",
-      "Clear to-do list and request tracking",
-    ],
-  },
-  {
-    title: "E-Sign & Approvals",
-    description: "Sign documents digitally",
-    icon: PenTool,
-    items: [
-      "E-sign engagement letters and forms",
-      "Approve documents without printing/scanning",
-      "Track signature status",
-    ],
-  },
-  {
-    title: "Billing & Payments",
-    description: "Manage invoices and payments",
-    icon: CreditCard,
-    items: [
-      "View invoices inside the portal",
-      "Pay online securely",
-      "Download receipts and payment history",
-    ],
-  },
-  {
-    title: "Visibility & Tracking",
-    description: "Know where things stand",
-    icon: Activity,
-    items: [
-      "Status updates for your work",
-      "Activity history (who did what and when)",
-      "Clear next steps at every stage",
-    ],
-  },
-]
-
-const steps = [
-  {
-    number: "1",
-    title: "Submit Intake",
-    description: "Complete our intake form with your business and service details.",
-    icon: CheckSquare,
-  },
-  {
-    number: "2",
-    title: "Get Portal Invite",
-    description: "Receive your secure portal login via email within 24-48 hours.",
-    icon: Bell,
-  },
-  {
-    number: "3",
-    title: "Upload + Track + Approve",
-    description: "Upload documents, track progress, and e-sign approvals—all in one place.",
-    icon: FileCheck,
-  },
-  {
-    number: "4",
-    title: "We Deliver + Store",
-    description: "We complete your books/taxes and store everything securely for you.",
-    icon: Receipt,
-  },
-]
-
-const faqs = [
-  {
-    question: "Is my data secure?",
-    answer:
-      "Yes. All data is encrypted using bank-level 256-bit encryption both in transit and at rest. We use secure servers with regular security audits and never request sensitive documents through email.",
-  },
-  {
-    question: "Can I use it on my phone?",
-    answer:
-      "Yes. Our mobile app is available for both iOS and Android devices. You can upload documents, view reports, message your team, and manage your account from anywhere.",
-  },
-  {
-    question: "Do I have to email documents?",
-    answer:
-      "No—and we strongly recommend against it. All document uploads should go through your secure portal. This ensures encryption and creates a proper audit trail for your records.",
-  },
-  {
-    question: "Can multiple people from my business access the portal?",
-    answer:
-      "Yes. We can set up multiple user accounts for your business with appropriate access levels. Just let your account rep know who needs access during onboarding.",
-  },
-  {
-    question: "What if I'm behind on bookkeeping?",
-    answer:
-      "No problem. We offer catchup bookkeeping services to get you current. We'll reconcile your historical transactions, organize your records, and then transition you to ongoing monthly service.",
-  },
-]
-
-export default function ClientPortalPage() {
+export default function PlatformPage() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       <SiteHeader />
 
       <main className="flex-1">
-        {/* Hero */}
-        <section className="container py-16 md:py-24">
-          <div className="mx-auto max-w-3xl text-center space-y-6">
-            <Badge variant="outline" className="px-4 py-1.5">
-              Client Portal & Mobile App
+
+        {/* ── Hero ── */}
+        <section className="px-6 lg:px-8 pt-16 pb-20 md:pt-24 md:pb-28">
+          <div className="mx-auto max-w-4xl text-center space-y-6">
+            <Badge variant="outline" className="px-4 py-1.5 text-xs font-semibold uppercase tracking-wider">
+              The Platform
             </Badge>
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl text-balance">
-              One Secure Portal for Your Books and Taxes
+            <h1 className="text-4xl font-black tracking-tight sm:text-6xl text-primary dark:text-foreground leading-[1.08]">
+              Your entire financial operation.<br className="hidden sm:block" />
+              <span className="text-primary/50 dark:text-foreground/40"> One platform.</span>
             </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed text-pretty">
-              Upload documents, track progress, message your team, e-sign, and pay invoices — all in one place.
+            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Sign up, invite your team, connect your accounts, and hand off everything — payroll, bookkeeping,
+              tax filings, invoices, W-2s, 1099s — to us. No QuickBooks. No Gusto. No Xero. No TurboTax.
+              We cover the software so you don&apos;t have to.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Link href="/contact">
-                <Button size="lg">
-                  Start Intake
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-primary text-primary-foreground font-bold text-base hover:-translate-y-0.5 transition-all shadow-lg shadow-primary/20"
+              >
+                Get Started
+                <ArrowRight className="h-4 w-4" />
               </Link>
-              <Button size="lg" variant="outline" className="bg-transparent" asChild>
-                <a href="#features">See What's Included</a>
-              </Button>
+              <a
+                href="#capabilities"
+                className="inline-flex items-center justify-center px-8 py-4 rounded-xl border-2 border-primary/20 text-primary dark:text-foreground font-bold text-base hover:bg-primary/5 transition-all"
+              >
+                See All Capabilities
+              </a>
             </div>
           </div>
         </section>
 
-        {/* Features Grid */}
-        <section id="features" className="border-t border-border bg-muted/30 py-24">
-          <div className="container">
-            <div className="mx-auto max-w-3xl text-center space-y-4 mb-16">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-balance">
-                Everything You Need in One Place
+        {/* ── Replace Your Stack ── */}
+        <section className="bg-primary px-6 lg:px-8 py-16">
+          <div className="mx-auto max-w-5xl">
+            <div className="text-center mb-10">
+              <h2 className="text-2xl md:text-3xl font-bold text-primary-foreground">
+                Cancel these. We&apos;ve got you covered.
               </h2>
-              <p className="text-muted-foreground leading-relaxed text-pretty">
-                A complete platform for managing your books, taxes, documents, and communication
+              <p className="text-primary-foreground/60 mt-2 text-sm">
+                Other bookkeepers charge you AND make you pay for the software. We include everything.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {[
+                { name: "QuickBooks", what: "Bookkeeping" },
+                { name: "Gusto", what: "Payroll" },
+                { name: "Xero", what: "Accounting" },
+                { name: "TurboTax", what: "Tax Filing" },
+              ].map(({ name, what }) => (
+                <div key={name} className="rounded-2xl bg-primary-foreground/10 border border-primary-foreground/10 p-5 text-center space-y-2">
+                  <div className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-red-500/20 text-red-400 mx-auto">
+                    <X className="h-4 w-4" />
+                  </div>
+                  <p className="text-primary-foreground font-bold text-sm line-through opacity-60">{name}</p>
+                  <p className="text-primary-foreground/40 text-xs">{what}</p>
+                </div>
+              ))}
+            </div>
+            <p className="text-center text-primary-foreground/50 text-sm mt-8">
+              You pay us for service, labor, expertise, and platform — all in one. No separate software subscriptions ever.
+            </p>
+          </div>
+        </section>
+
+        {/* ── Capabilities ── */}
+        <section id="capabilities" className="px-6 lg:px-8 py-24">
+          <div className="mx-auto max-w-7xl">
+            <div className="text-center mb-16 space-y-3">
+              <h2 className="text-3xl lg:text-4xl font-bold text-primary dark:text-foreground">
+                Everything your business needs
+              </h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                One place. One team. One monthly engagement that replaces your entire financial software stack.
               </p>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
-              {features.map((feature) => (
-                <Card key={feature.title}>
-                  <CardHeader>
-                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary mb-4">
-                      <feature.icon className="h-6 w-6" />
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+              {/* Team Access */}
+              <Card className="border-border hover:border-primary/30 hover:shadow-lg transition-all">
+                <CardHeader>
+                  <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-2">
+                    <Users className="h-6 w-6" />
+                  </div>
+                  <CardTitle>Team & Company Access</CardTitle>
+                  <CardDescription>Your whole team, one shared workspace</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    {[
+                      "Business signs up with one account",
+                      "Invite unlimited team members",
+                      "Role-based access (owner, admin, staff)",
+                      "Everyone works from the same portal",
+                      "No per-seat fees or user limits",
+                    ].map((f) => (
+                      <li key={f} className="flex items-start gap-2">
+                        <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+
+              {/* Payroll & People */}
+              <Card className="border-border hover:border-primary/30 hover:shadow-lg transition-all">
+                <CardHeader>
+                  <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-2">
+                    <Briefcase className="h-6 w-6" />
+                  </div>
+                  <CardTitle>Payroll & People</CardTitle>
+                  <CardDescription>Every worker type, fully handled</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    {[
+                      "Full-time & part-time employees",
+                      "1099 contractors & freelancers",
+                      "Temporary & one-off labor hires",
+                      "Payroll processing & distribution",
+                      "Quarterly payroll tax deposits",
+                    ].map((f) => (
+                      <li key={f} className="flex items-start gap-2">
+                        <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+
+              {/* W-2 & 1099 */}
+              <Card className="border-border hover:border-primary/30 hover:shadow-lg transition-all">
+                <CardHeader>
+                  <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-2">
+                    <FileBadge className="h-6 w-6" />
+                  </div>
+                  <CardTitle>W-2 & 1099 Issuance</CardTitle>
+                  <CardDescription>Year-end forms filed and distributed</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    {[
+                      "W-2s for all full-time employees",
+                      "1099-NEC for contractors & freelancers",
+                      "1099-MISC for other payments",
+                      "IRS & SSA e-filing included",
+                      "Recipient copies distributed",
+                    ].map((f) => (
+                      <li key={f} className="flex items-start gap-2">
+                        <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+
+              {/* Invoices */}
+              <Card className="border-border hover:border-primary/30 hover:shadow-lg transition-all">
+                <CardHeader>
+                  <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-2">
+                    <Receipt className="h-6 w-6" />
+                  </div>
+                  <CardTitle>Invoice Management</CardTitle>
+                  <CardDescription>Send, receive, and track — all in one place</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    {[
+                      "Upload invoices you sent to vendors",
+                      "Upload bills received from vendors",
+                      "We send invoices on your behalf",
+                      "Track outstanding & paid invoices",
+                      "Reconciled against your books automatically",
+                    ].map((f) => (
+                      <li key={f} className="flex items-start gap-2">
+                        <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+
+              {/* Bank Feeds & Bookkeeping */}
+              <Card className="border-primary/30 shadow-md hover:shadow-lg transition-all">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-2">
+                      <Landmark className="h-6 w-6" />
                     </div>
-                    <CardTitle className="text-lg">{feature.title}</CardTitle>
-                    <CardDescription>{feature.description}</CardDescription>
+                    <Badge className="text-xs mb-2">Core Service</Badge>
+                  </div>
+                  <CardTitle>Bank Feeds & Bookkeeping</CardTitle>
+                  <CardDescription>Connect once, we handle the rest</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    {[
+                      "Connect multiple bank accounts directly",
+                      "Connect credit cards directly",
+                      "Or manually upload statements (CSV/PDF)",
+                      "Automated transaction fetching",
+                      "Full reconciliation of all accounts",
+                      "Smart tagging & categorization",
+                      "Monthly P&L and Balance Sheet",
+                    ].map((f) => (
+                      <li key={f} className="flex items-start gap-2">
+                        <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+
+              {/* Quarterly Filings */}
+              <Card className="border-border hover:border-primary/30 hover:shadow-lg transition-all">
+                <CardHeader>
+                  <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-2">
+                    <ClipboardList className="h-6 w-6" />
+                  </div>
+                  <CardTitle>Quarterly & Annual Filings</CardTitle>
+                  <CardDescription>Never miss a deadline</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    {[
+                      "Quarterly payroll tax filings (941)",
+                      "State employment tax filings",
+                      "Unemployment insurance filings (FUTA/SUTA)",
+                      "Annual W-2 & 1099 filing deadlines",
+                      "Deadline tracking & proactive reminders",
+                    ].map((f) => (
+                      <li key={f} className="flex items-start gap-2">
+                        <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+
+            </div>
+          </div>
+        </section>
+
+        {/* ── How bank feeds work ── */}
+        <section className="bg-card px-6 lg:px-8 py-24 border-t border-border">
+          <div className="mx-auto max-w-6xl">
+            <div className="text-center mb-16 space-y-3">
+              <h2 className="text-3xl font-bold text-primary dark:text-foreground">How bank & account feeds work</h2>
+              <p className="text-muted-foreground max-w-xl mx-auto">
+                Two ways to get your financial data in — whichever works for your business.
+              </p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              <Card className="p-8">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+                    <Link2 className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg">Direct Connection</h3>
+                    <p className="text-xs text-muted-foreground">Recommended — fully automated</p>
+                  </div>
+                </div>
+                <ul className="space-y-3 text-sm text-muted-foreground">
+                  {[
+                    "Securely link your bank accounts",
+                    "Link credit cards and lines of credit",
+                    "We fetch transactions automatically",
+                    "New transactions pulled on a regular schedule",
+                    "Nothing for you to export or upload",
+                  ].map((f) => (
+                    <li key={f} className="flex items-start gap-2">
+                      <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+              <Card className="p-8">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+                    <Upload className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg">Manual Upload</h3>
+                    <p className="text-xs text-muted-foreground">For banks that don&apos;t support direct feeds</p>
+                  </div>
+                </div>
+                <ul className="space-y-3 text-sm text-muted-foreground">
+                  {[
+                    "Upload bank statements (PDF or CSV)",
+                    "Upload credit card statements",
+                    "Drag & drop through your portal",
+                    "Upload via mobile app photo",
+                    "We process and reconcile everything",
+                  ].map((f) => (
+                    <li key={f} className="flex items-start gap-2">
+                      <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            </div>
+            <div className="mt-10 max-w-4xl mx-auto">
+              <Card className="bg-primary/5 border-primary/20 p-6">
+                <div className="flex items-start gap-4">
+                  <Tag className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-sm mb-1">Reconciliation & Smart Tagging</h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Once transactions are in, our team reconciles every account and applies the correct
+                      categories, expense tags, and tax codes. You get clean, audit-ready books every month — not a raw
+                      data dump that you have to figure out yourself.
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Worker Types ── */}
+        <section className="px-6 lg:px-8 py-24">
+          <div className="mx-auto max-w-6xl">
+            <div className="text-center mb-16 space-y-3">
+              <h2 className="text-3xl font-bold text-primary dark:text-foreground">Every worker type, handled</h2>
+              <p className="text-muted-foreground max-w-xl mx-auto">
+                Tell us who works for your business — we handle the right payroll treatment, filings, and forms for each.
+              </p>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                {
+                  icon: UserCheck,
+                  title: "Full-Time Employees",
+                  items: ["Regular payroll runs", "Benefits deductions", "W-2 at year-end", "Federal & state withholding"],
+                },
+                {
+                  icon: Users,
+                  title: "Part-Time Employees",
+                  items: ["Flexible pay schedules", "Hourly or salaried", "W-2 at year-end", "Proper tax withholding"],
+                },
+                {
+                  icon: Briefcase,
+                  title: "Contractors & Freelancers",
+                  items: ["No payroll taxes owed", "1099-NEC at year-end", "Track payments per vendor", "Multi-contractor support"],
+                },
+                {
+                  icon: RefreshCw,
+                  title: "Temporary & One-Off Hires",
+                  items: ["One-time or short-term labor", "Correct W-2 or 1099 determination", "Seasonal workforce support", "No long-term commitment needed"],
+                },
+              ].map(({ icon: Icon, title, items }) => (
+                <Card key={title} className="hover:border-primary/30 hover:shadow-md transition-all">
+                  <CardHeader className="pb-3">
+                    <div className="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary mb-3">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <CardTitle className="text-base">{title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <ul className="space-y-2 text-sm text-muted-foreground">
-                      {feature.items.map((item) => (
+                    <ul className="space-y-1.5 text-sm text-muted-foreground">
+                      {items.map((item) => (
                         <li key={item} className="flex items-start gap-2">
                           <div className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0 mt-2" />
                           <span>{item}</span>
@@ -237,136 +442,158 @@ export default function ClientPortalPage() {
           </div>
         </section>
 
-        {/* How It Works */}
-        <section className="container py-24">
-          <div className="mx-auto max-w-3xl text-center space-y-4 mb-16">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-balance">How It Works</h2>
-            <p className="text-muted-foreground leading-relaxed text-pretty">
-              Getting started is simple—here's what to expect
-            </p>
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4 max-w-6xl mx-auto">
-            {steps.map((step) => (
-              <div key={step.number} className="text-center space-y-4">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground mx-auto text-2xl font-bold">
-                  {step.number}
+        {/* ── No Subscriptions ── */}
+        <section className="bg-card border-t border-border px-6 lg:px-8 py-24">
+          <div className="mx-auto max-w-6xl">
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <div className="space-y-6">
+                <Badge variant="outline" className="text-xs font-semibold uppercase tracking-wider">No Extra Software</Badge>
+                <h2 className="text-3xl lg:text-4xl font-bold text-primary dark:text-foreground leading-tight">
+                  Stop paying for software you don&apos;t need
+                </h2>
+                <p className="text-muted-foreground leading-relaxed text-lg">
+                  Most bookkeepers charge you for their service <em>and</em> then ask you to pay for QuickBooks on top.
+                  We include everything. You pay us — and that covers the platform, the software, the labor, and the expertise.
+                </p>
+                <div className="space-y-3">
+                  {[
+                    "We pay for all accounting software — not you",
+                    "One invoice from us replaces 4-5 separate subscriptions",
+                    "No QuickBooks, Gusto, Xero, or TurboTax monthly fees",
+                    "No onboarding fees or software setup charges",
+                    "Cancel anything else you've been paying for",
+                  ].map((f) => (
+                    <div key={f} className="flex items-center gap-3">
+                      <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <Check className="h-3 w-3 text-primary" />
+                      </div>
+                      <span className="text-sm font-medium">{f}</span>
+                    </div>
+                  ))}
                 </div>
-                <h3 className="font-semibold text-lg">{step.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-bold text-sm hover:opacity-90 transition-all"
+                >
+                  Get a Custom Quote
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
               </div>
-            ))}
-          </div>
-        </section>
 
-        {/* Mobile App Highlight */}
-        <section className="border-t border-border bg-muted/30 py-24">
-          <div className="container">
-            <div className="max-w-4xl mx-auto">
-              <Card className="overflow-hidden">
-                <div className="grid md:grid-cols-2">
-                  <CardContent className="p-8 md:p-12 flex flex-col justify-center space-y-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                      <Smartphone className="h-6 w-6" />
+              <div className="space-y-4">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">What you currently pay vs. working with us</p>
+                <div className="space-y-3">
+                  {[
+                    { label: "QuickBooks Online", included: false },
+                    { label: "Gusto Payroll", included: false },
+                    { label: "Xero or Wave", included: false },
+                    { label: "TurboTax Business", included: false },
+                    { label: "Separate invoicing software", included: false },
+                    { label: "Your own time managing it all", included: false },
+                  ].map(({ label, included }) => (
+                    <div key={label} className="flex items-center justify-between p-3 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30">
+                      <span className="text-sm text-muted-foreground line-through">{label}</span>
+                      <X className="h-4 w-4 text-red-400 flex-shrink-0" />
                     </div>
-                    <h3 className="text-2xl font-bold">Access on Any Device</h3>
-                    <p className="text-muted-foreground leading-relaxed">
-                      Our mobile app lets you upload receipts on the go, check on your work status, message your team,
-                      and approve documents—right from your phone.
-                    </p>
-                    <ul className="space-y-2 text-sm">
-                      <li className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                        <span>Available on iOS and Android</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                        <span>Upload photos of receipts instantly</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                        <span>Push notifications for updates</span>
-                      </li>
-                    </ul>
-                  </CardContent>
-                  <div className="bg-gradient-to-br from-primary/10 to-primary/5 p-8 md:p-12 flex items-center justify-center">
-                    <div className="grid grid-cols-2 gap-4 text-center">
-                      <div className="space-y-2 p-4 rounded-lg bg-background/80">
-                        <Clock className="h-8 w-8 mx-auto text-primary" />
-                        <p className="text-xs text-muted-foreground">Real-time updates</p>
-                      </div>
-                      <div className="space-y-2 p-4 rounded-lg bg-background/80">
-                        <Bell className="h-8 w-8 mx-auto text-primary" />
-                        <p className="text-xs text-muted-foreground">Push notifications</p>
-                      </div>
-                      <div className="space-y-2 p-4 rounded-lg bg-background/80">
-                        <FolderLock className="h-8 w-8 mx-auto text-primary" />
-                        <p className="text-xs text-muted-foreground">Secure storage</p>
-                      </div>
-                      <div className="space-y-2 p-4 rounded-lg bg-background/80">
-                        <PenTool className="h-8 w-8 mx-auto text-primary" />
-                        <p className="text-xs text-muted-foreground">E-sign anywhere</p>
-                      </div>
-                    </div>
+                  ))}
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-primary/5 border-2 border-primary/20 mt-2">
+                    <span className="text-sm font-bold text-primary">BookKeeping.business — all of the above</span>
+                    <Check className="h-5 w-5 text-primary flex-shrink-0" />
                   </div>
                 </div>
-              </Card>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* FAQ */}
-        <section className="container py-24">
-          <div className="mx-auto max-w-3xl text-center space-y-4 mb-12">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-balance">Frequently Asked Questions</h2>
-            <p className="text-muted-foreground leading-relaxed text-pretty">
-              Common questions about our client portal
-            </p>
-          </div>
-
-          <div className="max-w-3xl mx-auto">
-            <Accordion type="single" collapsible className="w-full">
-              {faqs.map((faq, index) => (
-                <AccordionItem key={index} value={`item-${index}`}>
-                  <AccordionTrigger className="text-left">{faq.question}</AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground leading-relaxed">
-                    {faq.answer}
-                  </AccordionContent>
-                </AccordionItem>
+        {/* ── Onboarding steps ── */}
+        <section className="px-6 lg:px-8 py-24">
+          <div className="mx-auto max-w-5xl">
+            <div className="text-center mb-16 space-y-3">
+              <h2 className="text-3xl font-bold text-primary dark:text-foreground">How onboarding works</h2>
+              <p className="text-muted-foreground">From signup to fully running — your team is set up fast.</p>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                {
+                  step: "1",
+                  title: "Business Signs Up",
+                  desc: "Complete the intake form with your business details, worker types, and services needed.",
+                },
+                {
+                  step: "2",
+                  title: "Invite Your Team",
+                  desc: "Add owners, accountants, office managers, or any staff who need access to the portal.",
+                },
+                {
+                  step: "3",
+                  title: "Connect & Upload",
+                  desc: "Link bank accounts, upload statements, add employees, and share existing documents.",
+                },
+                {
+                  step: "4",
+                  title: "We Take It From Here",
+                  desc: "Your dedicated team handles bookkeeping, payroll, filings, and taxes — every month.",
+                },
+              ].map(({ step, title, desc }) => (
+                <div key={step} className="text-center space-y-4">
+                  <div className="h-14 w-14 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center text-xl font-black mx-auto">
+                    {step}
+                  </div>
+                  <h3 className="font-bold">{title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
+                </div>
               ))}
-            </Accordion>
-          </div>
-        </section>
-
-        {/* Security Disclaimer */}
-        <section className="border-t border-border bg-muted/30 py-12">
-          <div className="container">
-            <div className="max-w-3xl mx-auto text-center space-y-2">
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Security features include encrypted transfer and controlled access. We do not request sensitive
-                documents through email.
-              </p>
             </div>
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="bg-primary text-primary-foreground py-16">
-          <div className="container">
-            <div className="mx-auto max-w-2xl text-center space-y-6">
-              <h2 className="text-3xl font-bold tracking-tight text-balance">Ready to Get Started?</h2>
-              <p className="text-lg leading-relaxed text-pretty opacity-90">
-                Submit your intake form and we'll set up your secure portal access within 24-48 hours.
+        {/* ── Security ── */}
+        <section className="bg-card border-t border-border px-6 lg:px-8 py-12">
+          <div className="mx-auto max-w-4xl">
+            <div className="flex items-start gap-4">
+              <Shield className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <h4 className="font-semibold text-sm">Bank-level security throughout</h4>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  All documents and financial data are encrypted end-to-end with 256-bit SSL. We never request sensitive
+                  documents via email. Every action is logged with a full audit trail. Mobile access available on iOS and Android.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── CTA ── */}
+        <section className="px-6 lg:px-8 py-20">
+          <div className="mx-auto max-w-7xl">
+            <div className="relative bg-primary rounded-[3rem] p-12 lg:p-20 overflow-hidden text-center space-y-6">
+              <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 h-80 w-80 bg-primary-foreground/5 rounded-full blur-3xl" />
+              <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 h-80 w-80 bg-primary-foreground/5 rounded-full blur-3xl" />
+              <h2 className="relative text-3xl lg:text-5xl font-bold text-primary-foreground max-w-3xl mx-auto leading-tight">
+                Ready to replace your entire financial stack?
+              </h2>
+              <p className="relative text-primary-foreground/70 max-w-xl mx-auto">
+                One intake form. One team. One platform. Everything your business needs — handled.
               </p>
-              <Link href="/contact">
-                <Button size="lg" variant="secondary">
+              <div className="relative flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+                <Link
+                  href="/contact"
+                  className="w-full sm:w-auto px-10 py-4 rounded-2xl bg-primary-foreground text-primary font-bold text-base hover:opacity-90 transition-all"
+                >
                   Start Your Intake
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
+                </Link>
+                <Link
+                  href="/services"
+                  className="w-full sm:w-auto px-10 py-4 rounded-2xl border-2 border-primary-foreground/20 text-primary-foreground font-bold text-base hover:bg-primary-foreground/10 transition-all"
+                >
+                  View All Services
+                </Link>
+              </div>
             </div>
           </div>
         </section>
+
       </main>
 
       <SiteFooter />

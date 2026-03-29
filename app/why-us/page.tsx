@@ -300,8 +300,56 @@ export default function WhyUsPage() {
           </div>
         </section>
 
-        {/* Comparison Table */}
+        {/* No Subscriptions */}
         <section className="border-t border-border bg-muted/30 py-24">
+          <div className="container">
+            <div className="mx-auto max-w-3xl text-center space-y-4 mb-16">
+              <Badge variant="outline">Zero Extra Subscriptions</Badge>
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-balance">
+                Cancel the Stack. Use Ours.
+              </h2>
+              <p className="text-muted-foreground leading-relaxed text-pretty">
+                When you work with us, you no longer need a separate subscription for any of these — it's all built into your plan.
+              </p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 max-w-4xl mx-auto">
+              {[
+                { name: "QuickBooks", what: "Bookkeeping & ledger" },
+                { name: "Gusto / ADP", what: "Payroll processing" },
+                { name: "TurboTax Business", what: "Business tax filing" },
+                { name: "TurboTax / H&R Block", what: "Personal tax filing" },
+                { name: "Wave / FreshBooks", what: "Invoicing & tracking" },
+                { name: "Xero", what: "Accounting software" },
+              ].map(({ name, what }) => (
+                <div key={name} className="flex items-center gap-4 rounded-xl border border-border bg-background p-4">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-destructive/10 text-destructive shrink-0">
+                    <X className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-sm line-through text-muted-foreground">{name}</p>
+                    <p className="text-xs text-muted-foreground">{what}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-10 max-w-xl mx-auto text-center">
+              <Card className="bg-primary/5 border-primary/20">
+                <CardContent className="pt-6 pb-6">
+                  <Check className="h-8 w-8 text-primary mx-auto mb-3" />
+                  <p className="font-semibold text-lg">One plan. Everything replaced.</p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Your books, payroll, taxes, and filings — all in one place. No logins to juggle, no bills to track separately.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Comparison Table */}
+        <section className="container py-24">
           <div className="container">
             <div className="mx-auto max-w-3xl text-center space-y-4 mb-16">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-balance">
@@ -416,7 +464,7 @@ export default function WhyUsPage() {
                     </td>
                   </tr>
                   <tr className="border-b">
-                    <td className="py-4 px-4">Transparent Flat Pricing</td>
+                    <td className="py-4 px-4">Clear, Upfront Quote</td>
                     <td className="text-center py-4 px-4">
                       <Check className="h-4 w-4 mx-auto text-muted-foreground" />
                     </td>

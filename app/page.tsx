@@ -13,12 +13,19 @@ import {
   Shield,
   Lock,
   ClipboardCheck,
+  ClipboardList,
   Star,
   Check,
   X,
   BarChart2,
   CloudUpload,
+  ArrowRight,
+  Users,
+  Landmark,
+  FileBadge,
+  Receipt,
 } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
 import { CALENDLY_URL, CONTACT_EMAIL } from "@/lib/constants"
 
 export const metadata: Metadata = {
@@ -164,6 +171,69 @@ export default function HomePage() {
                   <p className="text-muted-foreground text-sm leading-relaxed">{desc}</p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Platform Teaser ── */}
+        <section className="py-24 px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl">
+            <div className="bg-primary/5 border border-primary/15 rounded-[2.5rem] p-10 lg:p-16 grid lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-6">
+                <Badge variant="outline" className="text-xs font-semibold uppercase tracking-wider border-primary/30 text-primary">
+                  The Platform
+                </Badge>
+                <h2 className="text-3xl lg:text-4xl font-bold text-primary dark:text-foreground leading-tight">
+                  One platform replaces your entire financial software stack
+                </h2>
+                <p className="text-muted-foreground leading-relaxed">
+                  Sign up your business, invite your team, connect your bank accounts — and hand off everything.
+                  We handle payroll, W-2s, 1099s, invoices, bookkeeping, quarterly filings, and tax prep. No QuickBooks.
+                  No Gusto. No Xero. No TurboTax. We cover the software so you don&apos;t have to.
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    "Multi-user team access",
+                    "Bank & credit card feeds",
+                    "Payroll all worker types",
+                    "W-2 & 1099 issuance",
+                    "Invoice management",
+                    "Quarterly filings",
+                    "Monthly bookkeeping",
+                    "No extra subscriptions",
+                  ].map((f) => (
+                    <div key={f} className="flex items-center gap-2 text-sm">
+                      <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                      <span className="text-muted-foreground">{f}</span>
+                    </div>
+                  ))}
+                </div>
+                <Link
+                  href="/client-portal"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-bold text-sm hover:opacity-90 transition-all"
+                >
+                  Explore the Platform
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                {[
+                  { icon: Users, label: "Team Access", sub: "Invite your whole company" },
+                  { icon: Landmark, label: "Bank Feeds", sub: "Auto-fetch & reconcile" },
+                  { icon: FileBadge, label: "W-2 & 1099s", sub: "All worker types covered" },
+                  { icon: Receipt, label: "Invoices", sub: "Send, receive & track" },
+                  { icon: ClipboardList, label: "Quarterly Filings", sub: "Payroll & unemployment" },
+                  { icon: X, label: "No QuickBooks", sub: "We cover the software" },
+                ].map(({ icon: Icon, label, sub }) => (
+                  <div key={label} className="p-4 rounded-2xl bg-background border border-border space-y-2">
+                    <div className="h-9 w-9 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
+                      <Icon className="h-4 w-4" />
+                    </div>
+                    <p className="text-sm font-semibold">{label}</p>
+                    <p className="text-xs text-muted-foreground">{sub}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>

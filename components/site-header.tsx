@@ -62,7 +62,7 @@ export function SiteHeader() {
             href="/client-portal"
             className="hidden sm:flex items-center px-4 py-2 rounded-lg bg-primary/10 text-primary text-sm font-semibold hover:bg-primary/20 transition-colors"
           >
-            Client Portal
+            Platform
           </Link>
           <Link
             href="/contact"
