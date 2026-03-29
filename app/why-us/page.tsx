@@ -308,12 +308,14 @@ export default function WhyUsPage() {
         <section className="border-t border-border bg-muted/30 py-24">
           <div className="container">
             <div className="mx-auto max-w-3xl text-center space-y-4 mb-16">
-              <Badge variant="outline">Zero Extra Subscriptions</Badge>
+              <Badge variant="outline">We Cover the Software</Badge>
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-balance">
-                Cancel the Stack. Use Ours.
+                We pay for what our team needs. You don&apos;t.
               </h2>
               <p className="text-muted-foreground leading-relaxed text-pretty">
-                When you work with us, you no longer need a separate subscription for any of these — it's all built into your plan.
+                Traditional bookkeepers and CPAs have routinely billed software subscriptions as pass-through client expenses for years.
+                We don&apos;t do that. If we need any tool or platform to complete your work, that&apos;s our operating expense — period.
+                You hire us for expertise and results. Everything our team needs to deliver is already included.
               </p>
             </div>
 
@@ -342,9 +344,10 @@ export default function WhyUsPage() {
               <Card className="bg-primary/5 border-primary/20">
                 <CardContent className="pt-6 pb-6">
                   <Check className="h-8 w-8 text-primary mx-auto mb-3" />
-                  <p className="font-semibold text-lg">One plan. Everything replaced.</p>
+                  <p className="font-semibold text-lg">We come fully equipped. You just hire us.</p>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Your books, payroll, taxes, and filings — all in one place. No logins to juggle, no bills to track separately.
+                    Our team brings all the software, tools, and platforms needed to handle your books, payroll, taxes, and filings.
+                    That&apos;s our cost of business — not yours. No pass-throughs. No add-ons. No surprises.
                   </p>
                 </CardContent>
               </Card>

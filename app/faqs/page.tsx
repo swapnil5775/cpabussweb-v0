@@ -50,6 +50,11 @@ export default function FAQsPage() {
             "You'll be assigned a dedicated account representative who will handle your account throughout the year. For tax returns, a licensed tax professional will prepare and review your filing. For bookkeeping, you'll work with a dedicated bookkeeper who gets to know your business.",
         },
         {
+          question: "Do I need to pay for QuickBooks, Gusto, or any other software?",
+          answer:
+            "No — never. If our team needs any software or platform to complete your work, that is our operating expense, not yours. Traditional bookkeepers and CPAs have long passed software subscription costs to clients as line-item charges. We do not do that. You hire us to get the job done, and our team comes fully equipped with every tool required. One engagement covers everything — no separate software subscriptions, no pass-through fees, no surprises.",
+        },
+        {
           question: "How secure is my data?",
           answer:
             "We use bank-level encryption for all document uploads and storage. Our secure portal maintains a complete audit trail, and we're fully insured with professional liability coverage. Your documents are stored securely for 7 years in compliance with IRS guidelines.",

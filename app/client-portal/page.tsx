@@ -95,10 +95,12 @@ export default function PlatformPage() {
           <div className="mx-auto max-w-5xl">
             <div className="text-center mb-10">
               <h2 className="text-2xl md:text-3xl font-bold text-primary-foreground">
-                Cancel these. We&apos;ve got you covered.
+                Cancel these. We pay for what we need — you don&apos;t.
               </h2>
-              <p className="text-primary-foreground/60 mt-2 text-sm">
-                Other bookkeepers charge you AND make you pay for the software. We include everything.
+              <p className="text-primary-foreground/70 mt-3 max-w-2xl mx-auto text-sm leading-relaxed">
+                Traditional bookkeepers and CPAs have always passed software subscription costs to their clients.
+                We don&apos;t. If our team needs any tool or platform to do your work, that&apos;s our operating expense — not yours.
+                You hire us for expertise and results. Everything we need to deliver is already covered.
               </p>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -118,7 +120,7 @@ export default function PlatformPage() {
               ))}
             </div>
             <p className="text-center text-primary-foreground/50 text-sm mt-8">
-              You pay us for service, labor, expertise, and platform — all in one. No separate software subscriptions ever.
+              You pay us for service, labor, and expertise — that&apos;s it. All software we use to support your account is our expense.
             </p>
           </div>
         </section>
@@ -447,21 +449,26 @@ export default function PlatformPage() {
           <div className="mx-auto max-w-6xl">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               <div className="space-y-6">
-                <Badge variant="outline" className="text-xs font-semibold uppercase tracking-wider">No Extra Software</Badge>
+                <Badge variant="outline" className="text-xs font-semibold uppercase tracking-wider">We Cover the Software</Badge>
                 <h2 className="text-3xl lg:text-4xl font-bold text-primary dark:text-foreground leading-tight">
-                  Stop paying for software you don&apos;t need
+                  We pay for the software. You pay for the work.
                 </h2>
                 <p className="text-muted-foreground leading-relaxed text-lg">
-                  Most bookkeepers charge you for their service <em>and</em> then ask you to pay for QuickBooks on top.
-                  We include everything. You pay us — and that covers the platform, the software, the labor, and the expertise.
+                  For decades, bookkeepers and CPAs have outsourced their software costs to clients — billing QuickBooks,
+                  Gusto, and other subscriptions as client expenses. We think that&apos;s wrong.
+                </p>
+                <p className="text-muted-foreground leading-relaxed">
+                  If our team needs any software or platform to complete your work, <strong className="text-foreground">we pay for it</strong>.
+                  That&apos;s our cost of doing business. You hired us to get the job done — not to fund our toolbox.
+                  Our team is fully equipped with everything required to support you. No pass-through. No surprises.
                 </p>
                 <div className="space-y-3">
                   {[
-                    "We pay for all accounting software — not you",
-                    "One invoice from us replaces 4-5 separate subscriptions",
-                    "No QuickBooks, Gusto, Xero, or TurboTax monthly fees",
-                    "No onboarding fees or software setup charges",
-                    "Cancel anything else you've been paying for",
+                    "We absorb all software subscriptions our team uses for your account",
+                    "One engagement with us replaces 4–6 separate monthly subscriptions",
+                    "No QuickBooks, Gusto, Xero, or TurboTax fees ever billed to you",
+                    "No software setup charges or onboarding fees",
+                    "Cancel every tool you've been paying for on your own",
                   ].map((f) => (
                     <div key={f} className="flex items-center gap-3">
                       <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">

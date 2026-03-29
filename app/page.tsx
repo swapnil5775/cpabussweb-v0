@@ -192,8 +192,12 @@ export default function HomePage() {
                 </h2>
                 <p className="text-muted-foreground leading-relaxed">
                   Sign up your business, invite your team, connect your bank accounts — and hand off everything.
-                  We handle payroll, W-2s, 1099s, invoices, bookkeeping, quarterly filings, and tax prep. No QuickBooks.
-                  No Gusto. No Xero. No TurboTax. We cover the software so you don&apos;t have to.
+                  We handle payroll, W-2s, 1099s, invoices, bookkeeping, quarterly filings, and tax prep.
+                </p>
+                <p className="text-muted-foreground leading-relaxed">
+                  And unlike traditional bookkeepers and CPAs who pass software subscription costs to clients —
+                  we don&apos;t. Whatever tools our team needs to support your account, <strong className="text-foreground">we pay for them</strong>.
+                  No QuickBooks bill. No Gusto fee. No Xero charge. Our software is our expense, not yours.
                 </p>
                 <div className="grid grid-cols-2 gap-3">
                   {[
@@ -204,7 +208,7 @@ export default function HomePage() {
                     "Invoice management",
                     "Quarterly filings",
                     "Monthly bookkeeping",
-                    "No extra subscriptions",
+                    "We cover all software costs",
                   ].map((f) => (
                     <div key={f} className="flex items-center gap-2 text-sm">
                       <Check className="h-4 w-4 text-primary flex-shrink-0" />
