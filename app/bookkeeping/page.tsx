@@ -90,7 +90,7 @@ export default function BookkeepingPage() {
           <div className="mx-auto max-w-3xl text-center space-y-6">
             <div className="flex justify-center">
               <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                <BookOpen className="h-8 w-8" />
+                <BookOpen aria-hidden="true" className="h-8 w-8" />
               </div>
             </div>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl text-balance">Monthly Bookkeeping for Restaurants, Hotels, Childcare & Small Business</h1>
@@ -120,7 +120,7 @@ export default function BookkeepingPage() {
                   <ul className="space-y-3">
                     {tier.features.map((feature) => (
                       <li key={feature} className="flex items-start gap-3">
-                        <Check className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                        <Check aria-hidden="true" className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                         <span className="text-sm leading-relaxed">{feature}</span>
                       </li>
                     ))}
@@ -128,7 +128,7 @@ export default function BookkeepingPage() {
                   <Link href="/contact">
                     <Button className="w-full" variant={tier.popular ? "default" : "outline"}>
                       Get Started
-                      <ArrowRight className="ml-2 h-4 w-4" />
+                      <ArrowRight aria-hidden="true" className="ml-2 h-4 w-4" />
                     </Button>
                   </Link>
                 </CardContent>
@@ -152,19 +152,19 @@ export default function BookkeepingPage() {
                 </p>
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="flex items-start gap-3">
-                    <Check className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <Check aria-hidden="true" className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                     <span className="text-sm">Historical transaction reconciliation</span>
                   </div>
                   <div className="flex items-start gap-3">
-                    <Check className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <Check aria-hidden="true" className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                     <span className="text-sm">Expense categorization cleanup</span>
                   </div>
                   <div className="flex items-start gap-3">
-                    <Check className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <Check aria-hidden="true" className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                     <span className="text-sm">Audit-ready financial records</span>
                   </div>
                   <div className="flex items-start gap-3">
-                    <Check className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <Check aria-hidden="true" className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                     <span className="text-sm">Smooth transition to monthly service</span>
                   </div>
                 </div>
@@ -172,7 +172,7 @@ export default function BookkeepingPage() {
                   <Link href="/contact">
                     <Button>
                       Get a Catchup Quote
-                      <ArrowRight className="ml-2 h-4 w-4" />
+                      <ArrowRight aria-hidden="true" className="ml-2 h-4 w-4" />
                     </Button>
                   </Link>
                 </div>
@@ -281,7 +281,7 @@ export default function BookkeepingPage() {
               <Link href="/contact">
                 <Button size="lg" variant="secondary">
                   Get Started Today
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <ArrowRight aria-hidden="true" className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
             </div>

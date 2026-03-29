@@ -131,7 +131,7 @@ export default function ContactPage() {
             <Card className="max-w-2xl mx-auto">
               <CardContent className="pt-12 pb-12 text-center space-y-6">
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary mx-auto">
-                  <Check className="h-8 w-8" />
+                  <Check aria-hidden="true" className="h-8 w-8" />
                 </div>
                 <h1 className="text-3xl font-bold">Thank You!</h1>
                 <p className="text-muted-foreground leading-relaxed max-w-md mx-auto">
@@ -148,9 +148,9 @@ export default function ContactPage() {
                   </p>
                   <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer">
                     <Button className="gap-2">
-                      <Calendar className="h-4 w-4" />
+                      <Calendar aria-hidden="true" className="h-4 w-4" />
                       Schedule a Call
-                      <ExternalLink className="h-3 w-3" />
+                      <ExternalLink aria-hidden="true" className="h-3 w-3" />
                     </Button>
                   </a>
                 </div>
@@ -201,7 +201,7 @@ export default function ContactPage() {
                         : "bg-muted text-muted-foreground"
                     }`}
                   >
-                    {i + 1 < step ? <Check className="h-4 w-4" /> : i + 1}
+                    {i + 1 < step ? <Check aria-hidden="true" className="h-4 w-4" /> : i + 1}
                   </div>
                   {i < totalSteps - 1 && (
                     <div
@@ -558,7 +558,7 @@ export default function ContactPage() {
                     />
                   </div>
                   <div className="rounded-lg bg-muted/50 p-4 flex items-start gap-3">
-                    <Shield className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <Shield aria-hidden="true" className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                     <p className="text-sm text-muted-foreground">
                       <strong className="text-foreground">No documents needed right now.</strong> If we need any files from you, we'll send a secure upload link after reviewing your request.
                     </p>
@@ -574,7 +574,7 @@ export default function ContactPage() {
                     onClick={() => setStep(step - 1)}
                     className="bg-transparent"
                   >
-                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    <ArrowLeft aria-hidden="true" className="mr-2 h-4 w-4" />
                     Back
                   </Button>
                 ) : (
@@ -587,7 +587,7 @@ export default function ContactPage() {
                     disabled={!canProceed()}
                   >
                     Continue
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    <ArrowRight aria-hidden="true" className="ml-2 h-4 w-4" />
                   </Button>
                 ) : (
                   <Button
@@ -595,7 +595,7 @@ export default function ContactPage() {
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? "Submitting..." : "Submit Request"}
-                    {!isSubmitting && <ArrowRight className="ml-2 h-4 w-4" />}
+                    {!isSubmitting && <ArrowRight aria-hidden="true" className="ml-2 h-4 w-4" />}
                   </Button>
                 )}
               </div>
@@ -614,7 +614,7 @@ export default function ContactPage() {
               <Card>
                 <CardContent className="pt-6 text-center space-y-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary mx-auto">
-                    <Mail className="h-6 w-6" />
+                    <Mail aria-hidden="true" className="h-6 w-6" />
                   </div>
                   <h3 className="font-semibold">Email Us</h3>
                   <p className="text-sm text-muted-foreground">hello@bookkeeping.business</p>
@@ -624,7 +624,7 @@ export default function ContactPage() {
               <Card>
                 <CardContent className="pt-6 space-y-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary mx-auto">
-                    <Calendar className="h-6 w-6" />
+                    <Calendar aria-hidden="true" className="h-6 w-6" />
                   </div>
                   <div className="text-center space-y-2">
                     <h3 className="font-semibold">Book a Call</h3>
@@ -644,9 +644,9 @@ export default function ContactPage() {
                       </p>
                       <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer">
                         <Button variant="outline" size="sm" className="w-full bg-transparent gap-2">
-                          <Calendar className="h-3 w-3" />
+                          <Calendar aria-hidden="true" className="h-3 w-3" />
                           Schedule a Call
-                          <ExternalLink className="h-3 w-3" />
+                          <ExternalLink aria-hidden="true" className="h-3 w-3" />
                         </Button>
                       </a>
                     </div>

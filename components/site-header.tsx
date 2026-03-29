@@ -22,7 +22,7 @@ export function SiteHeader() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <BookOpenCheck className="h-4 w-4" />
+            <BookOpenCheck aria-hidden="true" className="h-4 w-4" />
           </div>
           <span className="text-lg font-bold tracking-tight text-primary dark:text-foreground">
             BookKeeping<span className="font-normal opacity-60">.business</span>

@@ -12,7 +12,7 @@ export function SiteFooter() {
           <div className="lg:col-span-2 space-y-5">
             <Link href="/" className="flex items-center gap-2 w-fit">
               <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                <BookOpenCheck className="h-3.5 w-3.5" />
+                <BookOpenCheck aria-hidden="true" className="h-3.5 w-3.5" />
               </div>
               <span className="text-base font-bold text-primary dark:text-foreground">BookKeeping.business</span>
             </Link>
@@ -23,7 +23,7 @@ export function SiteFooter() {
               href={`mailto:${CONTACT_EMAIL}`}
               className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
             >
-              <Mail className="h-4 w-4" />
+              <Mail aria-hidden="true" className="h-4 w-4" />
               {CONTACT_EMAIL}
             </a>
           </div>

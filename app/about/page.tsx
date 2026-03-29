@@ -69,7 +69,7 @@ export default function AboutPage() {
                     <CardContent className="pt-6 space-y-3">
                       <div className="flex items-center gap-3">
                         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                          <Zap className="h-5 w-5" />
+                          <Zap aria-hidden="true" className="h-5 w-5" />
                         </div>
                         <h3 className="font-semibold">AI-Assisted</h3>
                       </div>
@@ -82,7 +82,7 @@ export default function AboutPage() {
                     <CardContent className="pt-6 space-y-3">
                       <div className="flex items-center gap-3">
                         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                          <Users className="h-5 w-5" />
+                          <Users aria-hidden="true" className="h-5 w-5" />
                         </div>
                         <h3 className="font-semibold">Human Reviewed</h3>
                       </div>
@@ -109,7 +109,7 @@ export default function AboutPage() {
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4 max-w-6xl mx-auto">
             <div className="space-y-4 text-center">
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary mx-auto">
-                <Shield className="h-6 w-6" />
+                <Shield aria-hidden="true" className="h-6 w-6" />
               </div>
               <h3 className="font-semibold">Compliance First</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
@@ -119,7 +119,7 @@ export default function AboutPage() {
 
             <div className="space-y-4 text-center">
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary mx-auto">
-                <Target className="h-6 w-6" />
+                <Target aria-hidden="true" className="h-6 w-6" />
               </div>
               <h3 className="font-semibold">Clear Scope</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
@@ -129,7 +129,7 @@ export default function AboutPage() {
 
             <div className="space-y-4 text-center">
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary mx-auto">
-                <Users className="h-6 w-6" />
+                <Users aria-hidden="true" className="h-6 w-6" />
               </div>
               <h3 className="font-semibold">Dedicated Service</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
@@ -139,7 +139,7 @@ export default function AboutPage() {
 
             <div className="space-y-4 text-center">
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary mx-auto">
-                <Zap className="h-6 w-6" />
+                <Zap aria-hidden="true" className="h-6 w-6" />
               </div>
               <h3 className="font-semibold">All-in-One Service</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
@@ -160,7 +160,7 @@ export default function AboutPage() {
               <Link href="/contact">
                 <Button size="lg">
                   Get Started
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <ArrowRight aria-hidden="true" className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
               <Link href="/faqs">

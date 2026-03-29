@@ -138,7 +138,7 @@ export default function ServicesPage() {
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                        <Icon className="h-5 w-5" />
+                        <Icon aria-hidden="true" className="h-5 w-5" />
                       </div>
                     </div>
                     <CardTitle className="mt-4">{service.title}</CardTitle>
@@ -156,7 +156,7 @@ export default function ServicesPage() {
                     <Link href={service.href}>
                       <Button variant="outline" size="sm" className="w-full bg-transparent">
                         Learn More
-                        <ArrowRight className="ml-2 h-4 w-4" />
+                        <ArrowRight aria-hidden="true" className="ml-2 h-4 w-4" />
                       </Button>
                     </Link>
                   </CardContent>
@@ -241,7 +241,7 @@ export default function ServicesPage() {
         {/* CTA */}
         <section className="container py-24">
           <div className="mx-auto max-w-2xl text-center space-y-6">
-            <HelpCircle className="mx-auto h-12 w-12 text-muted-foreground" />
+            <HelpCircle aria-hidden="true" className="mx-auto h-12 w-12 text-muted-foreground" />
             <h2 className="text-3xl font-bold tracking-tight text-balance">Not sure what you need?</h2>
             <p className="text-muted-foreground leading-relaxed text-pretty">
               Book a free 15-minute consultation to discuss your specific situation and get a custom quote.
@@ -250,7 +250,7 @@ export default function ServicesPage() {
               <Link href="/contact">
                 <Button size="lg">
                   Book a Call
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <ArrowRight aria-hidden="true" className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
               <Link href="/faqs">

@@ -86,38 +86,38 @@ export default function WhyUsPage() {
               <Card className="border-destructive/20 bg-destructive/5">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-destructive">
-                    <Building2 className="h-5 w-5" />
+                    <Building2 aria-hidden="true" className="h-5 w-5" />
                     Traditional Big CPA Firms
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-3">
                     <div className="flex items-start gap-3">
-                      <X className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                      <X aria-hidden="true" className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
                       <span className="text-sm">Unpredictable hourly billing rates</span>
                     </div>
                     <div className="flex items-start gap-3">
-                      <X className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                      <X aria-hidden="true" className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
                       <span className="text-sm">Only see your numbers at year-end</span>
                     </div>
                     <div className="flex items-start gap-3">
-                      <X className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                      <X aria-hidden="true" className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
                       <span className="text-sm">Ask you to "dump files" and figure it out</span>
                     </div>
                     <div className="flex items-start gap-3">
-                      <X className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                      <X aria-hidden="true" className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
                       <span className="text-sm">Generic P&L without audit-proof documentation</span>
                     </div>
                     <div className="flex items-start gap-3">
-                      <X className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                      <X aria-hidden="true" className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
                       <span className="text-sm">No quarterly or monthly check-ins</span>
                     </div>
                     <div className="flex items-start gap-3">
-                      <X className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                      <X aria-hidden="true" className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
                       <span className="text-sm">Tax prep billed separately at premium rates</span>
                     </div>
                     <div className="flex items-start gap-3">
-                      <X className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                      <X aria-hidden="true" className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
                       <span className="text-sm">Reactive—only responds when you reach out</span>
                     </div>
                   </div>
@@ -132,38 +132,38 @@ export default function WhyUsPage() {
               <Card className="border-primary/20 bg-primary/5">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-primary">
-                    <Handshake className="h-5 w-5" />
+                    <Handshake aria-hidden="true" className="h-5 w-5" />
                     BookKeeping.business Partner Approach
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-3">
                     <div className="flex items-start gap-3">
-                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                       <span className="text-sm">Flat monthly pricing—no hourly surprises</span>
                     </div>
                     <div className="flex items-start gap-3">
-                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                       <span className="text-sm">Monthly reconciliation & quarterly business reviews</span>
                     </div>
                     <div className="flex items-start gap-3">
-                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                       <span className="text-sm">We handle everything—no file dumps required</span>
                     </div>
                     <div className="flex items-start gap-3">
-                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                       <span className="text-sm">Audit-proof books with proper documentation</span>
                     </div>
                     <div className="flex items-start gap-3">
-                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                       <span className="text-sm">Regular check-ins to see how your year looks</span>
                     </div>
                     <div className="flex items-start gap-3">
-                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                       <span className="text-sm">Business + personal tax prep INCLUDED</span>
                     </div>
                     <div className="flex items-start gap-3">
-                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                       <span className="text-sm">Proactive guidance—we reach out to you</span>
                     </div>
                   </div>
@@ -201,27 +201,27 @@ export default function WhyUsPage() {
                 <CardContent className="space-y-4">
                   <div className="space-y-3 text-sm">
                     <div className="flex items-start gap-2">
-                      <X className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
+                      <X aria-hidden="true" className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
                       <span>You enter all transactions</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <X className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
+                      <X aria-hidden="true" className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
                       <span>You categorize expenses</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <X className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
+                      <X aria-hidden="true" className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
                       <span>You reconcile accounts</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <X className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
+                      <X aria-hidden="true" className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
                       <span>You figure out deductions</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <X className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
+                      <X aria-hidden="true" className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
                       <span>You file your own taxes</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <X className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
+                      <X aria-hidden="true" className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
                       <span>No expert review</span>
                     </div>
                   </div>
@@ -244,7 +244,7 @@ export default function WhyUsPage() {
                   <div className="space-y-3 text-sm">
                     {["QuickBooks (bookkeeping)", "Gusto (payroll)", "TurboTax Business (tax)", "Invoicing software", "Your own time & effort"].map((tool) => (
                       <div key={tool} className="flex items-center gap-2">
-                        <X className="h-4 w-4 text-destructive shrink-0" />
+                        <X aria-hidden="true" className="h-4 w-4 text-destructive shrink-0" />
                         <span>{tool}</span>
                       </div>
                     ))}
@@ -270,27 +270,27 @@ export default function WhyUsPage() {
                 <CardContent className="space-y-4">
                   <div className="space-y-3 text-sm">
                     <div className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                       <span>We handle bookkeeping</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                       <span>We categorize & reconcile</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                       <span>We prep & file business taxes</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                       <span>We prep & file personal taxes</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                       <span>Expert human review</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                       <span>Quarterly strategy calls</span>
                     </div>
                   </div>
@@ -330,7 +330,7 @@ export default function WhyUsPage() {
               ].map(({ name, what }) => (
                 <div key={name} className="flex items-center gap-4 rounded-xl border border-border bg-background p-4">
                   <div className="flex h-9 w-9 items-center justify-center rounded-full bg-destructive/10 text-destructive shrink-0">
-                    <X className="h-4 w-4" />
+                    <X aria-hidden="true" className="h-4 w-4" />
                   </div>
                   <div>
                     <p className="font-medium text-sm line-through text-muted-foreground">{name}</p>
@@ -343,7 +343,7 @@ export default function WhyUsPage() {
             <div className="mt-10 max-w-xl mx-auto text-center">
               <Card className="bg-primary/5 border-primary/20">
                 <CardContent className="pt-6 pb-6">
-                  <Check className="h-8 w-8 text-primary mx-auto mb-3" />
+                  <Check aria-hidden="true" className="h-8 w-8 text-primary mx-auto mb-3" />
                   <p className="font-semibold text-lg">We come fully equipped. You just hire us.</p>
                   <p className="text-sm text-muted-foreground mt-1">
                     Our team brings all the software, tools, and platforms needed to handle your books, payroll, taxes, and filings.
@@ -384,10 +384,10 @@ export default function WhyUsPage() {
                     <td className="py-4 px-4">Monthly Bookkeeping</td>
                     <td className="text-center py-4 px-4 text-muted-foreground">You do it</td>
                     <td className="text-center py-4 px-4">
-                      <Check className="h-4 w-4 mx-auto text-muted-foreground" />
+                      <Check aria-hidden="true" className="h-4 w-4 mx-auto text-muted-foreground" />
                     </td>
                     <td className="text-center py-4 px-4 bg-primary/5">
-                      <Check className="h-4 w-4 mx-auto text-primary" />
+                      <Check aria-hidden="true" className="h-4 w-4 mx-auto text-primary" />
                     </td>
                   </tr>
                   <tr className="border-b">
@@ -395,7 +395,7 @@ export default function WhyUsPage() {
                     <td className="text-center py-4 px-4 text-muted-foreground">You do it</td>
                     <td className="text-center py-4 px-4 text-muted-foreground">Billed separately</td>
                     <td className="text-center py-4 px-4 bg-primary/5">
-                      <Check className="h-4 w-4 mx-auto text-primary" />
+                      <Check aria-hidden="true" className="h-4 w-4 mx-auto text-primary" />
                     </td>
                   </tr>
                   <tr className="border-b">
@@ -403,95 +403,95 @@ export default function WhyUsPage() {
                     <td className="text-center py-4 px-4 text-muted-foreground">You do it</td>
                     <td className="text-center py-4 px-4 text-muted-foreground">Billed separately</td>
                     <td className="text-center py-4 px-4 bg-primary/5">
-                      <Check className="h-4 w-4 mx-auto text-primary" />
+                      <Check aria-hidden="true" className="h-4 w-4 mx-auto text-primary" />
                     </td>
                   </tr>
                   <tr className="border-b">
                     <td className="py-4 px-4">Quarterly Business Reviews</td>
                     <td className="text-center py-4 px-4">
-                      <X className="h-4 w-4 mx-auto text-destructive" />
+                      <X aria-hidden="true" className="h-4 w-4 mx-auto text-destructive" />
                     </td>
                     <td className="text-center py-4 px-4">
-                      <X className="h-4 w-4 mx-auto text-destructive" />
+                      <X aria-hidden="true" className="h-4 w-4 mx-auto text-destructive" />
                     </td>
                     <td className="text-center py-4 px-4 bg-primary/5">
-                      <Check className="h-4 w-4 mx-auto text-primary" />
+                      <Check aria-hidden="true" className="h-4 w-4 mx-auto text-primary" />
                     </td>
                   </tr>
                   <tr className="border-b">
                     <td className="py-4 px-4">Dedicated Account Rep</td>
                     <td className="text-center py-4 px-4">
-                      <X className="h-4 w-4 mx-auto text-destructive" />
+                      <X aria-hidden="true" className="h-4 w-4 mx-auto text-destructive" />
                     </td>
                     <td className="text-center py-4 px-4 text-muted-foreground">Maybe</td>
                     <td className="text-center py-4 px-4 bg-primary/5">
-                      <Check className="h-4 w-4 mx-auto text-primary" />
+                      <Check aria-hidden="true" className="h-4 w-4 mx-auto text-primary" />
                     </td>
                   </tr>
                   <tr className="border-b">
                     <td className="py-4 px-4">Audit-Proof Documentation</td>
                     <td className="text-center py-4 px-4">
-                      <X className="h-4 w-4 mx-auto text-destructive" />
+                      <X aria-hidden="true" className="h-4 w-4 mx-auto text-destructive" />
                     </td>
                     <td className="text-center py-4 px-4 text-muted-foreground">Varies</td>
                     <td className="text-center py-4 px-4 bg-primary/5">
-                      <Check className="h-4 w-4 mx-auto text-primary" />
+                      <Check aria-hidden="true" className="h-4 w-4 mx-auto text-primary" />
                     </td>
                   </tr>
                   <tr className="border-b">
                     <td className="py-4 px-4">Proactive Tax Planning</td>
                     <td className="text-center py-4 px-4">
-                      <X className="h-4 w-4 mx-auto text-destructive" />
+                      <X aria-hidden="true" className="h-4 w-4 mx-auto text-destructive" />
                     </td>
                     <td className="text-center py-4 px-4 text-muted-foreground">Billed separately</td>
                     <td className="text-center py-4 px-4 bg-primary/5">
-                      <Check className="h-4 w-4 mx-auto text-primary" />
+                      <Check aria-hidden="true" className="h-4 w-4 mx-auto text-primary" />
                     </td>
                   </tr>
                   <tr className="border-b">
                     <td className="py-4 px-4">AI-Powered Efficiency</td>
                     <td className="text-center py-4 px-4 text-muted-foreground">Basic</td>
                     <td className="text-center py-4 px-4">
-                      <X className="h-4 w-4 mx-auto text-destructive" />
+                      <X aria-hidden="true" className="h-4 w-4 mx-auto text-destructive" />
                     </td>
                     <td className="text-center py-4 px-4 bg-primary/5">
-                      <Check className="h-4 w-4 mx-auto text-primary" />
+                      <Check aria-hidden="true" className="h-4 w-4 mx-auto text-primary" />
                     </td>
                   </tr>
                   <tr className="border-b">
                     <td className="py-4 px-4">Human Expert Review</td>
                     <td className="text-center py-4 px-4">
-                      <X className="h-4 w-4 mx-auto text-destructive" />
+                      <X aria-hidden="true" className="h-4 w-4 mx-auto text-destructive" />
                     </td>
                     <td className="text-center py-4 px-4">
-                      <Check className="h-4 w-4 mx-auto text-muted-foreground" />
+                      <Check aria-hidden="true" className="h-4 w-4 mx-auto text-muted-foreground" />
                     </td>
                     <td className="text-center py-4 px-4 bg-primary/5">
-                      <Check className="h-4 w-4 mx-auto text-primary" />
+                      <Check aria-hidden="true" className="h-4 w-4 mx-auto text-primary" />
                     </td>
                   </tr>
                   <tr className="border-b">
                     <td className="py-4 px-4">Clear, Upfront Quote</td>
                     <td className="text-center py-4 px-4">
-                      <Check className="h-4 w-4 mx-auto text-muted-foreground" />
+                      <Check aria-hidden="true" className="h-4 w-4 mx-auto text-muted-foreground" />
                     </td>
                     <td className="text-center py-4 px-4">
-                      <X className="h-4 w-4 mx-auto text-destructive" />
+                      <X aria-hidden="true" className="h-4 w-4 mx-auto text-destructive" />
                     </td>
                     <td className="text-center py-4 px-4 bg-primary/5">
-                      <Check className="h-4 w-4 mx-auto text-primary" />
+                      <Check aria-hidden="true" className="h-4 w-4 mx-auto text-primary" />
                     </td>
                   </tr>
                   <tr>
                     <td className="py-4 px-4 font-semibold">All Services in One Place</td>
                     <td className="text-center py-4 px-4">
-                      <X className="h-4 w-4 mx-auto text-destructive" />
+                      <X aria-hidden="true" className="h-4 w-4 mx-auto text-destructive" />
                     </td>
                     <td className="text-center py-4 px-4">
-                      <X className="h-4 w-4 mx-auto text-destructive" />
+                      <X aria-hidden="true" className="h-4 w-4 mx-auto text-destructive" />
                     </td>
                     <td className="text-center py-4 px-4 bg-primary/5 font-semibold text-primary rounded-b-lg">
-                      <Check className="h-4 w-4 mx-auto text-primary" />
+                      <Check aria-hidden="true" className="h-4 w-4 mx-auto text-primary" />
                     </td>
                   </tr>
                 </tbody>
@@ -516,7 +516,7 @@ export default function WhyUsPage() {
               <CardContent className="pt-6">
                 <div className="flex items-center gap-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <FileText className="h-6 w-6" />
+                    <FileText aria-hidden="true" className="h-6 w-6" />
                   </div>
                   <div>
                     <h3 className="font-semibold">Bookkeeping</h3>
@@ -530,7 +530,7 @@ export default function WhyUsPage() {
               <CardContent className="pt-6">
                 <div className="flex items-center gap-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <Calculator className="h-6 w-6" />
+                    <Calculator aria-hidden="true" className="h-6 w-6" />
                   </div>
                   <div>
                     <h3 className="font-semibold">Business Tax Filing</h3>
@@ -544,7 +544,7 @@ export default function WhyUsPage() {
               <CardContent className="pt-6">
                 <div className="flex items-center gap-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <Users className="h-6 w-6" />
+                    <Users aria-hidden="true" className="h-6 w-6" />
                   </div>
                   <div>
                     <h3 className="font-semibold">Personal Tax Filing</h3>
@@ -558,7 +558,7 @@ export default function WhyUsPage() {
               <CardContent className="pt-6">
                 <div className="flex items-center gap-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <CreditCard className="h-6 w-6" />
+                    <CreditCard aria-hidden="true" className="h-6 w-6" />
                   </div>
                   <div>
                     <h3 className="font-semibold">Payroll Support</h3>
@@ -572,7 +572,7 @@ export default function WhyUsPage() {
               <CardContent className="pt-6">
                 <div className="flex items-center gap-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <Receipt className="h-6 w-6" />
+                    <Receipt aria-hidden="true" className="h-6 w-6" />
                   </div>
                   <div>
                     <h3 className="font-semibold">Invoicing Guidance</h3>
@@ -586,7 +586,7 @@ export default function WhyUsPage() {
               <CardContent className="pt-6">
                 <div className="flex items-center gap-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <TrendingUp className="h-6 w-6" />
+                    <TrendingUp aria-hidden="true" className="h-6 w-6" />
                   </div>
                   <div>
                     <h3 className="font-semibold">CFO Guidance</h3>
@@ -628,7 +628,7 @@ export default function WhyUsPage() {
                   <div className="space-y-4">
                     <div className="flex items-start gap-3">
                       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary shrink-0">
-                        <Clock className="h-4 w-4" />
+                        <Clock aria-hidden="true" className="h-4 w-4" />
                       </div>
                       <div>
                         <h4 className="font-medium">Monthly Check-Ins</h4>
@@ -639,7 +639,7 @@ export default function WhyUsPage() {
                     </div>
                     <div className="flex items-start gap-3">
                       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary shrink-0">
-                        <TrendingUp className="h-4 w-4" />
+                        <TrendingUp aria-hidden="true" className="h-4 w-4" />
                       </div>
                       <div>
                         <h4 className="font-medium">Quarterly Strategy Sessions</h4>
@@ -650,7 +650,7 @@ export default function WhyUsPage() {
                     </div>
                     <div className="flex items-start gap-3">
                       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary shrink-0">
-                        <DollarSign className="h-4 w-4" />
+                        <DollarSign aria-hidden="true" className="h-4 w-4" />
                       </div>
                       <div>
                         <h4 className="font-medium">Proactive Tax Planning</h4>
@@ -707,7 +707,7 @@ export default function WhyUsPage() {
               <Link href="/contact">
                 <Button size="lg">
                   Get Started Today
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <ArrowRight aria-hidden="true" className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
               <Link href="/services">

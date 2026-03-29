@@ -136,7 +136,7 @@ export default function HomePage() {
                     <div className="h-20 bg-muted rounded-xl" />
                   </div>
                   <div className="h-40 bg-muted/60 border-2 border-dashed border-border rounded-xl flex flex-col items-center justify-center gap-2">
-                    <CloudUpload className="h-8 w-8 text-muted-foreground/50" />
+                    <CloudUpload aria-hidden="true" className="h-8 w-8 text-muted-foreground/50" />
                     <div className="h-2.5 w-28 bg-muted-foreground/20 rounded" />
                     <div className="h-2 w-20 bg-muted-foreground/10 rounded" />
                   </div>
@@ -169,7 +169,7 @@ export default function HomePage() {
               ].map(({ icon: Icon, title, desc }) => (
                 <div key={title} className="group p-8 rounded-2xl border border-border hover:border-primary/30 hover:shadow-xl transition-all">
                   <div className="h-14 w-14 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                    <Icon className="h-6 w-6" />
+                    <Icon aria-hidden="true" className="h-6 w-6" />
                   </div>
                   <h3 className="text-lg font-bold mb-2">{title}</h3>
                   <p className="text-muted-foreground text-sm leading-relaxed">{desc}</p>
@@ -211,7 +211,7 @@ export default function HomePage() {
                     "We cover all software costs",
                   ].map((f) => (
                     <div key={f} className="flex items-center gap-2 text-sm">
-                      <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                      <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0" />
                       <span className="text-muted-foreground">{f}</span>
                     </div>
                   ))}
@@ -221,7 +221,7 @@ export default function HomePage() {
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-bold text-sm hover:opacity-90 transition-all"
                 >
                   Explore the Platform
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight aria-hidden="true" className="h-4 w-4" />
                 </Link>
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -235,7 +235,7 @@ export default function HomePage() {
                 ].map(({ icon: Icon, label, sub }) => (
                   <div key={label} className="p-4 rounded-2xl bg-background border border-border space-y-2">
                     <div className="h-9 w-9 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
-                      <Icon className="h-4 w-4" />
+                      <Icon aria-hidden="true" className="h-4 w-4" />
                     </div>
                     <p className="text-sm font-semibold">{label}</p>
                     <p className="text-xs text-muted-foreground">{sub}</p>
@@ -263,7 +263,7 @@ export default function HomePage() {
                   ].map(({ icon: Icon, title, desc }) => (
                     <div key={title} className="flex gap-4">
                       <div className="h-12 w-12 rounded-full bg-primary-foreground/10 flex items-center justify-center flex-shrink-0">
-                        <Icon className="h-5 w-5 text-primary-foreground" />
+                        <Icon aria-hidden="true" className="h-5 w-5 text-primary-foreground" />
                       </div>
                       <div>
                         <h4 className="text-base font-bold mb-1">{title}</h4>
@@ -275,7 +275,7 @@ export default function HomePage() {
               </div>
               <div className="relative aspect-square lg:aspect-auto min-h-[360px] rounded-3xl bg-primary-foreground/5 border border-primary-foreground/10 flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/80 to-slate-900 opacity-40" />
-                <BarChart2 className="relative h-40 w-40 text-primary-foreground/15" />
+                <BarChart2 aria-hidden="true" className="relative h-40 w-40 text-primary-foreground/15" />
               </div>
             </div>
           </div>
@@ -299,7 +299,7 @@ export default function HomePage() {
                 <ul className="space-y-3 mb-8 flex-grow">
                   {["Monthly reconciliation & reports", "Transaction categorization", "Tax-ready year-end books", "Dedicated account rep"].map((f) => (
                     <li key={f} className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                      <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0" />
                       {f}
                     </li>
                   ))}
@@ -321,7 +321,7 @@ export default function HomePage() {
                 <ul className="space-y-3 mb-8 flex-grow">
                   {["Historical reconciliation & cleanup", "Audit-ready documentation", "Prior-year tax filing support", "Dedicated clean-up expert", "Smooth handoff to monthly service"].map((f) => (
                     <li key={f} className="flex items-center gap-2 text-sm text-primary-foreground/80">
-                      <Check className="h-4 w-4 text-primary-foreground flex-shrink-0" />
+                      <Check aria-hidden="true" className="h-4 w-4 text-primary-foreground flex-shrink-0" />
                       {f}
                     </li>
                   ))}
@@ -340,7 +340,7 @@ export default function HomePage() {
                 <ul className="space-y-3 mb-8 flex-grow">
                   {["LLC formation assistance", "EIN application support", "Registered agent services", "Payroll management", "CFO-level financial advice"].map((f) => (
                     <li key={f} className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                      <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0" />
                       {f}
                     </li>
                   ))}
@@ -380,13 +380,13 @@ export default function HomePage() {
                     <tr key={feature as string} className="hover:bg-muted/30 transition-colors">
                       <td className="p-6 text-sm font-medium">{feature as string}</td>
                       <td className="p-6">
-                        {cpa ? <Check className="h-5 w-5 text-green-500" /> : <X className="h-5 w-5 text-muted-foreground/40" />}
+                        {cpa ? <Check aria-hidden="true" className="h-5 w-5 text-green-500" /> : <X aria-hidden="true" className="h-5 w-5 text-muted-foreground/40" />}
                       </td>
                       <td className="p-6">
-                        {diy ? <Check className="h-5 w-5 text-green-500" /> : <X className="h-5 w-5 text-muted-foreground/40" />}
+                        {diy ? <Check aria-hidden="true" className="h-5 w-5 text-green-500" /> : <X aria-hidden="true" className="h-5 w-5 text-muted-foreground/40" />}
                       </td>
                       <td className="p-6">
-                        {us ? <Check className="h-5 w-5 text-primary font-bold" /> : <X className="h-5 w-5 text-muted-foreground/40" />}
+                        {us ? <Check aria-hidden="true" className="h-5 w-5 text-primary font-bold" /> : <X aria-hidden="true" className="h-5 w-5 text-muted-foreground/40" />}
                       </td>
                     </tr>
                   ))}
@@ -401,7 +401,7 @@ export default function HomePage() {
           <div className="mx-auto max-w-7xl flex flex-col lg:flex-row gap-16 items-center">
             <div className="lg:w-1/2 space-y-6">
               <div className="h-16 w-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
-                <Shield className="h-8 w-8" />
+                <Shield aria-hidden="true" className="h-8 w-8" />
               </div>
               <h2 className="text-3xl font-bold text-primary dark:text-foreground">Security &amp; Compliance</h2>
               <p className="text-muted-foreground leading-relaxed">
@@ -410,15 +410,15 @@ export default function HomePage() {
               </p>
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <h4 className="font-semibold flex items-center gap-2 text-sm">
-                    <Lock className="h-4 w-4 text-primary" /> Bank-level Encryption
-                  </h4>
+                  <h3 className="font-semibold flex items-center gap-2 text-sm">
+                    <Lock aria-hidden="true" className="h-4 w-4 text-primary" /> Bank-level Encryption
+                  </h3>
                   <p className="text-xs text-muted-foreground">256-bit SSL encryption protects your data in transit and at rest.</p>
                 </div>
                 <div className="space-y-2">
-                  <h4 className="font-semibold flex items-center gap-2 text-sm">
-                    <ClipboardCheck className="h-4 w-4 text-primary" /> Full Audit Trail
-                  </h4>
+                  <h3 className="font-semibold flex items-center gap-2 text-sm">
+                    <ClipboardCheck aria-hidden="true" className="h-4 w-4 text-primary" /> Full Audit Trail
+                  </h3>
                   <p className="text-xs text-muted-foreground">Every change and access is logged with a permanent digital audit trail.</p>
                 </div>
               </div>
@@ -461,9 +461,9 @@ export default function HomePage() {
                 },
               ].map(({ quote, name, role }) => (
                 <div key={name} className="p-8 bg-card rounded-2xl shadow-sm border border-border space-y-4">
-                  <div className="flex gap-0.5">
+                  <div className="flex gap-0.5" role="img" aria-label="5 out of 5 stars">
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      <Star key={i} aria-hidden="true" className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                     ))}
                   </div>
                   <p className="text-muted-foreground text-sm leading-relaxed italic">&ldquo;{quote}&rdquo;</p>

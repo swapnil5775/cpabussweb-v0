@@ -44,7 +44,7 @@ export default function TaxPrepPage() {
           <div className="mx-auto max-w-3xl text-center space-y-6">
             <div className="flex justify-center">
               <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                <FileText className="h-8 w-8" />
+                <FileText aria-hidden="true" className="h-8 w-8" />
               </div>
             </div>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl text-balance">
@@ -73,15 +73,15 @@ export default function TaxPrepPage() {
               <CardContent>
                 <ul className="space-y-2 text-sm">
                   <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                    <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                     <span>Standard deduction</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                    <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                     <span>W-2 income</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                    <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                     <span>Federal + state e-filing</span>
                   </li>
                 </ul>
@@ -97,15 +97,15 @@ export default function TaxPrepPage() {
               <CardContent>
                 <ul className="space-y-2 text-sm">
                   <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                    <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                     <span>Itemized deductions</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                    <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                     <span>Married filing jointly</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                    <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                     <span>Multiple W-2s</span>
                   </li>
                 </ul>
@@ -120,15 +120,15 @@ export default function TaxPrepPage() {
               <CardContent>
                 <ul className="space-y-2 text-sm">
                   <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                    <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                     <span>Schedule C</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                    <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                     <span>Business expenses</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                    <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                     <span>Quarterly estimates</span>
                   </li>
                 </ul>
@@ -143,15 +143,15 @@ export default function TaxPrepPage() {
               <CardContent>
                 <ul className="space-y-2 text-sm">
                   <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                    <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                     <span>Schedule E</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                    <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                     <span>Capital gains</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                    <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                     <span>Cryptocurrency</span>
                   </li>
                 </ul>
@@ -189,15 +189,15 @@ export default function TaxPrepPage() {
                 <CardContent>
                   <ul className="space-y-2 text-sm">
                     <li className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                       <span>S-Corporation return</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                       <span>K-1 schedules</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                       <span>Federal + state e-filing</span>
                     </li>
                   </ul>
@@ -212,15 +212,15 @@ export default function TaxPrepPage() {
                 <CardContent>
                   <ul className="space-y-2 text-sm">
                     <li className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                       <span>Corporate return</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                       <span>Complex deductions</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                       <span>Federal + state e-filing</span>
                     </li>
                   </ul>
@@ -235,15 +235,15 @@ export default function TaxPrepPage() {
                 <CardContent>
                   <ul className="space-y-2 text-sm">
                     <li className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                       <span>Partnership return</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                       <span>Partner K-1s</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                       <span>Federal + state e-filing</span>
                     </li>
                   </ul>
@@ -254,7 +254,7 @@ export default function TaxPrepPage() {
             <div className="mt-8">
               <Card className="max-w-2xl mx-auto border-muted-foreground/20 bg-card">
                 <CardContent className="pt-6 flex gap-4">
-                  <AlertCircle className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
+                  <AlertCircle aria-hidden="true" className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     Multi-entity structures, holding companies, and complex situations are all handled. Book a free consultation to discuss your specific needs.
                   </p>
@@ -303,7 +303,7 @@ export default function TaxPrepPage() {
                 <Link href="/contact">
                   <Button size="lg" variant="secondary">
                     Start Intake
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    <ArrowRight aria-hidden="true" className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
                 <Link href="/contact">

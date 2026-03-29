@@ -129,7 +129,7 @@ export default function BusinessServicesPage() {
                 <Card key={service.title} className="hover:shadow-lg transition-shadow">
                   <CardHeader>
                     <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary mb-4">
-                      <Icon className="h-6 w-6" />
+                      <Icon aria-hidden="true" className="h-6 w-6" />
                     </div>
                     <CardTitle className="text-lg">{service.title}</CardTitle>
                     <CardDescription>{service.description}</CardDescription>
@@ -236,7 +236,7 @@ export default function BusinessServicesPage() {
               <Link href="/contact">
                 <Button size="lg" variant="secondary">
                   Book a Consultation
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <ArrowRight aria-hidden="true" className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
             </div>

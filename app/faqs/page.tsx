@@ -196,7 +196,7 @@ export default function FAQsPage() {
                 <Link href="/contact">
                   <Button size="lg">
                     Contact Us
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    <ArrowRight aria-hidden="true" className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
                 <Link href="/services">

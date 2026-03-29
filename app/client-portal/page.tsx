@@ -78,7 +78,7 @@ export default function PlatformPage() {
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-primary text-primary-foreground font-bold text-base hover:-translate-y-0.5 transition-all shadow-lg shadow-primary/20"
               >
                 Get Started
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight aria-hidden="true" className="h-4 w-4" />
               </Link>
               <a
                 href="#capabilities"
@@ -112,7 +112,7 @@ export default function PlatformPage() {
               ].map(({ name, what }) => (
                 <div key={name} className="rounded-2xl bg-primary-foreground/10 border border-primary-foreground/10 p-5 text-center space-y-2">
                   <div className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-red-500/20 text-red-400 mx-auto">
-                    <X className="h-4 w-4" />
+                    <X aria-hidden="true" className="h-4 w-4" />
                   </div>
                   <p className="text-primary-foreground font-bold text-sm line-through opacity-60">{name}</p>
                   <p className="text-primary-foreground/40 text-xs">{what}</p>
@@ -143,7 +143,7 @@ export default function PlatformPage() {
               <Card className="border-border hover:border-primary/30 hover:shadow-lg transition-all">
                 <CardHeader>
                   <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-2">
-                    <Users className="h-6 w-6" />
+                    <Users aria-hidden="true" className="h-6 w-6" />
                   </div>
                   <CardTitle>Team & Company Access</CardTitle>
                   <CardDescription>Your whole team, one shared workspace</CardDescription>
@@ -158,7 +158,7 @@ export default function PlatformPage() {
                       "No per-seat fees or user limits",
                     ].map((f) => (
                       <li key={f} className="flex items-start gap-2">
-                        <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                        <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                         <span>{f}</span>
                       </li>
                     ))}
@@ -170,7 +170,7 @@ export default function PlatformPage() {
               <Card className="border-border hover:border-primary/30 hover:shadow-lg transition-all">
                 <CardHeader>
                   <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-2">
-                    <Briefcase className="h-6 w-6" />
+                    <Briefcase aria-hidden="true" className="h-6 w-6" />
                   </div>
                   <CardTitle>Payroll & People</CardTitle>
                   <CardDescription>Every worker type, fully handled</CardDescription>
@@ -185,7 +185,7 @@ export default function PlatformPage() {
                       "Quarterly payroll tax deposits",
                     ].map((f) => (
                       <li key={f} className="flex items-start gap-2">
-                        <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                        <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                         <span>{f}</span>
                       </li>
                     ))}
@@ -197,7 +197,7 @@ export default function PlatformPage() {
               <Card className="border-border hover:border-primary/30 hover:shadow-lg transition-all">
                 <CardHeader>
                   <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-2">
-                    <FileBadge className="h-6 w-6" />
+                    <FileBadge aria-hidden="true" className="h-6 w-6" />
                   </div>
                   <CardTitle>W-2 & 1099 Issuance</CardTitle>
                   <CardDescription>Year-end forms filed and distributed</CardDescription>
@@ -212,7 +212,7 @@ export default function PlatformPage() {
                       "Recipient copies distributed",
                     ].map((f) => (
                       <li key={f} className="flex items-start gap-2">
-                        <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                        <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                         <span>{f}</span>
                       </li>
                     ))}
@@ -224,7 +224,7 @@ export default function PlatformPage() {
               <Card className="border-border hover:border-primary/30 hover:shadow-lg transition-all">
                 <CardHeader>
                   <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-2">
-                    <Receipt className="h-6 w-6" />
+                    <Receipt aria-hidden="true" className="h-6 w-6" />
                   </div>
                   <CardTitle>Invoice Management</CardTitle>
                   <CardDescription>Send, receive, and track — all in one place</CardDescription>
@@ -239,7 +239,7 @@ export default function PlatformPage() {
                       "Reconciled against your books automatically",
                     ].map((f) => (
                       <li key={f} className="flex items-start gap-2">
-                        <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                        <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                         <span>{f}</span>
                       </li>
                     ))}
@@ -252,7 +252,7 @@ export default function PlatformPage() {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-2">
-                      <Landmark className="h-6 w-6" />
+                      <Landmark aria-hidden="true" className="h-6 w-6" />
                     </div>
                     <Badge className="text-xs mb-2">Core Service</Badge>
                   </div>
@@ -271,7 +271,7 @@ export default function PlatformPage() {
                       "Monthly P&L and Balance Sheet",
                     ].map((f) => (
                       <li key={f} className="flex items-start gap-2">
-                        <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                        <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                         <span>{f}</span>
                       </li>
                     ))}
@@ -283,7 +283,7 @@ export default function PlatformPage() {
               <Card className="border-border hover:border-primary/30 hover:shadow-lg transition-all">
                 <CardHeader>
                   <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-2">
-                    <ClipboardList className="h-6 w-6" />
+                    <ClipboardList aria-hidden="true" className="h-6 w-6" />
                   </div>
                   <CardTitle>Quarterly & Annual Filings</CardTitle>
                   <CardDescription>Never miss a deadline</CardDescription>
@@ -298,7 +298,7 @@ export default function PlatformPage() {
                       "Deadline tracking & proactive reminders",
                     ].map((f) => (
                       <li key={f} className="flex items-start gap-2">
-                        <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                        <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                         <span>{f}</span>
                       </li>
                     ))}
@@ -323,7 +323,7 @@ export default function PlatformPage() {
               <Card className="p-8">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
-                    <Link2 className="h-6 w-6" />
+                    <Link2 aria-hidden="true" className="h-6 w-6" />
                   </div>
                   <div>
                     <h3 className="font-bold text-lg">Direct Connection</h3>
@@ -339,7 +339,7 @@ export default function PlatformPage() {
                     "Nothing for you to export or upload",
                   ].map((f) => (
                     <li key={f} className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                       <span>{f}</span>
                     </li>
                   ))}
@@ -348,7 +348,7 @@ export default function PlatformPage() {
               <Card className="p-8">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
-                    <Upload className="h-6 w-6" />
+                    <Upload aria-hidden="true" className="h-6 w-6" />
                   </div>
                   <div>
                     <h3 className="font-bold text-lg">Manual Upload</h3>
@@ -364,7 +364,7 @@ export default function PlatformPage() {
                     "We process and reconcile everything",
                   ].map((f) => (
                     <li key={f} className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                      <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                       <span>{f}</span>
                     </li>
                   ))}
@@ -374,9 +374,9 @@ export default function PlatformPage() {
             <div className="mt-10 max-w-4xl mx-auto">
               <Card className="bg-primary/5 border-primary/20 p-6">
                 <div className="flex items-start gap-4">
-                  <Tag className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                  <Tag aria-hidden="true" className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-semibold text-sm mb-1">Reconciliation & Smart Tagging</h4>
+                    <h3 className="font-semibold text-sm mb-1">Reconciliation & Smart Tagging</h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       Once transactions are in, our team reconciles every account and applies the correct
                       categories, expense tags, and tax codes. You get clean, audit-ready books every month — not a raw
@@ -424,7 +424,7 @@ export default function PlatformPage() {
                 <Card key={title} className="hover:border-primary/30 hover:shadow-md transition-all">
                   <CardHeader className="pb-3">
                     <div className="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary mb-3">
-                      <Icon className="h-5 w-5" />
+                      <Icon aria-hidden="true" className="h-5 w-5" />
                     </div>
                     <CardTitle className="text-base">{title}</CardTitle>
                   </CardHeader>
@@ -472,7 +472,7 @@ export default function PlatformPage() {
                   ].map((f) => (
                     <div key={f} className="flex items-center gap-3">
                       <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                        <Check className="h-3 w-3 text-primary" />
+                        <Check aria-hidden="true" className="h-3 w-3 text-primary" />
                       </div>
                       <span className="text-sm font-medium">{f}</span>
                     </div>
@@ -483,7 +483,7 @@ export default function PlatformPage() {
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-bold text-sm hover:opacity-90 transition-all"
                 >
                   Get a Custom Quote
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight aria-hidden="true" className="h-4 w-4" />
                 </Link>
               </div>
 
@@ -500,12 +500,12 @@ export default function PlatformPage() {
                   ].map(({ label, included }) => (
                     <div key={label} className="flex items-center justify-between p-3 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30">
                       <span className="text-sm text-muted-foreground line-through">{label}</span>
-                      <X className="h-4 w-4 text-red-400 flex-shrink-0" />
+                      <X aria-hidden="true" className="h-4 w-4 text-red-400 flex-shrink-0" />
                     </div>
                   ))}
                   <div className="flex items-center justify-between p-4 rounded-xl bg-primary/5 border-2 border-primary/20 mt-2">
                     <span className="text-sm font-bold text-primary">BookKeeping.business — all of the above</span>
-                    <Check className="h-5 w-5 text-primary flex-shrink-0" />
+                    <Check aria-hidden="true" className="h-5 w-5 text-primary flex-shrink-0" />
                   </div>
                 </div>
               </div>
@@ -559,9 +559,9 @@ export default function PlatformPage() {
         <section className="bg-card border-t border-border px-6 lg:px-8 py-12">
           <div className="mx-auto max-w-4xl">
             <div className="flex items-start gap-4">
-              <Shield className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
+              <Shield aria-hidden="true" className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
               <div className="space-y-1">
-                <h4 className="font-semibold text-sm">Bank-level security throughout</h4>
+                <h3 className="font-semibold text-sm">Bank-level security throughout</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   All documents and financial data are encrypted end-to-end with 256-bit SSL. We never request sensitive
                   documents via email. Every action is logged with a full audit trail. Mobile access available on iOS and Android.
