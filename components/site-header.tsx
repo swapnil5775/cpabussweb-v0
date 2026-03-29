@@ -65,7 +65,13 @@ export function SiteHeader() {
             Platform
           </Link>
           <Link
-            href="/contact"
+            href="/login"
+            className="hidden sm:flex items-center px-3 py-2 rounded-lg text-sm font-medium text-foreground/70 hover:text-primary transition-colors"
+          >
+            Sign In
+          </Link>
+          <Link
+            href="/signup"
             className="flex items-center px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity"
           >
             Get Started
