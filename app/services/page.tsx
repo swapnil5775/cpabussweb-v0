@@ -2,23 +2,27 @@ import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site-header"
 
 export const metadata: Metadata = {
-  title: "Tax & Accounting Services for Small Business | BookKeeping.business",
+  title: "Bookkeeping & Tax Services for Restaurants, Hotels, Childcare & Small Business | BookKeeping.business",
   description:
-    "Full-service tax preparation, monthly bookkeeping, LLC formation, and business consulting — all in one place. Serving freelancers, solopreneurs, and SMBs across the US.",
+    "Full-service bookkeeping and tax preparation for restaurants, hotels, childcare centers, realtors, tutoring centers, home-based businesses, and small businesses — all in one place, no separate software needed.",
   keywords: [
-    "small business accounting services",
-    "tax preparation services",
+    "restaurant bookkeeping services",
+    "hotel accounting services",
+    "childcare bookkeeping",
+    "daycare accounting",
+    "realtor bookkeeping",
+    "home-based business accounting",
+    "tutoring center bookkeeping",
+    "small business tax preparation",
     "LLC formation assistance",
-    "business consulting",
-    "monthly bookkeeping",
+    "monthly bookkeeping services",
     "S-corp tax filing",
-    "partnership tax returns",
-    "business tax services",
+    "no QuickBooks subscription",
   ],
   openGraph: {
-    title: "Tax & Accounting Services for Small Business | BookKeeping.business",
+    title: "Bookkeeping & Tax Services for Restaurants, Hotels, Childcare & Small Business | BookKeeping.business",
     description:
-      "Full-service tax preparation, monthly bookkeeping, LLC formation, and business consulting — all centralized in one place.",
+      "All-in-one bookkeeping, tax prep, and business services for restaurants, hotels, childcare centers, realtors, and home-based businesses.",
     url: "https://bookkeeping.business/services",
   },
 }
@@ -115,18 +119,18 @@ export default function ServicesPage() {
               Full Service Tax & Accounting
             </Badge>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl text-balance">
-              Comprehensive Services for Every Need
+              Bookkeeping & Tax Services for Every Type of Small Business
             </h1>
             <p className="text-lg text-muted-foreground leading-relaxed text-pretty">
-              From monthly bookkeeping to complex business acquisitions, we combine technology with expert human review
-              to deliver accurate, compliant results.
+              Serving restaurants, hotels, childcare centers, realtors, tutoring centers, home-based businesses, and more.
+              One platform — bookkeeping, payroll, tax prep, and filing — no separate software subscriptions.
             </p>
           </div>
         </section>
 
         {/* Services Grid */}
         <section className="container pb-24">
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
             {services.map((service) => {
               const Icon = service.icon
               return (

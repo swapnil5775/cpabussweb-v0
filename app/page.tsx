@@ -31,21 +31,25 @@ import { CALENDLY_URL, CONTACT_EMAIL } from "@/lib/constants"
 export const metadata: Metadata = {
   title: "Online Bookkeeping & Tax Services for Small Business | BookKeeping.business",
   description:
-    "Affordable online bookkeeping and tax preparation services for freelancers and small businesses. AI-assisted workflows with human review. Secure portal, dedicated account rep, transparent pricing starting at $75/month.",
+    "All-in-one bookkeeping and tax preparation for restaurants, hotels, childcare centers, realtors, home-based businesses, and small businesses. AI-assisted workflows with dedicated human review — no extra software subscriptions.",
   keywords: [
     "online bookkeeping services",
     "small business bookkeeping",
     "tax preparation services",
-    "affordable bookkeeping",
+    "restaurant bookkeeping",
+    "hotel accounting services",
+    "childcare bookkeeping",
+    "realtor accounting",
+    "home-based business bookkeeping",
+    "tutoring center accounting",
     "virtual bookkeeper",
-    "tax filing for small business",
     "AI bookkeeping",
-    "freelancer tax prep",
+    "no QuickBooks needed",
   ],
   openGraph: {
     title: "Online Bookkeeping & Tax Services for Small Business | BookKeeping.business",
     description:
-      "Affordable online bookkeeping and tax preparation services for freelancers and small businesses. Starting at $75/month.",
+      "All-in-one bookkeeping and tax for restaurants, hotels, childcare, realtors, and small businesses — no extra subscriptions required.",
     url: "https://bookkeeping.business",
   },
 }

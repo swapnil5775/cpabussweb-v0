@@ -5,14 +5,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const currentDate = new Date().toISOString()
 
   return [
-    // Homepage - Primary landing for bookkeeping & tax services
+    // Homepage — primary entry point
     {
       url: baseUrl,
       lastModified: currentDate,
       changeFrequency: "weekly",
       priority: 1.0,
     },
-    // High-value service pages targeting US bookkeeping and tax market
+    // Core service pages — highest-traffic keyword targets
+    // Targets: restaurant bookkeeping, hotel accounting, childcare, realtors, home-based business
     {
       url: `${baseUrl}/bookkeeping`,
       lastModified: currentDate,
@@ -20,7 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.95,
     },
     {
-      url: `${baseUrl}/why-us`,
+      url: `${baseUrl}/tax-prep`,
       lastModified: currentDate,
       changeFrequency: "weekly",
       priority: 0.95,
@@ -31,13 +32,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.9,
     },
+    // Platform page — explains all-in-one value (no QuickBooks, Gusto, Xero needed)
     {
-      url: `${baseUrl}/tax-prep`,
+      url: `${baseUrl}/client-portal`,
       lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 0.9,
+      changeFrequency: "monthly",
+      priority: 0.85,
     },
-    // Conversion pages
+    // Conversion & trust pages
+    {
+      url: `${baseUrl}/why-us`,
+      lastModified: currentDate,
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
     {
       url: `${baseUrl}/contact`,
       lastModified: currentDate,
@@ -49,28 +57,28 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/business-services`,
       lastModified: currentDate,
       changeFrequency: "monthly",
-      priority: 0.8,
+      priority: 0.75,
     },
-    // Trust & information pages
+    {
+      url: `${baseUrl}/how-it-works`,
+      lastModified: currentDate,
+      changeFrequency: "monthly",
+      priority: 0.75,
+    },
+    // Information & trust pages
     {
       url: `${baseUrl}/about`,
       lastModified: currentDate,
       changeFrequency: "monthly",
-      priority: 0.7,
+      priority: 0.65,
     },
     {
       url: `${baseUrl}/faqs`,
       lastModified: currentDate,
       changeFrequency: "monthly",
-      priority: 0.7,
+      priority: 0.65,
     },
-    {
-      url: `${baseUrl}/client-portal`,
-      lastModified: currentDate,
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    // Legal pages (lower priority but necessary)
+    // Legal pages
     {
       url: `${baseUrl}/privacy`,
       lastModified: currentDate,

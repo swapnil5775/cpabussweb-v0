@@ -6,13 +6,16 @@ export const metadata: Metadata = {
   description:
     "Learn about our mission to combine AI efficiency with human expertise. We deliver accurate, compliant tax and bookkeeping services — all centralized in one place with dedicated account reps.",
   keywords: [
-    "about bookkeeping business",
+    "bookkeeping for small business",
     "AI-assisted bookkeeping",
     "human-reviewed tax services",
-    "modern accounting firm",
-    "tech-enabled bookkeeping",
-    "dedicated accountant",
-    "all-in-one accounting",
+    "restaurant bookkeeping firm",
+    "hotel accounting services",
+    "childcare bookkeeping company",
+    "realtor tax preparation",
+    "home-based business accounting",
+    "all-in-one accounting platform",
+    "no QuickBooks or Xero needed",
   ],
   openGraph: {
     title: "About Us - AI-Assisted, Human-Reviewed Tax & Bookkeeping | BookKeeping.business",

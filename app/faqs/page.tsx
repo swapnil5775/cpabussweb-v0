@@ -8,10 +8,12 @@ export const metadata: Metadata = {
   keywords: [
     "bookkeeping FAQ",
     "tax preparation questions",
-    "online bookkeeping help",
-    "small business accounting FAQ",
-    "tax filing questions",
-    "bookkeeping service pricing",
+    "restaurant bookkeeping FAQ",
+    "childcare accounting questions",
+    "realtor tax prep FAQ",
+    "home-based business bookkeeping help",
+    "hotel accounting FAQ",
+    "small business accounting questions",
     "AI bookkeeping questions",
   ],
   openGraph: {
@@ -32,6 +34,11 @@ export default function FAQsPage() {
     {
       category: "General",
       questions: [
+        {
+          question: "What types of businesses do you serve?",
+          answer:
+            "We serve a wide range of small businesses including restaurants, cafes, and food service businesses; hotels and hospitality; childcare centers and daycares; tutoring and education centers; real estate agents and realtors; home-based businesses; freelancers and self-employed individuals; retail shops; and general small businesses and LLCs. If you run a business, we can help — contact us to discuss your specific situation.",
+        },
         {
           question: "What does 'AI-assisted, human-reviewed' mean?",
           answer:

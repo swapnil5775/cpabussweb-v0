@@ -2,24 +2,27 @@ import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site-header"
 
 export const metadata: Metadata = {
-  title: "Tax Preparation & E-Filing Services | BookKeeping.business",
+  title: "Tax Preparation for Restaurants, Realtors, Childcare & Small Business | BookKeeping.business",
   description:
-    "Professional tax preparation and e-filing for individuals and businesses. W-2, self-employed, rental income, S-Corp, C-Corp, and partnership returns. Human-reviewed for accuracy with secure document storage.",
+    "Business and personal tax preparation for restaurants, hotels, childcare centers, realtors, home-based businesses, and tutoring centers. S-Corp, LLC, self-employed, and partnership returns — human-reviewed with federal and state e-filing.",
   keywords: [
-    "tax preparation services",
-    "tax filing services",
-    "self-employed tax prep",
+    "restaurant tax preparation",
+    "hotel tax filing",
+    "childcare business tax prep",
+    "realtor tax services",
+    "home-based business tax",
+    "tutoring center tax prep",
+    "self-employed tax preparation",
     "S-corp tax filing",
     "small business tax returns",
-    "e-file taxes",
-    "federal tax filing",
-    "state tax filing",
+    "LLC tax filing",
+    "federal and state tax e-filing",
     "1099 tax prep",
   ],
   openGraph: {
-    title: "Tax Preparation & E-Filing Services | BookKeeping.business",
+    title: "Tax Preparation for Restaurants, Realtors, Childcare & Small Business | BookKeeping.business",
     description:
-      "Professional tax preparation for individuals and businesses. Human-reviewed returns with federal and state e-filing included.",
+      "Business and personal tax prep for restaurants, hotels, childcare, realtors, and small businesses — human-reviewed with federal and state e-filing.",
     url: "https://bookkeeping.business/tax-prep",
   },
 }
@@ -45,11 +48,11 @@ export default function TaxPrepPage() {
               </div>
             </div>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl text-balance">
-              Tax Preparation & Filing Services
+              Tax Preparation for Restaurants, Realtors, Childcare & Small Business
             </h1>
             <p className="text-lg text-muted-foreground leading-relaxed text-pretty">
-              Individual and business tax preparation with federal and state e-filing. AI-assisted prep with mandatory
-              human review for accuracy and compliance.
+              Business and personal tax prep for every type of small business — restaurants, hotels, childcare centers,
+              realtors, tutoring centers, and home-based businesses. AI-assisted, human-reviewed, federal and state e-filing included.
             </p>
           </div>
         </section>

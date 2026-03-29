@@ -2,23 +2,27 @@ import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site-header"
 
 export const metadata: Metadata = {
-  title: "Monthly Bookkeeping Services | BookKeeping.business",
+  title: "Monthly Bookkeeping for Restaurants, Hotels, Childcare & Small Business | BookKeeping.business",
   description:
-    "Professional monthly bookkeeping with personal and business tax prep included. Dedicated bookkeeper, monthly reconciliation, P&L reports, and quarterly business reviews — all in one place.",
+    "Monthly bookkeeping services for restaurants, hotels, childcare centers, realtors, tutoring centers, and home-based businesses. Includes business and personal tax prep — no QuickBooks or Xero subscription needed.",
   keywords: [
+    "restaurant bookkeeping services",
+    "hotel bookkeeping",
+    "childcare bookkeeping services",
+    "daycare accounting",
+    "realtor bookkeeping",
+    "home-based business bookkeeping",
+    "tutoring business accounting",
     "monthly bookkeeping services",
-    "affordable bookkeeping",
-    "small business bookkeeping",
     "bookkeeping with tax prep included",
-    "virtual bookkeeping services",
-    "dedicated bookkeeper",
-    "P&L reports",
+    "virtual bookkeeper small business",
     "bank reconciliation services",
+    "no QuickBooks needed",
   ],
   openGraph: {
-    title: "Monthly Bookkeeping Services | BookKeeping.business",
+    title: "Monthly Bookkeeping for Restaurants, Hotels, Childcare & Small Business | BookKeeping.business",
     description:
-      "Professional monthly bookkeeping with personal and business tax prep included. Dedicated bookkeeper, monthly reconciliation, and quarterly reviews.",
+      "Monthly bookkeeping with tax prep included — serving restaurants, hotels, childcare, realtors, and small businesses. No extra software subscriptions.",
     url: "https://bookkeeping.business/bookkeeping",
   },
 }
@@ -89,10 +93,10 @@ export default function BookkeepingPage() {
                 <BookOpen className="h-8 w-8" />
               </div>
             </div>
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl text-balance">Monthly Bookkeeping Services</h1>
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl text-balance">Monthly Bookkeeping for Restaurants, Hotels, Childcare & Small Business</h1>
             <p className="text-lg text-muted-foreground leading-relaxed text-pretty">
-              Keep your books clean and compliant with monthly reconciliation, categorization, and financial reports.
-              AI-assisted for efficiency, human-reviewed for accuracy.
+              Dedicated bookkeeping for every type of small business — restaurants, hotels, childcare centers, realtors,
+              tutoring centers, and home-based businesses. AI-assisted for efficiency, human-reviewed for accuracy.
             </p>
           </div>
         </section>
