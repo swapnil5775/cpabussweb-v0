@@ -13,7 +13,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Mail, Calendar, ArrowRight, ArrowLeft, Check, Shield, ExternalLink } from "lucide-react"
-import { createClient } from "@/lib/supabase/client"
 import { CALENDLY_URL } from "@/lib/constants"
 
 export default function ContactPage() {
@@ -84,35 +83,27 @@ export default function ContactPage() {
 
   const handleSubmit = async () => {
     setIsSubmitting(true)
-    
+
     try {
-      const supabase = createClient()
-      
-      const { error } = await supabase.from("leads").insert({
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        email: formData.email,
-        phone: formData.phone || null,
-        preferred_contact_method: formData.preferredContact,
-        service_type: formData.clientType,
-        services_needed: formData.servicesNeeded,
-        business_legal_name: formData.businessName || null,
-        entity_type: formData.businessStructure || null,
-        states_of_operation: formData.stateOfFormation ? [formData.stateOfFormation] : null,
-        annual_revenue_bucket: formData.estimatedRevenue || null,
-        current_software: formData.accountingSoftware || null,
-        current_bookkeeping_management: formData.currentSituation || null,
-        pain_points: formData.hearAboutUs || null,
-        anything_else: formData.additionalNotes || null,
-        status: "new",
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       })
 
-      if (error) throw error
-      
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error ?? "Submission failed")
+      }
+
       setIsSubmitted(true)
     } catch (error) {
       console.error("Error submitting form:", error)
-      alert("There was an error submitting your request. Please try again or email us directly at hello@bookkeeping.business")
+      alert(
+        error instanceof Error
+          ? error.message
+          : "There was an error submitting your request. Please try again or email us directly at hello@bookkeeping.business"
+      )
     } finally {
       setIsSubmitting(false)
     }
