@@ -4,22 +4,11 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
-        userAgent: "Googlebot",
-        allow: "/",
-        disallow: ["/api/", "/private/"],
-      },
-      {
-        userAgent: "Bingbot",
-        allow: "/",
-        disallow: ["/api/", "/private/"],
-      },
-      {
         userAgent: "*",
         allow: "/",
-        disallow: ["/api/", "/private/"],
+        disallow: ["/_next/static/", "/_next/image/", "/api/"],
       },
     ],
-    sitemap: "https://bookkeeping.business/sitemap.xml",
-    host: "https://bookkeeping.business",
+    sitemap: "https://www.bookkeeping.business/sitemap.xml",
   }
 }

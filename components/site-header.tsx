@@ -25,7 +25,7 @@ export function SiteHeader() {
             <BookOpenCheck aria-hidden="true" className="h-4 w-4" />
           </div>
           <span className="text-lg font-bold tracking-tight text-primary dark:text-foreground">
-            BookKeeping<span className="font-normal opacity-60">.business</span>
+            BookKeeping<span className="font-normal opacity-80">.business</span>
           </span>
         </Link>
 

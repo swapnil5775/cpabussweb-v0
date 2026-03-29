@@ -77,7 +77,7 @@ export default function HomePage() {
 
               <h1 className="text-5xl lg:text-7xl font-black text-primary dark:text-foreground leading-[1.08] tracking-tight">
                 Tax &amp; Books,{" "}
-                <span className="text-primary/50 dark:text-foreground/40">handled.</span>
+                <span className="text-primary/75 dark:text-foreground/60">handled.</span>
               </h1>
 
               <p className="text-lg lg:text-xl text-muted-foreground max-w-xl leading-relaxed">
@@ -266,7 +266,7 @@ export default function HomePage() {
                         <Icon aria-hidden="true" className="h-5 w-5 text-primary-foreground" />
                       </div>
                       <div>
-                        <h4 className="text-base font-bold mb-1">{title}</h4>
+                        <h3 className="text-base font-bold mb-1">{title}</h3>
                         <p className="text-primary-foreground/60 text-sm leading-relaxed">{desc}</p>
                       </div>
                     </div>
@@ -427,9 +427,9 @@ export default function HomePage() {
               {["SOC 2 TYPE II", "HIPAA COMPLIANT", "PCI DSS", "SSL SECURE"].map((badge) => (
                 <div
                   key={badge}
-                  className="aspect-square bg-background rounded-2xl flex items-center justify-center border border-border opacity-60 hover:opacity-100 transition-all"
+                  className="aspect-square bg-background rounded-2xl flex items-center justify-center border border-border opacity-85 hover:opacity-100 transition-all"
                 >
-                  <span className="text-sm font-bold text-primary/70">{badge}</span>
+                  <span className="text-sm font-bold text-primary/90">{badge}</span>
                 </div>
               ))}
             </div>

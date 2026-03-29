@@ -30,7 +30,7 @@ export function SiteFooter() {
 
           {/* Services */}
           <div>
-            <h4 className="font-semibold text-sm mb-5">Services</h4>
+            <h3 className="font-semibold text-sm mb-5">Services</h3>
             <ul className="space-y-3.5 text-sm text-muted-foreground">
               {[
                 { href: "/bookkeeping", label: "Bookkeeping" },
@@ -47,7 +47,7 @@ export function SiteFooter() {
 
           {/* Company */}
           <div>
-            <h4 className="font-semibold text-sm mb-5">Company</h4>
+            <h3 className="font-semibold text-sm mb-5">Company</h3>
             <ul className="space-y-3.5 text-sm text-muted-foreground">
               {[
                 { href: "/about", label: "About Us" },
@@ -64,7 +64,7 @@ export function SiteFooter() {
 
           {/* Resources */}
           <div>
-            <h4 className="font-semibold text-sm mb-5">Resources</h4>
+            <h3 className="font-semibold text-sm mb-5">Resources</h3>
             <ul className="space-y-3.5 text-sm text-muted-foreground">
               {[
                 { href: "/faqs", label: "FAQs" },

@@ -153,7 +153,7 @@ export default function ServicesPage() {
                         </li>
                       ))}
                     </ul>
-                    <Link href={service.href}>
+                    <Link href={service.href} aria-label={`Learn more about ${service.title}`}>
                       <Button variant="outline" size="sm" className="w-full bg-transparent">
                         Learn More
                         <ArrowRight aria-hidden="true" className="ml-2 h-4 w-4" />

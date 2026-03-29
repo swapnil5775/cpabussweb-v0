@@ -631,7 +631,7 @@ export default function WhyUsPage() {
                         <Clock aria-hidden="true" className="h-4 w-4" />
                       </div>
                       <div>
-                        <h4 className="font-medium">Monthly Check-Ins</h4>
+                        <h3 className="font-medium">Monthly Check-Ins</h3>
                         <p className="text-sm text-muted-foreground">
                           Regular updates on your financial health, not just year-end surprises
                         </p>
@@ -642,7 +642,7 @@ export default function WhyUsPage() {
                         <TrendingUp aria-hidden="true" className="h-4 w-4" />
                       </div>
                       <div>
-                        <h4 className="font-medium">Quarterly Strategy Sessions</h4>
+                        <h3 className="font-medium">Quarterly Strategy Sessions</h3>
                         <p className="text-sm text-muted-foreground">
                           Review how your year is tracking and plan for what's ahead
                         </p>
@@ -653,7 +653,7 @@ export default function WhyUsPage() {
                         <DollarSign aria-hidden="true" className="h-4 w-4" />
                       </div>
                       <div>
-                        <h4 className="font-medium">Proactive Tax Planning</h4>
+                        <h3 className="font-medium">Proactive Tax Planning</h3>
                         <p className="text-sm text-muted-foreground">
                           We identify opportunities throughout the year, not after it's too late
                         </p>

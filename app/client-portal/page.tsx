@@ -65,7 +65,7 @@ export default function PlatformPage() {
             </Badge>
             <h1 className="text-4xl font-black tracking-tight sm:text-6xl text-primary dark:text-foreground leading-[1.08]">
               Your entire financial operation.<br className="hidden sm:block" />
-              <span className="text-primary/50 dark:text-foreground/40"> One platform.</span>
+              <span className="text-primary/75 dark:text-foreground/60"> One platform.</span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Sign up, invite your team, connect your accounts, and hand off everything — payroll, bookkeeping,
@@ -114,8 +114,8 @@ export default function PlatformPage() {
                   <div className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-red-500/20 text-red-400 mx-auto">
                     <X aria-hidden="true" className="h-4 w-4" />
                   </div>
-                  <p className="text-primary-foreground font-bold text-sm line-through opacity-60">{name}</p>
-                  <p className="text-primary-foreground/40 text-xs">{what}</p>
+                  <p className="text-primary-foreground font-bold text-sm line-through opacity-80">{name}</p>
+                  <p className="text-primary-foreground/60 text-xs">{what}</p>
                 </div>
               ))}
             </div>
