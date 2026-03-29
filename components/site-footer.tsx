@@ -1,95 +1,92 @@
 import Link from "next/link"
+import { BookOpenCheck, Mail } from "lucide-react"
+import { CONTACT_EMAIL, SITE_NAME } from "@/lib/constants"
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border bg-muted/30">
-      <div className="container py-12">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">BookKeeping.business</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Tech-enabled tax & bookkeeping services with human preparation and review.
+    <footer className="bg-background border-t border-border pt-20 pb-10 px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
+
+          {/* Brand col */}
+          <div className="lg:col-span-2 space-y-5">
+            <Link href="/" className="flex items-center gap-2 w-fit">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                <BookOpenCheck className="h-3.5 w-3.5" />
+              </div>
+              <span className="text-base font-bold text-primary dark:text-foreground">BookKeeping.business</span>
+            </Link>
+            <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
+              The modern standard for small business finance. Human expertise meets AI efficiency.
             </p>
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+            >
+              <Mail className="h-4 w-4" />
+              {CONTACT_EMAIL}
+            </a>
           </div>
 
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold">Services</h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/services" className="text-muted-foreground hover:text-foreground transition-colors">
-                  All Services
-                </Link>
-              </li>
-              <li>
-                <Link href="/bookkeeping" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Bookkeeping
-                </Link>
-              </li>
-              <li>
-                <Link href="/tax-prep" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Tax Prep & Filing
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/business-services"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Business Services
-                </Link>
-              </li>
+          {/* Services */}
+          <div>
+            <h4 className="font-semibold text-sm mb-5">Services</h4>
+            <ul className="space-y-3.5 text-sm text-muted-foreground">
+              {[
+                { href: "/bookkeeping", label: "Bookkeeping" },
+                { href: "/tax-prep", label: "Tax Prep" },
+                { href: "/services", label: "Catchup Books" },
+                { href: "/business-services", label: "Business Services" },
+              ].map(({ href, label }) => (
+                <li key={href}>
+                  <Link href={href} className="hover:text-primary transition-colors">{label}</Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold">Company</h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/about" className="text-muted-foreground hover:text-foreground transition-colors">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/faqs" className="text-muted-foreground hover:text-foreground transition-colors">
-                  FAQs
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Contact
-                </Link>
-              </li>
-              <li>
-                <Link href="/client-portal" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Client Portal
-                </Link>
-              </li>
+          {/* Company */}
+          <div>
+            <h4 className="font-semibold text-sm mb-5">Company</h4>
+            <ul className="space-y-3.5 text-sm text-muted-foreground">
+              {[
+                { href: "/about", label: "About Us" },
+                { href: "/why-us", label: "Why Us" },
+                { href: "/how-it-works", label: "How It Works" },
+                { href: "/contact", label: "Contact" },
+              ].map(({ href, label }) => (
+                <li key={href}>
+                  <Link href={href} className="hover:text-primary transition-colors">{label}</Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold">Legal</h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Terms of Service
-                </Link>
-              </li>
+          {/* Resources */}
+          <div>
+            <h4 className="font-semibold text-sm mb-5">Resources</h4>
+            <ul className="space-y-3.5 text-sm text-muted-foreground">
+              {[
+                { href: "/faqs", label: "FAQs" },
+                { href: "/client-portal", label: "Client Portal" },
+                { href: "/privacy", label: "Privacy Policy" },
+                { href: "/terms", label: "Terms of Service" },
+              ].map(({ href, label }) => (
+                <li key={href}>
+                  <Link href={href} className="hover:text-primary transition-colors">{label}</Link>
+                </li>
+              ))}
             </ul>
           </div>
+
         </div>
 
-        <div className="mt-12 pt-8 border-t border-border space-y-3">
-          <p className="text-xs text-muted-foreground text-center">
-            Client Portal access is provided as part of our service. Features may vary by engagement.
+        <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
           </p>
-          <p className="text-sm text-muted-foreground text-center">
-            © {new Date().getFullYear()} BookKeeping.business. All rights reserved.
+          <p className="text-xs text-muted-foreground text-center md:text-right">
+            Client portal access is included with all service plans.
           </p>
         </div>
       </div>
