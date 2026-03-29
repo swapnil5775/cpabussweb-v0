@@ -114,7 +114,7 @@ export async function POST(request: Request) {
 
     // ── 1. Notification email → you ─────────────────────────────────────
     if (notificationEmail) {
-      resend.emails.send({
+      await resend.emails.send({
         from: fromAddress,
         to: notificationEmail,
         subject: `New lead: ${fullName} — BookKeeping.business`,
@@ -161,7 +161,7 @@ export async function POST(request: Request) {
     }
 
     // ── 2. Confirmation email → submitter ────────────────────────────────
-    resend.emails.send({
+    await resend.emails.send({
       from: fromAddress,
       to: email_,
       subject: `We received your message — BookKeeping.business`,
@@ -239,6 +239,7 @@ export async function POST(request: Request) {
 
 </div>`,
     }).catch((e) => console.error("Confirmation email failed:", e))
+
   }
 
   return NextResponse.json({ success: true }, { status: 201 })
