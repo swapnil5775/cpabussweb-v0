@@ -125,13 +125,12 @@ export default function OnboardingPage() {
     setError("")
 
     try {
-      // 1. Save onboarding profile
-      const profileRes = await fetch("/api/onboarding", {
+      // 1. Save onboarding profile — non-blocking, never stops the payment flow
+      fetch("/api/onboarding", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...data, selectedPlan: plan }),
-      })
-      if (!profileRes.ok) throw new Error("Failed to save profile")
+      }).catch(() => {/* profile saved later via webhook metadata */})
 
       // 2. Create Stripe checkout session
       const checkoutRes = await fetch("/api/stripe/create-checkout", {
@@ -140,12 +139,12 @@ export default function OnboardingPage() {
         body: JSON.stringify({ plan }),
       })
       const checkoutData = await checkoutRes.json()
-      if (!checkoutRes.ok || !checkoutData.url) throw new Error("Failed to create checkout")
+      if (!checkoutRes.ok || !checkoutData.url) throw new Error("Failed to start checkout — please try again or contact support.")
 
       // 3. Redirect to Stripe
       window.location.href = checkoutData.url
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong")
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.")
       setLoading(false)
     }
   }
