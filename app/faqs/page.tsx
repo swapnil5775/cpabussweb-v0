@@ -4,7 +4,7 @@ import { SiteHeader } from "@/components/site-header"
 export const metadata: Metadata = {
   title: "FAQs - Tax Prep, Bookkeeping & Business Services Questions | BookKeeping.business",
   description:
-    "Answers to frequently asked questions about our tax preparation, bookkeeping services, pricing, security, and process. Learn how we combine AI assistance with human expertise.",
+    "Answers to frequently asked questions about our tax preparation, bookkeeping services, security, and process. Learn how we combine AI assistance with human expertise — all in one place.",
   keywords: [
     "bookkeeping FAQ",
     "tax preparation questions",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "FAQs - Tax Prep, Bookkeeping & Business Services Questions | BookKeeping.business",
     description:
-      "Find answers to common questions about our tax preparation, bookkeeping services, pricing, and process.",
+      "Find answers to common questions about our tax preparation, bookkeeping services, and process.",
     url: "https://bookkeeping.business/faqs",
   },
 }
@@ -48,9 +48,9 @@ export default function FAQsPage() {
             "We use bank-level encryption for all document uploads and storage. Our secure portal maintains a complete audit trail, and we're fully insured with professional liability coverage. Your documents are stored securely for 7 years in compliance with IRS guidelines.",
         },
         {
-          question: "What is your pricing structure?",
+          question: "How do I get a quote?",
           answer:
-            "We offer transparent, upfront pricing based on the complexity of your situation. Individual tax returns start at $149, bookkeeping starts at $75/month, and business returns start at $800. We'll provide a clear quote before starting work, and there are no hidden fees.",
+            "All quotes are custom and based on the complexity of your situation. Submit the intake form or book a free 15-minute consultation and we'll provide a clear, upfront quote before any work begins. No hidden fees, no surprises.",
         },
       ],
     },
@@ -70,7 +70,7 @@ export default function FAQsPage() {
         {
           question: "Do you handle state taxes?",
           answer:
-            "Yes! We prepare and e-file state returns for all 50 states. State filing is included in our base pricing for one state. Additional states are $100 per state return.",
+            "Yes! We prepare and e-file state returns for all 50 states. State filing is included for your primary state of operation. Multi-state situations are handled — ask us during your intake call.",
         },
         {
           question: "What if I need to amend a return?",
@@ -105,7 +105,7 @@ export default function FAQsPage() {
         {
           question: "What if my transaction count varies each month?",
           answer:
-            "Our pricing tiers have some flexibility built in. If you occasionally go over your tier limit, we won't immediately raise your rate. However, if your volume consistently increases, we'll discuss moving you to the appropriate tier.",
+            "Our service tiers have flexibility built in. If your transaction volume fluctuates, we won't change your plan every month. If your business grows and volume consistently increases, we'll have a conversation about the right service level for you.",
         },
       ],
     },
@@ -146,7 +146,7 @@ export default function FAQsPage() {
           <div className="mx-auto max-w-3xl text-center space-y-6">
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl text-balance">Frequently Asked Questions</h1>
             <p className="text-lg text-muted-foreground leading-relaxed text-pretty">
-              Find answers to common questions about our services, pricing, and process.
+              Find answers to common questions about our services and process.
             </p>
           </div>
         </section>

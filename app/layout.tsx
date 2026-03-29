@@ -11,7 +11,7 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "BookKeeping.business - Tech-Enabled Tax & Bookkeeping Services",
   description:
-    "Modern tax preparation and bookkeeping services combining AI-assisted workflows with human preparation and review. Secure portal, dedicated account rep, and transparent pricing.",
+    "Modern tax preparation and bookkeeping services combining AI-assisted workflows with human preparation and review. Secure portal, dedicated account rep — all in one centralized place.",
   generator: "v0.app",
   keywords: [
     "bookkeeping services",

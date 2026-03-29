@@ -4,7 +4,7 @@ import { SiteHeader } from "@/components/site-header"
 export const metadata: Metadata = {
   title: "Why Choose Us Over Big CPA Firms & TurboTax | BookKeeping.business",
   description:
-    "Compare BookKeeping.business to traditional CPA firms and DIY tools like TurboTax. Get CFO-level service at a fraction of the cost with flat monthly pricing, quarterly check-ins, and business + personal tax prep included.",
+    "Compare BookKeeping.business to traditional CPA firms and DIY tools like TurboTax. Get CFO-level service, all-in-one, with quarterly check-ins, dedicated support, and business + personal tax prep all under one roof.",
   keywords: [
     "better than TurboTax",
     "affordable CPA alternative",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Why Choose Us Over Big CPA Firms & TurboTax | BookKeeping.business",
     description:
-      "CFO-level service at a fraction of the cost. Flat monthly pricing with business and personal tax prep included.",
+      "CFO-level service, all-in-one. Dedicated support with business and personal tax prep included under one roof.",
     url: "https://bookkeeping.business/why-us",
   },
 }
@@ -90,7 +90,7 @@ export default function WhyUsPage() {
                   <div className="space-y-3">
                     <div className="flex items-start gap-3">
                       <X className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
-                      <span className="text-sm">$300-$500+/hour billing rates</span>
+                      <span className="text-sm">Unpredictable hourly billing rates</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <X className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
@@ -118,8 +118,8 @@ export default function WhyUsPage() {
                     </div>
                   </div>
                   <div className="pt-4 border-t">
-                    <p className="text-sm font-medium text-destructive">Typical Annual Cost: $5,000 - $15,000+</p>
-                    <p className="text-xs text-muted-foreground mt-1">For bookkeeping + tax prep separately</p>
+                    <p className="text-sm font-medium text-destructive">Fragmented service — multiple bills, multiple contacts</p>
+                    <p className="text-xs text-muted-foreground mt-1">Bookkeeping and tax prep billed and handled separately</p>
                   </div>
                 </CardContent>
               </Card>
@@ -164,8 +164,8 @@ export default function WhyUsPage() {
                     </div>
                   </div>
                   <div className="pt-4 border-t">
-                    <p className="text-sm font-medium text-primary">Starting at $75/month ($900/year)</p>
-                    <p className="text-xs text-muted-foreground mt-1">All-inclusive: bookkeeping + tax prep + filing</p>
+                    <p className="text-sm font-medium text-primary">All-inclusive: bookkeeping + tax prep + filing</p>
+                    <p className="text-xs text-muted-foreground mt-1">One team, one portal, one place for everything</p>
                   </div>
                 </CardContent>
               </Card>
@@ -238,30 +238,16 @@ export default function WhyUsPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-3 text-sm">
-                    <div className="flex items-center justify-between">
-                      <span>QuickBooks</span>
-                      <span className="text-muted-foreground">$30-90/mo</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span>Gusto Payroll</span>
-                      <span className="text-muted-foreground">$40-80/mo</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span>TurboTax Business</span>
-                      <span className="text-muted-foreground">$200-400/yr</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span>Invoicing Software</span>
-                      <span className="text-muted-foreground">$15-50/mo</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span>Your Time</span>
-                      <span className="text-muted-foreground">Priceless</span>
-                    </div>
+                    {["QuickBooks (bookkeeping)", "Gusto (payroll)", "TurboTax Business (tax)", "Invoicing software", "Your own time & effort"].map((tool) => (
+                      <div key={tool} className="flex items-center gap-2">
+                        <X className="h-4 w-4 text-destructive shrink-0" />
+                        <span>{tool}</span>
+                      </div>
+                    ))}
                   </div>
                   <div className="pt-4 border-t text-center">
-                    <p className="text-2xl font-bold">$1,500-3,000+/yr</p>
-                    <p className="text-xs text-muted-foreground">Plus your valuable time</p>
+                    <p className="text-lg font-bold">Multiple vendors, multiple logins</p>
+                    <p className="text-xs text-muted-foreground">Nothing is connected — you do the coordination</p>
                   </div>
                 </CardContent>
               </Card>
@@ -305,8 +291,8 @@ export default function WhyUsPage() {
                     </div>
                   </div>
                   <div className="pt-4 border-t text-center">
-                    <p className="text-2xl font-bold text-primary">From $75/mo</p>
-                    <p className="text-xs text-muted-foreground">Everything included</p>
+                    <p className="text-lg font-bold text-primary">One subscription. Everything included.</p>
+                    <p className="text-xs text-muted-foreground">Custom quote based on your needs</p>
                   </div>
                 </CardContent>
               </Card>
@@ -352,7 +338,7 @@ export default function WhyUsPage() {
                   <tr className="border-b">
                     <td className="py-4 px-4">Business Tax Prep & Filing</td>
                     <td className="text-center py-4 px-4 text-muted-foreground">You do it</td>
-                    <td className="text-center py-4 px-4 text-muted-foreground">Extra $$$</td>
+                    <td className="text-center py-4 px-4 text-muted-foreground">Billed separately</td>
                     <td className="text-center py-4 px-4 bg-primary/5">
                       <Check className="h-4 w-4 mx-auto text-primary" />
                     </td>
@@ -360,7 +346,7 @@ export default function WhyUsPage() {
                   <tr className="border-b">
                     <td className="py-4 px-4">Personal Tax Prep & Filing</td>
                     <td className="text-center py-4 px-4 text-muted-foreground">You do it</td>
-                    <td className="text-center py-4 px-4 text-muted-foreground">Extra $$$</td>
+                    <td className="text-center py-4 px-4 text-muted-foreground">Billed separately</td>
                     <td className="text-center py-4 px-4 bg-primary/5">
                       <Check className="h-4 w-4 mx-auto text-primary" />
                     </td>
@@ -402,7 +388,7 @@ export default function WhyUsPage() {
                     <td className="text-center py-4 px-4">
                       <X className="h-4 w-4 mx-auto text-destructive" />
                     </td>
-                    <td className="text-center py-4 px-4 text-muted-foreground">Extra $$$</td>
+                    <td className="text-center py-4 px-4 text-muted-foreground">Billed separately</td>
                     <td className="text-center py-4 px-4 bg-primary/5">
                       <Check className="h-4 w-4 mx-auto text-primary" />
                     </td>
@@ -442,11 +428,15 @@ export default function WhyUsPage() {
                     </td>
                   </tr>
                   <tr>
-                    <td className="py-4 px-4 font-semibold">Typical Annual Cost</td>
-                    <td className="text-center py-4 px-4 font-semibold">$1,500-3,000+</td>
-                    <td className="text-center py-4 px-4 font-semibold">$5,000-15,000+</td>
+                    <td className="py-4 px-4 font-semibold">All Services in One Place</td>
+                    <td className="text-center py-4 px-4">
+                      <X className="h-4 w-4 mx-auto text-destructive" />
+                    </td>
+                    <td className="text-center py-4 px-4">
+                      <X className="h-4 w-4 mx-auto text-destructive" />
+                    </td>
                     <td className="text-center py-4 px-4 bg-primary/5 font-semibold text-primary rounded-b-lg">
-                      From $900/yr
+                      <Check className="h-4 w-4 mx-auto text-primary" />
                     </td>
                   </tr>
                 </tbody>
@@ -665,9 +655,9 @@ export default function WhyUsPage() {
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
-              <Link href="/bookkeeping">
+              <Link href="/services">
                 <Button size="lg" variant="outline" className="bg-transparent">
-                  View Pricing
+                  Explore Services
                 </Button>
               </Link>
             </div>

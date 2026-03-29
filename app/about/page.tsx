@@ -4,7 +4,7 @@ import { SiteHeader } from "@/components/site-header"
 export const metadata: Metadata = {
   title: "About Us - AI-Assisted, Human-Reviewed Tax & Bookkeeping | BookKeeping.business",
   description:
-    "Learn about our mission to combine AI efficiency with human expertise. We deliver accurate, compliant tax and bookkeeping services with dedicated account reps and transparent pricing.",
+    "Learn about our mission to combine AI efficiency with human expertise. We deliver accurate, compliant tax and bookkeeping services — all centralized in one place with dedicated account reps.",
   keywords: [
     "about bookkeeping business",
     "AI-assisted bookkeeping",
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     "modern accounting firm",
     "tech-enabled bookkeeping",
     "dedicated accountant",
-    "transparent pricing accounting",
+    "all-in-one accounting",
   ],
   openGraph: {
     title: "About Us - AI-Assisted, Human-Reviewed Tax & Bookkeeping | BookKeeping.business",
@@ -138,9 +138,9 @@ export default function AboutPage() {
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary mx-auto">
                 <Zap className="h-6 w-6" />
               </div>
-              <h3 className="font-semibold">Transparent Pricing</h3>
+              <h3 className="font-semibold">All-in-One Service</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Clear pricing based on complexity, no hidden fees
+                One place for bookkeeping, tax prep, and business services — no juggling vendors
               </p>
             </div>
           </div>

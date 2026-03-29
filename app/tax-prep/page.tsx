@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site-header"
 
 export const metadata: Metadata = {
-  title: "Tax Preparation & E-Filing Services from $149 | BookKeeping.business",
+  title: "Tax Preparation & E-Filing Services | BookKeeping.business",
   description:
     "Professional tax preparation and e-filing for individuals and businesses. W-2, self-employed, rental income, S-Corp, C-Corp, and partnership returns. Human-reviewed for accuracy with secure document storage.",
   keywords: [
@@ -17,9 +17,9 @@ export const metadata: Metadata = {
     "1099 tax prep",
   ],
   openGraph: {
-    title: "Tax Preparation & E-Filing Services from $149 | BookKeeping.business",
+    title: "Tax Preparation & E-Filing Services | BookKeeping.business",
     description:
-      "Professional tax preparation for individuals and businesses. Human-reviewed returns with e-filing starting at $149.",
+      "Professional tax preparation for individuals and businesses. Human-reviewed returns with federal and state e-filing included.",
     url: "https://bookkeeping.business/tax-prep",
   },
 }
@@ -54,20 +54,18 @@ export default function TaxPrepPage() {
           </div>
         </section>
 
-        {/* Individual Tax Pricing */}
+        {/* Individual Tax Services */}
         <section className="container pb-16">
           <div className="mx-auto max-w-3xl text-center space-y-4 mb-12">
             <h2 className="text-3xl font-bold tracking-tight text-balance">Individual Tax Returns</h2>
-            <p className="text-muted-foreground leading-relaxed text-pretty">Transparent pricing based on complexity</p>
+            <p className="text-muted-foreground leading-relaxed text-pretty">We handle all individual filing situations — from simple W-2s to complex investment and self-employment returns.</p>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 max-w-6xl mx-auto">
             <Card>
               <CardHeader>
                 <CardTitle>Simple W-2</CardTitle>
-                <div className="mt-4">
-                  <span className="text-3xl font-bold">$149</span>
-                </div>
+                <CardDescription className="mt-1">Standard employment income</CardDescription>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm">
@@ -81,7 +79,7 @@ export default function TaxPrepPage() {
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
-                    <span>Federal + 1 state</span>
+                    <span>Federal + state e-filing</span>
                   </li>
                 </ul>
               </CardContent>
@@ -90,10 +88,8 @@ export default function TaxPrepPage() {
             <Card className="border-primary">
               <CardHeader>
                 <Badge className="w-fit mb-2">Popular</Badge>
-                <CardTitle>Married/Itemized</CardTitle>
-                <div className="mt-4">
-                  <span className="text-3xl font-bold">$249</span>
-                </div>
+                <CardTitle>Married / Itemized</CardTitle>
+                <CardDescription className="mt-1">Joint filing with deductions</CardDescription>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm">
@@ -116,10 +112,7 @@ export default function TaxPrepPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Self-Employed</CardTitle>
-                <div className="mt-4">
-                  <span className="text-3xl font-bold">$349</span>
-                  <span className="text-muted-foreground text-base">+</span>
-                </div>
+                <CardDescription className="mt-1">1099 & freelance income</CardDescription>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm">
@@ -141,11 +134,8 @@ export default function TaxPrepPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Rental/Investments</CardTitle>
-                <div className="mt-4">
-                  <span className="text-3xl font-bold">$449</span>
-                  <span className="text-muted-foreground text-base">+</span>
-                </div>
+                <CardTitle>Rental / Investments</CardTitle>
+                <CardDescription className="mt-1">Complex income situations</CardDescription>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm">
@@ -170,21 +160,20 @@ export default function TaxPrepPage() {
             <Card className="max-w-2xl mx-auto bg-muted/50">
               <CardContent className="pt-6">
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  <span className="font-semibold text-foreground">Multi-state add-on:</span> +$100 per additional state
-                  return
+                  Multi-state filings, amended returns, and complex situations are all handled. Book a consultation for a custom quote.
                 </p>
               </CardContent>
             </Card>
           </div>
         </section>
 
-        {/* Business Tax Pricing */}
+        {/* Business Tax Services */}
         <section className="border-t border-border bg-muted/30 py-24">
           <div className="container">
             <div className="mx-auto max-w-3xl text-center space-y-4 mb-12">
               <h2 className="text-3xl font-bold tracking-tight text-balance">Business Tax Returns</h2>
               <p className="text-muted-foreground leading-relaxed text-pretty">
-                Pricing varies based on entity type and complexity
+                We handle all entity types — from single-member LLCs to C-Corps and multi-partner structures.
               </p>
             </div>
 
@@ -193,10 +182,6 @@ export default function TaxPrepPage() {
                 <CardHeader>
                   <CardTitle>LLC / S-Corp</CardTitle>
                   <CardDescription>Form 1120-S</CardDescription>
-                  <div className="mt-4">
-                    <span className="text-3xl font-bold">$800</span>
-                    <span className="text-muted-foreground text-base">+</span>
-                  </div>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm">
@@ -210,7 +195,7 @@ export default function TaxPrepPage() {
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
-                      <span>State filing</span>
+                      <span>Federal + state e-filing</span>
                     </li>
                   </ul>
                 </CardContent>
@@ -220,10 +205,6 @@ export default function TaxPrepPage() {
                 <CardHeader>
                   <CardTitle>C-Corporation</CardTitle>
                   <CardDescription>Form 1120</CardDescription>
-                  <div className="mt-4">
-                    <span className="text-3xl font-bold">$1,000</span>
-                    <span className="text-muted-foreground text-base">+</span>
-                  </div>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm">
@@ -237,7 +218,7 @@ export default function TaxPrepPage() {
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
-                      <span>State filing</span>
+                      <span>Federal + state e-filing</span>
                     </li>
                   </ul>
                 </CardContent>
@@ -247,10 +228,6 @@ export default function TaxPrepPage() {
                 <CardHeader>
                   <CardTitle>Partnership</CardTitle>
                   <CardDescription>Form 1065</CardDescription>
-                  <div className="mt-4">
-                    <span className="text-3xl font-bold">$900</span>
-                    <span className="text-muted-foreground text-base">+</span>
-                  </div>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm">
@@ -264,7 +241,7 @@ export default function TaxPrepPage() {
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
-                      <span>State filing</span>
+                      <span>Federal + state e-filing</span>
                     </li>
                   </ul>
                 </CardContent>
@@ -276,8 +253,7 @@ export default function TaxPrepPage() {
                 <CardContent className="pt-6 flex gap-4">
                   <AlertCircle className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Multi-entity structures and complex situations require custom pricing. Book a consultation for an
-                    accurate quote.
+                    Multi-entity structures, holding companies, and complex situations are all handled. Book a free consultation to discuss your specific needs.
                   </p>
                 </CardContent>
               </Card>

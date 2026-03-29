@@ -4,7 +4,7 @@ import { SiteHeader } from "@/components/site-header"
 export const metadata: Metadata = {
   title: "Tax & Accounting Services for Small Business | BookKeeping.business",
   description:
-    "Full-service tax preparation, monthly bookkeeping, LLC formation, and business consulting. Transparent pricing with no hidden fees. Serving freelancers, solopreneurs, and SMBs across the US.",
+    "Full-service tax preparation, monthly bookkeeping, LLC formation, and business consulting — all in one place. Serving freelancers, solopreneurs, and SMBs across the US.",
   keywords: [
     "small business accounting services",
     "tax preparation services",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Tax & Accounting Services for Small Business | BookKeeping.business",
     description:
-      "Full-service tax preparation, monthly bookkeeping, LLC formation, and business consulting with transparent pricing.",
+      "Full-service tax preparation, monthly bookkeeping, LLC formation, and business consulting — all centralized in one place.",
     url: "https://bookkeeping.business/services",
   },
 }
@@ -48,7 +48,6 @@ export default function ServicesPage() {
       title: "Monthly Bookkeeping",
       description: "All-in-one bookkeeping with tax prep & filing included for you and your business",
       icon: BookOpen,
-      pricing: "From $75/mo",
       href: "/bookkeeping",
       features: ["Monthly reconciliation", "Personal tax prep included", "Business tax prep included", "Quarterly check-ins"],
       highlight: true,
@@ -57,7 +56,6 @@ export default function ServicesPage() {
       title: "Catchup Bookkeeping",
       description: "Behind on your books? We'll get you caught up and audit-ready",
       icon: FileText,
-      pricing: "Custom",
       href: "/contact",
       features: ["Historical reconciliation", "Transaction categorization", "Clean financial records", "Smooth transition to monthly"],
     },
@@ -65,7 +63,6 @@ export default function ServicesPage() {
       title: "Financial Analysis",
       description: "Business health reviews and actionable insights",
       icon: TrendingUp,
-      pricing: "Included in plans",
       href: "/business-services",
       features: ["P&L analysis", "Cash flow review", "KPI tracking", "Growth recommendations"],
     },
@@ -73,7 +70,6 @@ export default function ServicesPage() {
       title: "LLC Formation Assistance",
       description: "Help with LLC creation and EIN application (not legal advice)",
       icon: Building2,
-      pricing: "Custom",
       href: "/business-services",
       features: ["Formation guidance", "EIN assistance", "Document prep help", "State filing support"],
     },
@@ -81,7 +77,6 @@ export default function ServicesPage() {
       title: "Registered Agent Services",
       description: "Assistance with registered agent updates and compliance",
       icon: Shield,
-      pricing: "Custom",
       href: "/business-services",
       features: ["Agent updates", "Compliance reminders", "Document handling", "State coordination"],
     },
@@ -89,7 +84,6 @@ export default function ServicesPage() {
       title: "State Filings Support",
       description: "Annual reports and ongoing state compliance",
       icon: Calculator,
-      pricing: "Custom",
       href: "/business-services",
       features: ["Annual reports", "State amendments", "Compliance tracking", "Deadline reminders"],
     },
@@ -97,7 +91,6 @@ export default function ServicesPage() {
       title: "Business Consultation",
       description: "1:1 calls for strategic business guidance and planning",
       icon: Users,
-      pricing: "Included quarterly",
       href: "/business-services",
       features: ["Quarterly check-ins", "Strategic planning", "Tax strategy", "Growth planning"],
     },
@@ -105,7 +98,6 @@ export default function ServicesPage() {
       title: "Acquisition File Review",
       description: "Financial review for business purchases with risk assessment",
       icon: BarChart3,
-      pricing: "Custom",
       href: "/business-services",
       features: ["Financial review", "Risk flag identification", "Due diligence support", "Report delivery"],
     },
@@ -144,7 +136,6 @@ export default function ServicesPage() {
                       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                         <Icon className="h-5 w-5" />
                       </div>
-                      <Badge variant="secondary">{service.pricing}</Badge>
                     </div>
                     <CardTitle className="mt-4">{service.title}</CardTitle>
                     <CardDescription>{service.description}</CardDescription>
@@ -171,106 +162,65 @@ export default function ServicesPage() {
           </div>
         </section>
 
-        {/* Pricing Overview */}
+        {/* Why All-in-One */}
         <section className="border-t border-border bg-muted/30 py-24">
           <div className="container">
             <div className="mx-auto max-w-3xl text-center space-y-4 mb-16">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-balance">Transparent Pricing</h2>
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-balance">One Place for Everything</h2>
               <p className="text-muted-foreground leading-relaxed text-pretty">
-                Flat monthly pricing based on your annual revenue. Tax prep and filing included—no surprise bills at year-end.
+                Stop juggling multiple tools and vendors. Every service you need is centralized in one place, handled by one dedicated team who knows your business inside out.
               </p>
             </div>
 
             <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
               <Card>
                 <CardHeader>
-                  <CardTitle>Starter</CardTitle>
-                  <CardDescription>Up to $500K annual revenue</CardDescription>
+                  <CardTitle>Centralized</CardTitle>
+                  <CardDescription>Everything under one roof</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="text-center py-4">
-                    <span className="text-4xl font-bold">$75</span>
-                    <span className="text-muted-foreground">/month</span>
-                  </div>
                   <ul className="space-y-3 text-sm">
-                    <li className="flex items-center gap-2">
-                      <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                      <span className="text-muted-foreground">Monthly bookkeeping</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                      <span className="text-muted-foreground">Business tax prep & filing</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                      <span className="text-muted-foreground">Personal tax prep & filing</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                      <span className="text-muted-foreground">Quarterly business reviews</span>
-                    </li>
+                    {["Bookkeeping + tax in one plan", "Business & personal returns included", "No separate vendors to manage", "Single secure portal for all documents"].map((f) => (
+                      <li key={f} className="flex items-center gap-2">
+                        <div className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
+                        <span className="text-muted-foreground">{f}</span>
+                      </li>
+                    ))}
                   </ul>
                 </CardContent>
               </Card>
 
               <Card className="border-primary">
                 <CardHeader>
-                  <Badge className="w-fit mb-2">Most Popular</Badge>
-                  <CardTitle>Growth</CardTitle>
-                  <CardDescription>Up to $1M annual revenue</CardDescription>
+                  <Badge className="w-fit mb-2">All-Inclusive</Badge>
+                  <CardTitle>Complete Service</CardTitle>
+                  <CardDescription>No surprises, no add-ons</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="text-center py-4">
-                    <span className="text-4xl font-bold">$175</span>
-                    <span className="text-muted-foreground">/month</span>
-                  </div>
                   <ul className="space-y-3 text-sm">
-                    <li className="flex items-center gap-2">
-                      <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                      <span className="text-muted-foreground">Everything in Starter</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                      <span className="text-muted-foreground">Advanced financial reports</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                      <span className="text-muted-foreground">Cash flow forecasting</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                      <span className="text-muted-foreground">Monthly business reviews</span>
-                    </li>
+                    {["Monthly bookkeeping & reconciliation", "Business tax prep & e-filing", "Owner's personal tax prep & filing", "Quarterly strategy check-ins", "Dedicated account rep"].map((f) => (
+                      <li key={f} className="flex items-center gap-2">
+                        <div className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
+                        <span className="text-muted-foreground">{f}</span>
+                      </li>
+                    ))}
                   </ul>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Pro</CardTitle>
-                  <CardDescription>Over $1M annual revenue</CardDescription>
+                  <CardTitle>Scalable</CardTitle>
+                  <CardDescription>Grows with your business</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="text-center py-4">
-                    <span className="text-4xl font-bold">Custom</span>
-                  </div>
                   <ul className="space-y-3 text-sm">
-                    <li className="flex items-center gap-2">
-                      <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                      <span className="text-muted-foreground">Everything in Growth</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                      <span className="text-muted-foreground">Multi-entity support</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                      <span className="text-muted-foreground">Dedicated account manager</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                      <span className="text-muted-foreground">Phone + email support</span>
-                    </li>
+                    {["Tailored to your business size", "Add services as you grow", "Multi-entity support available", "Enterprise needs handled too"].map((f) => (
+                      <li key={f} className="flex items-center gap-2">
+                        <div className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
+                        <span className="text-muted-foreground">{f}</span>
+                      </li>
+                    ))}
                   </ul>
                 </CardContent>
               </Card>
@@ -278,7 +228,7 @@ export default function ServicesPage() {
 
             <div className="mt-12 text-center">
               <p className="text-sm text-muted-foreground">
-                All plans include: Owner's personal tax prep & filing (or married couple), business tax prep & filing, and quarterly check-ins.
+                All plans include: Owner's personal tax prep & filing, business tax prep & filing, and quarterly check-ins. Custom quotes based on your specific needs.
               </p>
             </div>
           </div>

@@ -203,12 +203,12 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ── Pricing ── */}
+        {/* ── Solutions ── */}
         <section className="py-24 px-6 lg:px-8 bg-card">
           <div className="mx-auto max-w-7xl">
             <div className="text-center mb-16 space-y-3">
               <h2 className="text-3xl lg:text-4xl font-bold text-primary dark:text-foreground">All-in-One Solutions</h2>
-              <p className="text-muted-foreground">Professional services tailored for businesses of all sizes.</p>
+              <p className="text-muted-foreground max-w-2xl mx-auto">One place for everything your business needs — bookkeeping, tax filing, and strategic guidance, all under one roof.</p>
             </div>
             <div className="grid md:grid-cols-3 gap-8 items-start">
 
@@ -216,37 +216,32 @@ export default function HomePage() {
               <div className="p-8 rounded-3xl border border-border hover:border-primary/40 transition-all flex flex-col h-full bg-background">
                 <div className="mb-8">
                   <h3 className="text-xl font-bold text-primary dark:text-foreground mb-2">Monthly Bookkeeping</h3>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-black text-primary dark:text-foreground">from $75</span>
-                    <span className="text-muted-foreground">/mo</span>
-                  </div>
+                  <p className="text-sm text-muted-foreground">Ongoing monthly service with everything kept clean, current, and tax-ready.</p>
                 </div>
                 <ul className="space-y-3 mb-8 flex-grow">
-                  {["Up to 50 transactions/month", "Monthly financial reports", "Tax-ready year-end books", "Dedicated account rep"].map((f) => (
+                  {["Monthly reconciliation & reports", "Transaction categorization", "Tax-ready year-end books", "Dedicated account rep"].map((f) => (
                     <li key={f} className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Check className="h-4 w-4 text-primary flex-shrink-0" />
                       {f}
                     </li>
                   ))}
                 </ul>
-                <Link href="/contact" className="w-full py-3.5 rounded-xl border border-primary text-primary font-bold text-sm text-center hover:bg-primary hover:text-primary-foreground transition-all">
-                  Get Started
+                <Link href="/bookkeeping" className="w-full py-3.5 rounded-xl border border-primary text-primary font-bold text-sm text-center hover:bg-primary hover:text-primary-foreground transition-all">
+                  Learn More
                 </Link>
               </div>
 
               {/* Plan 2 — highlighted */}
               <div className="p-8 rounded-3xl bg-primary text-primary-foreground shadow-2xl shadow-primary/25 scale-105 relative flex flex-col h-full">
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-background text-primary text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full border border-primary/20 whitespace-nowrap">
-                  Most Popular
+                  Most Requested
                 </div>
                 <div className="mb-8">
                   <h3 className="text-xl font-bold mb-2">Catchup Bookkeeping</h3>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-3xl font-black">Custom Pricing</span>
-                  </div>
+                  <p className="text-sm text-primary-foreground/70">Behind on your books? We get you fully caught up and audit-ready.</p>
                 </div>
                 <ul className="space-y-3 mb-8 flex-grow">
-                  {["Clean up past financial years", "Reconciliation for audits", "Historical tax filing support", "Dedicated clean-up expert", "Free initial assessment"].map((f) => (
+                  {["Historical reconciliation & cleanup", "Audit-ready documentation", "Prior-year tax filing support", "Dedicated clean-up expert", "Smooth handoff to monthly service"].map((f) => (
                     <li key={f} className="flex items-center gap-2 text-sm text-primary-foreground/80">
                       <Check className="h-4 w-4 text-primary-foreground flex-shrink-0" />
                       {f}
@@ -254,7 +249,7 @@ export default function HomePage() {
                   ))}
                 </ul>
                 <Link href="/contact" className="w-full py-3.5 rounded-xl bg-primary-foreground text-primary font-bold text-sm text-center hover:opacity-90 transition-all">
-                  Request Quote
+                  Get a Quote
                 </Link>
               </div>
 
@@ -262,9 +257,7 @@ export default function HomePage() {
               <div className="p-8 rounded-3xl border border-border hover:border-primary/40 transition-all flex flex-col h-full bg-background">
                 <div className="mb-8">
                   <h3 className="text-xl font-bold text-primary dark:text-foreground mb-2">Business Services</h3>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-black text-primary dark:text-foreground">Full-Service</span>
-                  </div>
+                  <p className="text-sm text-muted-foreground">Full-service support for formation, compliance, and strategic growth.</p>
                 </div>
                 <ul className="space-y-3 mb-8 flex-grow">
                   {["LLC formation assistance", "EIN application support", "Registered agent services", "Payroll management", "CFO-level financial advice"].map((f) => (
@@ -274,8 +267,8 @@ export default function HomePage() {
                     </li>
                   ))}
                 </ul>
-                <Link href="/contact" className="w-full py-3.5 rounded-xl border border-primary text-primary font-bold text-sm text-center hover:bg-primary hover:text-primary-foreground transition-all">
-                  Talk to Sales
+                <Link href="/business-services" className="w-full py-3.5 rounded-xl border border-primary text-primary font-bold text-sm text-center hover:bg-primary hover:text-primary-foreground transition-all">
+                  Learn More
                 </Link>
               </div>
 
@@ -431,8 +424,8 @@ export default function HomePage() {
                   a: "We work with QuickBooks, Xero, Wave, FreshBooks, and spreadsheets. We can also migrate you to a new platform if needed.",
                 },
                 {
-                  q: "How much does it cost?",
-                  a: "Monthly bookkeeping starts at $75/month. Tax prep and business services are priced based on complexity. We provide a free quote after your intake call.",
+                  q: "How do I get started?",
+                  a: "Submit the intake form or book a free 15-minute consultation. We'll review your situation and provide a custom quote tailored to your needs — no obligation.",
                 },
               ].map(({ q, a }) => (
                 <details key={q} className="group border border-border rounded-xl overflow-hidden">

@@ -2,9 +2,9 @@ import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site-header"
 
 export const metadata: Metadata = {
-  title: "Monthly Bookkeeping Services Starting at $75/mo | BookKeeping.business",
+  title: "Monthly Bookkeeping Services | BookKeeping.business",
   description:
-    "Professional monthly bookkeeping services with personal tax prep included. Plans for businesses up to $500K, $1M, and custom enterprise. Dedicated bookkeeper, monthly reconciliation, P&L reports, and quarterly business reviews.",
+    "Professional monthly bookkeeping with personal and business tax prep included. Dedicated bookkeeper, monthly reconciliation, P&L reports, and quarterly business reviews — all in one place.",
   keywords: [
     "monthly bookkeeping services",
     "affordable bookkeeping",
@@ -16,9 +16,9 @@ export const metadata: Metadata = {
     "bank reconciliation services",
   ],
   openGraph: {
-    title: "Monthly Bookkeeping Services Starting at $75/mo | BookKeeping.business",
+    title: "Monthly Bookkeeping Services | BookKeeping.business",
     description:
-      "Professional monthly bookkeeping with personal tax prep included. Dedicated bookkeeper and monthly reconciliation starting at $75/month.",
+      "Professional monthly bookkeeping with personal and business tax prep included. Dedicated bookkeeper, monthly reconciliation, and quarterly reviews.",
     url: "https://bookkeeping.business/bookkeeping",
   },
 }
@@ -32,11 +32,9 @@ import Link from "next/link"
 export default function BookkeepingPage() {
   const tiers = [
     {
-      name: "Starter",
-      price: "$75",
-      period: "/month",
-      description: "Perfect for solopreneurs and small businesses",
-      revenue: "Up to $500K annual revenue",
+      name: "Essentials",
+      label: "For solopreneurs & small businesses",
+      description: "Clean, current books with everything you need to stay compliant and tax-ready.",
       features: [
         "Monthly reconciliation",
         "Transaction categorization",
@@ -49,12 +47,10 @@ export default function BookkeepingPage() {
     },
     {
       name: "Growth",
-      price: "$175",
-      period: "/month",
-      description: "For growing businesses scaling up",
-      revenue: "Up to $1M annual revenue",
+      label: "For scaling businesses",
+      description: "Advanced reporting and more frequent reviews as your business complexity grows.",
       features: [
-        "Everything in Starter",
+        "Everything in Essentials",
         "Advanced financial reports",
         "Cash flow forecasting",
         "Expense tracking & insights",
@@ -65,11 +61,9 @@ export default function BookkeepingPage() {
       popular: true,
     },
     {
-      name: "Pro",
-      price: "Custom",
-      period: "",
-      description: "For established businesses with complex needs",
-      revenue: "Over $1M annual revenue",
+      name: "Enterprise",
+      label: "For established & complex businesses",
+      description: "Full-service support for businesses with multi-entity structures and complex needs.",
       features: [
         "Everything in Growth",
         "Multi-entity bookkeeping",
@@ -115,14 +109,8 @@ export default function BookkeepingPage() {
                 )}
                 <CardHeader className="text-center pb-8">
                   <CardTitle className="text-lg">{tier.name}</CardTitle>
-                  <div className="mt-4">
-                    <span className="text-4xl font-bold">{tier.price}</span>
-                    <span className="text-muted-foreground">{tier.period}</span>
-                  </div>
-                  <CardDescription className="mt-2">{tier.description}</CardDescription>
-                  <Badge variant="outline" className="mt-4 w-fit mx-auto">
-                    {tier.revenue}
-                  </Badge>
+                  <Badge variant="outline" className="mt-2 w-fit mx-auto text-xs">{tier.label}</Badge>
+                  <CardDescription className="mt-3 leading-relaxed">{tier.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <ul className="space-y-3">
@@ -150,7 +138,7 @@ export default function BookkeepingPage() {
           <div className="container">
             <Card className="max-w-3xl mx-auto">
               <CardHeader className="text-center">
-                <Badge variant="outline" className="w-fit mx-auto mb-2">Custom Pricing</Badge>
+                <Badge variant="outline" className="w-fit mx-auto mb-2">Quote-Based</Badge>
                 <CardTitle className="text-2xl">Catchup Bookkeeping</CardTitle>
                 <CardDescription>Behind on your books? We'll get you caught up.</CardDescription>
               </CardHeader>
