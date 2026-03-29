@@ -28,6 +28,7 @@ import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
+import Script from "next/script"
 
 export default function FAQsPage() {
   const faqs = [
@@ -148,8 +149,28 @@ export default function FAQsPage() {
     },
   ]
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqs.flatMap((cat) =>
+      cat.questions.map((faq) => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer,
+        },
+      }))
+    ),
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
+      <Script
+        id="faq-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       <SiteHeader />
 
       <main className="flex-1">

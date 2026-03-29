@@ -83,6 +83,87 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <Script
+          id="schema-org"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "ProfessionalService",
+              "name": "BookKeeping.business",
+              "url": "https://www.bookkeeping.business",
+              "logo": "https://www.bookkeeping.business/icon.svg",
+              "email": "hello@bookkeeping.business",
+              "description": "Monthly bookkeeping, tax preparation, and business services for restaurants, hotels, childcare centers, realtors, home-based businesses, and small businesses. AI-assisted, human-reviewed. Clients never pay for software subscriptions.",
+              "slogan": "AI-assisted bookkeeping and tax prep. Human-reviewed. No software subscriptions for clients.",
+              "areaServed": { "@type": "Country", "name": "United States" },
+              "serviceType": [
+                "Bookkeeping",
+                "Tax Preparation",
+                "Payroll Administration",
+                "Business Consulting",
+                "LLC Formation Assistance"
+              ],
+              "knowsAbout": [
+                "Restaurant bookkeeping",
+                "Hotel accounting",
+                "Childcare center bookkeeping",
+                "Realtor tax preparation",
+                "Home-based business accounting",
+                "S-Corp tax filing",
+                "Small business bookkeeping",
+                "Monthly reconciliation",
+                "QuickBooks alternative"
+              ],
+              "hasOfferCatalog": {
+                "@type": "OfferCatalog",
+                "name": "Bookkeeping and Tax Services",
+                "itemListElement": [
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Service",
+                      "name": "Monthly Bookkeeping",
+                      "description": "Monthly reconciliation, transaction categorization, financial reports, dedicated bookkeeper, and owner's personal tax prep included.",
+                      "url": "https://www.bookkeeping.business/bookkeeping"
+                    }
+                  },
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Service",
+                      "name": "Tax Preparation",
+                      "description": "Individual and business tax returns — W-2, self-employed, S-Corp, C-Corp, Partnership — with federal and state e-filing included.",
+                      "url": "https://www.bookkeeping.business/tax-prep"
+                    }
+                  },
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Service",
+                      "name": "Catchup Bookkeeping",
+                      "description": "Historical transaction reconciliation for businesses behind on their books.",
+                      "url": "https://www.bookkeeping.business/bookkeeping"
+                    }
+                  },
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Service",
+                      "name": "Business Services",
+                      "description": "LLC formation assistance, registered agent coordination, state filings, business consultation, acquisition file review.",
+                      "url": "https://www.bookkeeping.business/business-services"
+                    }
+                  }
+                ]
+              },
+              "sameAs": [
+                "https://bookkeeping.business"
+              ]
+            })
+          }}
+        />
+        <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-X290C9HEH9"
           strategy="afterInteractive"
         />

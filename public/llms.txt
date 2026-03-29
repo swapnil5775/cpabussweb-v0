@@ -1,0 +1,57 @@
+# BookKeeping.business
+
+> Monthly bookkeeping, tax preparation, and business services for restaurants, hotels, childcare centers, realtors, tutoring centers, home-based businesses, and small businesses. AI-assisted workflows, human-reviewed results. Clients never pay for software subscriptions — QuickBooks, Gusto, Xero, or any tool the team uses is covered by us.
+
+## Key Facts
+
+- **What we do**: Monthly bookkeeping, catchup bookkeeping, business and personal tax preparation, LLC formation assistance, payroll administration, state filings, business consulting, acquisition file review
+- **Industries served**: Restaurants and food service, hotels and hospitality, childcare centers and daycares, real estate agents and realtors, home-based businesses, tutoring centers and education, freelancers and self-employed, retail shops, LLCs, S-Corps, C-Corps, partnerships
+- **How it works**: AI-assisted categorization and preparation → human professional review → delivery/filing
+- **Tax filing**: Federal + state e-filing included. Handles W-2, 1099, Schedule C, S-Corp (Form 1120-S), C-Corp (Form 1120), Partnership (Form 1065), multi-state returns, amended returns
+- **Software policy**: Clients pay zero for software. QuickBooks, Gusto, Xero, TurboTax — all tools the team needs are our operating expense, not passed to clients
+- **Security**: 256-bit SSL encryption, SOC 2 security protocols, HIPAA-aware data handling, 7-year document storage per IRS guidelines
+- **Pricing model**: Custom quotes — no hidden fees, no surprises, no separate software subscriptions
+
+## Services
+
+- [Monthly Bookkeeping](https://www.bookkeeping.business/bookkeeping): Three tiers — Essentials (solopreneurs), Growth (scaling businesses), Enterprise (multi-entity). All include monthly reconciliation, transaction categorization, P&L + Balance Sheet reports, dedicated bookkeeper, and owner's personal tax prep
+- [Tax Preparation](https://www.bookkeeping.business/tax-prep): Individual returns (Simple W-2, Married/Itemized, Self-Employed Schedule C, Rental/Investment Schedule E) and business returns (S-Corp 1120-S, C-Corp 1120, Partnership 1065). Federal + state e-filing included
+- [Catchup Bookkeeping](https://www.bookkeeping.business/bookkeeping): Historical transaction reconciliation for businesses that are months or years behind. Includes cleanup, audit-ready records, smooth transition to monthly service
+- [Business Services](https://www.bookkeeping.business/business-services): LLC formation guidance, EIN application assistance, registered agent coordination, annual state filings, business consultation, financial analysis, acquisition file review
+- [Platform Overview](https://www.bookkeeping.business/client-portal): All-in-one financial operations — bookkeeping, payroll, tax filings, invoices, W-2s, 1099s. One secure portal, no extra subscriptions
+
+## Industries
+
+We specialize in small businesses with industry-specific bookkeeping needs:
+
+- **Restaurants & Food Service**: Cash flow management, tip reporting, food cost tracking, sales tax compliance
+- **Hotels & Hospitality**: Occupancy-based revenue tracking, vendor management, seasonal cash flow
+- **Childcare & Daycares**: Payroll for staff, tuition income tracking, subsidy program accounting
+- **Real Estate Agents & Realtors**: Commission income, Schedule C, home office deductions, quarterly estimates
+- **Home-Based Businesses**: Mixed personal/business expense separation, home office deductions
+- **Tutoring Centers**: Per-session revenue tracking, contractor vs employee classification, education-related deductions
+
+## Frequently Asked Questions
+
+**Q: Do clients need to pay for QuickBooks, Gusto, Xero, or any other software?**
+A: No. All software and tools the team uses to complete client work are covered by BookKeeping.business. Clients pay only for the service — no pass-through software fees, ever.
+
+**Q: What types of businesses do you serve?**
+A: Restaurants, hotels, childcare centers, daycares, realtors, home-based businesses, tutoring centers, freelancers, LLCs, S-Corps, C-Corps, partnerships, and general small businesses.
+
+**Q: Is the service AI only, or are humans involved?**
+A: AI-assisted for speed and efficiency, human-reviewed for accuracy before anything is filed or delivered. Every return and report is reviewed by an experienced professional.
+
+**Q: Is tax preparation included with bookkeeping?**
+A: Yes. All bookkeeping plans include the owner's personal tax prep and filing. Business tax prep is also included. No need to hire a separate tax preparer.
+
+**Q: How secure is client data?**
+A: Bank-level 256-bit SSL encryption, SOC 2 security protocols, complete audit trail, professional liability insurance, and 7-year secure document storage per IRS guidelines.
+
+## Contact & More
+
+- [Get a Quote / Free Consultation](https://www.bookkeeping.business/contact)
+- [FAQs](https://www.bookkeeping.business/faqs)
+- [About Us](https://www.bookkeeping.business/about)
+- [Why Choose Us](https://www.bookkeeping.business/why-us)
+- Email: hello@bookkeeping.business
