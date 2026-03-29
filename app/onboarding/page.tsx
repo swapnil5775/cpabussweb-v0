@@ -139,6 +139,13 @@ export default function OnboardingPage() {
         body: JSON.stringify({ plan }),
       })
       const checkoutData = await checkoutRes.json()
+
+      // Stripe not yet configured — send to contact form with plan pre-filled
+      if (checkoutData.fallback) {
+        window.location.href = `/contact?plan=${plan}&source=onboarding`
+        return
+      }
+
       if (!checkoutRes.ok || !checkoutData.url) throw new Error("Failed to start checkout — please try again or contact support.")
 
       // 3. Redirect to Stripe

@@ -32,6 +32,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
+  // Stripe not configured yet — signal the frontend to use the contact form fallback
+  if (!process.env.STRIPE_SECRET_KEY) {
+    return NextResponse.json({ fallback: true }, { status: 200 })
+  }
+
   try {
     if (plan) {
       // ── Subscription checkout ─────────────────────────────
