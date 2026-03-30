@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import {
   CheckCircle2, Clock, FileUp, ShoppingBag, ArrowRight, CreditCard,
-  Building2, BookOpen, AlertCircle, Star
+  Building2, BookOpen, AlertCircle, Star, UserCircle, CalendarClock
 } from "lucide-react"
 import { PLANS, ONE_TIME_SERVICES } from "@/lib/stripe-plans"
 
@@ -26,10 +26,11 @@ export default async function DashboardPage({
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 
-  const [{ data: profile }, { data: subscription }, { data: recentDocs }] = await Promise.all([
+  const [{ data: profile }, { data: subscription }, { data: recentDocs }, { data: clientProfile }] = await Promise.all([
     admin.from("business_profiles").select("*").eq("user_id", user.id).single(),
     admin.from("subscriptions").select("*").eq("user_id", user.id).single(),
     admin.from("documents").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(3),
+    admin.from("client_profiles").select("full_name, phone, business_address_line1, business_city, secondary_email, secondary_email_verified").eq("user_id", user.id).single(),
   ])
 
   // Free tier — no subscription record, or profile selected "free"
@@ -73,6 +74,35 @@ export default async function DashboardPage({
     })
   }
 
+  // Profile completeness
+  const completenessItems = [
+    { label: "Full name", done: !!clientProfile?.full_name },
+    { label: "Phone", done: !!clientProfile?.phone },
+    { label: "Business address", done: !!clientProfile?.business_address_line1 && !!clientProfile?.business_city },
+    { label: "Secondary email", done: !!clientProfile?.secondary_email_verified },
+  ]
+  const completedCount = completenessItems.filter((i) => i.done).length
+  const completenessPercent = Math.round((completedCount / completenessItems.length) * 100)
+
+  // Upcoming tax deadlines (static, relevant based on month)
+  const now = new Date()
+  const currentYear = now.getFullYear()
+  const allDeadlines = [
+    { label: "Q4 Estimated Tax (prior year)", date: new Date(currentYear, 0, 15), desc: "Form 1040-ES" },
+    { label: "W-2 / 1099 Filing Deadline", date: new Date(currentYear, 0, 31), desc: "Send to recipients" },
+    { label: "Partnership / S-Corp Returns", date: new Date(currentYear, 2, 15), desc: "Form 1065 / 1120-S" },
+    { label: "Individual / C-Corp Returns", date: new Date(currentYear, 3, 15), desc: "Form 1040 / 1120" },
+    { label: "Q1 Estimated Tax", date: new Date(currentYear, 3, 15), desc: "Form 1040-ES" },
+    { label: "Q2 Estimated Tax", date: new Date(currentYear, 5, 16), desc: "Form 1040-ES" },
+    { label: "Extended Partnership / S-Corp", date: new Date(currentYear, 8, 15), desc: "If extension filed" },
+    { label: "Q3 Estimated Tax", date: new Date(currentYear, 8, 15), desc: "Form 1040-ES" },
+    { label: "Extended Individual / C-Corp", date: new Date(currentYear, 9, 15), desc: "If extension filed" },
+  ]
+  const upcomingDeadlines = allDeadlines
+    .filter((d) => d.date >= now)
+    .sort((a, b) => a.date.getTime() - b.date.getTime())
+    .slice(0, 3)
+
   return (
     <div className="space-y-8">
       {/* Free tier upgrade banner */}
@@ -108,7 +138,7 @@ export default async function DashboardPage({
           {firstName ? `Hey, ${firstName}` : "Your Dashboard"}
         </h1>
         <p className="text-muted-foreground text-sm mt-1">
-          {profile?.business_name ?? "Your account"} — {planConfig?.name ?? subscription.plan} Plan
+          {profile?.business_name ?? "Your account"} — {planConfig?.name ?? subscription?.plan ?? "Free"} Plan
         </p>
       </div>
 
@@ -164,6 +194,89 @@ export default async function DashboardPage({
               </Button>
             </Link>
             <ManageBillingButton />
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Profile completeness + Tax deadlines */}
+      <div className="grid gap-4 sm:grid-cols-2">
+        {/* Profile completeness */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <UserCircle className="h-4 w-4" aria-hidden="true" />
+              Profile Completeness
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-2xl font-bold">{completenessPercent}%</span>
+              {completenessPercent === 100 ? (
+                <Badge variant="default" className="text-xs">Complete</Badge>
+              ) : (
+                <Link href="/dashboard/profile">
+                  <Button variant="outline" size="sm" className="text-xs bg-transparent">
+                    Complete Profile
+                    <ArrowRight className="h-3 w-3 ml-1" aria-hidden="true" />
+                  </Button>
+                </Link>
+              )}
+            </div>
+            <div className="w-full bg-muted rounded-full h-1.5">
+              <div
+                className="bg-primary h-1.5 rounded-full transition-all"
+                style={{ width: `${completenessPercent}%` }}
+              />
+            </div>
+            <ul className="space-y-1.5">
+              {completenessItems.map((item) => (
+                <li key={item.label} className="flex items-center gap-2 text-xs">
+                  <CheckCircle2
+                    className={`h-3.5 w-3.5 shrink-0 ${item.done ? "text-green-600" : "text-muted-foreground/40"}`}
+                    aria-hidden="true"
+                  />
+                  <span className={item.done ? "text-foreground" : "text-muted-foreground"}>{item.label}</span>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+
+        {/* Tax deadlines */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <CalendarClock className="h-4 w-4" aria-hidden="true" />
+              Upcoming Tax Deadlines
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {upcomingDeadlines.length > 0 ? (
+              <ul className="space-y-3">
+                {upcomingDeadlines.map((d) => {
+                  const daysLeft = Math.ceil((d.date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+                  const urgent = daysLeft <= 14
+                  return (
+                    <li key={d.label} className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium truncate">{d.label}</p>
+                        <p className="text-xs text-muted-foreground">{d.desc}</p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className="text-xs font-semibold tabular-nums">
+                          {d.date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                        </p>
+                        <p className={`text-xs ${urgent ? "text-amber-600 font-medium" : "text-muted-foreground"}`}>
+                          {daysLeft === 0 ? "Today" : daysLeft === 1 ? "Tomorrow" : `${daysLeft}d`}
+                        </p>
+                      </div>
+                    </li>
+                  )
+                })}
+              </ul>
+            ) : (
+              <p className="text-sm text-muted-foreground">No upcoming deadlines this year.</p>
+            )}
           </CardContent>
         </Card>
       </div>

@@ -1,5 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import { redirect } from "next/navigation"
+import { createClient } from "@/lib/supabase/server"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import {
@@ -54,7 +56,10 @@ export const metadata: Metadata = {
   },
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user) redirect("/dashboard")
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SiteHeader />
