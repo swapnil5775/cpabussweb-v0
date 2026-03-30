@@ -7,7 +7,14 @@ import { createClient as createServiceClient } from "@supabase/supabase-js"
 
 export async function POST(request: Request) {
   const body = await request.json()
-  const { businessType, entityType, revenueRange, booksStatus, selectedPlan, businessName } = body
+  const {
+    businessName, businessType, entityType, revenueRange,
+    booksStatus, bookkeepingPlatform,
+    workerTypes, headcount,
+    needsPayroll, payrollPlatform,
+    bankAccountsCount, creditCardsCount, hasAchVendors,
+    selectedPlan,
+  } = body
 
   // Get authenticated user
   const cookieStore = await cookies()
@@ -38,11 +45,19 @@ export async function POST(request: Request) {
   const { error } = await admin.from("business_profiles").upsert({
     user_id: user.id,
     business_name: businessName ?? null,
-    business_type: businessType,
-    entity_type: entityType,
-    revenue_range: revenueRange,
-    books_status: booksStatus,
-    selected_plan: selectedPlan,
+    business_type: businessType ?? null,
+    entity_type: entityType ?? null,
+    revenue_range: revenueRange ?? null,
+    books_status: booksStatus ?? null,
+    bookkeeping_platform: bookkeepingPlatform ?? null,
+    worker_types: workerTypes ?? null,
+    headcount: headcount ?? null,
+    needs_payroll: needsPayroll ?? null,
+    payroll_platform: payrollPlatform ?? null,
+    bank_accounts_count: bankAccountsCount ?? null,
+    credit_cards_count: creditCardsCount ?? null,
+    has_ach_vendors: hasAchVendors ?? null,
+    selected_plan: selectedPlan ?? null,
     onboarding_completed_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   }, { onConflict: "user_id" })

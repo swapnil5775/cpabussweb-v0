@@ -32,13 +32,11 @@ export default async function DashboardPage({
     admin.from("documents").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(3),
   ])
 
-  // If no subscription, redirect to onboarding
-  if (!subscription || subscription.status === "canceled") {
-    redirect("/onboarding")
-  }
+  // Free tier — no subscription record, or profile selected "free"
+  const isFree = !subscription || subscription.status === "canceled" || profile?.selected_plan === "free"
 
-  const isSettingUp = subscription.status === "pending" && params.session_id
-  const planConfig = subscription.plan ? PLANS[subscription.plan as keyof typeof PLANS] : null
+  const isSettingUp = subscription?.status === "pending" && params.session_id
+  const planConfig = subscription?.plan ? PLANS[subscription.plan as keyof typeof PLANS] : null
   const firstName = (user.user_metadata as { first_name?: string })?.first_name ?? ""
 
   // Contextual upsell offers based on profile
@@ -77,6 +75,22 @@ export default async function DashboardPage({
 
   return (
     <div className="space-y-8">
+      {/* Free tier upgrade banner */}
+      {isFree && (
+        <div className="rounded-2xl border-2 border-primary/30 bg-primary/5 px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <p className="font-bold text-primary">You&apos;re on a free account</p>
+            <p className="text-sm text-muted-foreground mt-0.5">Upgrade to activate your bookkeeper, get monthly reports, and include tax filing.</p>
+          </div>
+          <Link href="/onboarding" className="shrink-0">
+            <Button size="sm">
+              View Plans
+              <ArrowRight className="h-4 w-4 ml-2" aria-hidden="true" />
+            </Button>
+          </Link>
+        </div>
+      )}
+
       {/* Success banner after payment */}
       {isSettingUp && (
         <div className="rounded-2xl bg-primary text-primary-foreground px-6 py-5 flex items-center gap-4">
@@ -105,7 +119,7 @@ export default async function DashboardPage({
             <CardTitle className="text-sm font-medium text-muted-foreground">Account Status</CardTitle>
           </CardHeader>
           <CardContent className="flex items-center gap-3">
-            {subscription.status === "active" ? (
+            {subscription?.status === "active" ? (
               <>
                 <CheckCircle2 className="h-5 w-5 text-green-600" aria-hidden="true" />
                 <div>
@@ -131,10 +145,10 @@ export default async function DashboardPage({
           </CardHeader>
           <CardContent className="flex items-center justify-between">
             <div>
-              <p className="font-semibold text-sm">{planConfig?.name ?? subscription.plan}</p>
-              <p className="text-xs text-muted-foreground">{planConfig?.displayPrice}/mo</p>
+              <p className="font-semibold text-sm">{isFree ? "Free Account" : (planConfig?.name ?? subscription?.plan)}</p>
+              <p className="text-xs text-muted-foreground">{isFree ? "Upgrade to activate" : `${planConfig?.displayPrice}/mo`}</p>
             </div>
-            <Badge variant="outline" className="text-xs">Active</Badge>
+            <Badge variant={isFree ? "outline" : "default"} className="text-xs">{isFree ? "Free" : "Active"}</Badge>
           </CardContent>
         </Card>
 
