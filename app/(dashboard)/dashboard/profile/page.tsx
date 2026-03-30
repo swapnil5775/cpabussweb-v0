@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { CheckCircle2, Mail, User, Building2, MapPin, Loader2, AlertCircle } from "lucide-react"
+import { CheckCircle2, Mail, User, Building2, MapPin, Loader2, AlertCircle, Briefcase } from "lucide-react"
 
 type Profile = {
   full_name: string
@@ -24,6 +24,16 @@ type Profile = {
   personal_zip: string
   secondary_email: string
   secondary_email_verified: boolean
+  // CPA / Accountant
+  cpa_firm_name: string
+  cpa_full_name: string
+  cpa_email: string
+  cpa_phone: string
+  cpa_address_line1: string
+  cpa_address_line2: string
+  cpa_city: string
+  cpa_state: string
+  cpa_zip: string
 }
 
 const emptyProfile: Profile = {
@@ -41,6 +51,15 @@ const emptyProfile: Profile = {
   personal_zip: "",
   secondary_email: "",
   secondary_email_verified: false,
+  cpa_firm_name: "",
+  cpa_full_name: "",
+  cpa_email: "",
+  cpa_phone: "",
+  cpa_address_line1: "",
+  cpa_address_line2: "",
+  cpa_city: "",
+  cpa_state: "",
+  cpa_zip: "",
 }
 
 export default function ProfilePage() {
@@ -81,6 +100,15 @@ export default function ProfilePage() {
             personal_zip: data.profile.personal_zip ?? "",
             secondary_email: data.profile.secondary_email ?? "",
             secondary_email_verified: data.profile.secondary_email_verified ?? false,
+            cpa_firm_name: data.profile.cpa_firm_name ?? "",
+            cpa_full_name: data.profile.cpa_full_name ?? "",
+            cpa_email: data.profile.cpa_email ?? "",
+            cpa_phone: data.profile.cpa_phone ?? "",
+            cpa_address_line1: data.profile.cpa_address_line1 ?? "",
+            cpa_address_line2: data.profile.cpa_address_line2 ?? "",
+            cpa_city: data.profile.cpa_city ?? "",
+            cpa_state: data.profile.cpa_state ?? "",
+            cpa_zip: data.profile.cpa_zip ?? "",
           })
         }
       }
@@ -404,6 +432,112 @@ export default function ProfilePage() {
               {otpMsg.text}
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      {/* CPA / Accountant */}
+      <Card>
+        <CardHeader className="pb-4">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Briefcase className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+            Current CPA / Accountant / Bookkeeper
+          </CardTitle>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Optional — helps us reach your existing advisor to retrieve records or coordinate onboarding.
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="cpa_firm_name">Firm / Company Name</Label>
+              <Input
+                id="cpa_firm_name"
+                value={form.cpa_firm_name}
+                onChange={(e) => set("cpa_firm_name", e.target.value)}
+                placeholder="Smith & Associates CPA"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="cpa_full_name">Contact Full Name</Label>
+              <Input
+                id="cpa_full_name"
+                value={form.cpa_full_name}
+                onChange={(e) => set("cpa_full_name", e.target.value)}
+                placeholder="John Smith"
+              />
+            </div>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="cpa_email">Email</Label>
+              <Input
+                id="cpa_email"
+                type="email"
+                value={form.cpa_email}
+                onChange={(e) => set("cpa_email", e.target.value)}
+                placeholder="john@smithcpa.com"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="cpa_phone">Phone</Label>
+              <Input
+                id="cpa_phone"
+                type="tel"
+                value={form.cpa_phone}
+                onChange={(e) => set("cpa_phone", e.target.value)}
+                placeholder="+1 (555) 000-0000"
+              />
+            </div>
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="cpa_addr1">Address Line 1</Label>
+            <Input
+              id="cpa_addr1"
+              value={form.cpa_address_line1}
+              onChange={(e) => set("cpa_address_line1", e.target.value)}
+              placeholder="789 Finance Blvd"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="cpa_addr2">Address Line 2 <span className="text-muted-foreground font-normal">(optional)</span></Label>
+            <Input
+              id="cpa_addr2"
+              value={form.cpa_address_line2}
+              onChange={(e) => set("cpa_address_line2", e.target.value)}
+              placeholder="Suite 100"
+            />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="space-y-1.5 sm:col-span-1">
+              <Label htmlFor="cpa_city">City</Label>
+              <Input
+                id="cpa_city"
+                value={form.cpa_city}
+                onChange={(e) => set("cpa_city", e.target.value)}
+                placeholder="Austin"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="cpa_state">State</Label>
+              <Input
+                id="cpa_state"
+                value={form.cpa_state}
+                onChange={(e) => set("cpa_state", e.target.value)}
+                placeholder="TX"
+                maxLength={2}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="cpa_zip">ZIP</Label>
+              <Input
+                id="cpa_zip"
+                value={form.cpa_zip}
+                onChange={(e) => set("cpa_zip", e.target.value)}
+                placeholder="78701"
+                maxLength={10}
+              />
+            </div>
+          </div>
         </CardContent>
       </Card>
 

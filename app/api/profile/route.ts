@@ -33,7 +33,7 @@ export async function GET() {
 
   const { data: profile } = await admin()
     .from("client_profiles")
-    .select("*")
+    .select("full_name, phone, business_address_line1, business_address_line2, business_city, business_state, business_zip, personal_address_line1, personal_address_line2, personal_city, personal_state, personal_zip, secondary_email, secondary_email_verified, cpa_firm_name, cpa_full_name, cpa_email, cpa_phone, cpa_address_line1, cpa_address_line2, cpa_city, cpa_state, cpa_zip")
     .eq("user_id", user.id)
     .single()
 
@@ -50,6 +50,8 @@ export async function POST(request: Request) {
     business_address_line1, business_address_line2, business_city, business_state, business_zip,
     personal_address_line1, personal_address_line2, personal_city, personal_state, personal_zip,
     secondary_email,
+    cpa_firm_name, cpa_full_name, cpa_email, cpa_phone,
+    cpa_address_line1, cpa_address_line2, cpa_city, cpa_state, cpa_zip,
   } = body
 
   // Fetch existing to preserve verified status if email unchanged
@@ -80,6 +82,15 @@ export async function POST(request: Request) {
       personal_zip: personal_zip ?? null,
       secondary_email: secondary_email || null,
       secondary_email_verified,
+      cpa_firm_name: cpa_firm_name || null,
+      cpa_full_name: cpa_full_name || null,
+      cpa_email: cpa_email || null,
+      cpa_phone: cpa_phone || null,
+      cpa_address_line1: cpa_address_line1 || null,
+      cpa_address_line2: cpa_address_line2 || null,
+      cpa_city: cpa_city || null,
+      cpa_state: cpa_state || null,
+      cpa_zip: cpa_zip || null,
       updated_at: new Date().toISOString(),
     }, { onConflict: "user_id" })
 
