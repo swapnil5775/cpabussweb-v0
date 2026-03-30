@@ -84,22 +84,34 @@ export default function HowItWorksPage() {
                       1
                     </div>
                     <div>
-                      <CardTitle className="text-2xl">Sign Up & Choose Your Plan</CardTitle>
-                      <p className="text-sm text-muted-foreground mt-1">Takes less than 2 minutes</p>
+                      <CardTitle className="text-2xl">Create Your Account & Onboard</CardTitle>
+                      <p className="text-sm text-muted-foreground mt-1">Fully self-service — under 5 minutes</p>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-muted-foreground leading-relaxed">
-                    Select the service that fits your needs. Your first month is completely free—no credit card required upfront.
+                    Sign up free at <strong>bookkeeping.business</strong>, complete a short onboarding quiz about your business, then pick a plan and pay — all without waiting for a call. Your dashboard is ready instantly.
                   </p>
                   <div className="flex items-center gap-2 text-sm">
                     <CheckCircle2 className="h-4 w-4 text-green-600 flex-shrink-0" />
-                    <span>No commitment during trial period</span>
+                    <span>No credit card required to create an account</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
                     <CheckCircle2 className="h-4 w-4 text-green-600 flex-shrink-0" />
-                    <span>Cancel anytime before billing starts</span>
+                    <span>Pick Essentials, Growth, or Enterprise — or stay free</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <CheckCircle2 className="h-4 w-4 text-green-600 flex-shrink-0" />
+                    <span>Cancel anytime, no long-term contracts</span>
+                  </div>
+                  <div className="pt-2">
+                    <Link href="/signup">
+                      <Button size="sm">
+                        Create Free Account
+                        <ArrowRight className="ml-2 h-3.5 w-3.5" />
+                      </Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>
@@ -453,9 +465,9 @@ export default function HowItWorksPage() {
               Join today and get your first month completely free. No credit card required to start.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/contact">
+              <Link href="/signup">
                 <Button size="lg">
-                  Start Your Free Month
+                  Create Free Account
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
@@ -466,7 +478,7 @@ export default function HowItWorksPage() {
               </Link>
             </div>
             <p className="text-xs text-muted-foreground pt-4">
-              Questions? <Link href="/faqs" className="underline hover:text-primary">Check our FAQs</Link> or <Link href="/contact" className="underline hover:text-primary">contact us</Link>
+              Prefer to talk first? <Link href="/contact" className="underline hover:text-primary">Schedule a call</Link> — or <Link href="/faqs" className="underline hover:text-primary">check our FAQs</Link>
             </p>
           </div>
         </section>

@@ -242,23 +242,24 @@ export default function ServicesPage() {
         <section className="container py-24">
           <div className="mx-auto max-w-2xl text-center space-y-6">
             <HelpCircle aria-hidden="true" className="mx-auto h-12 w-12 text-muted-foreground" />
-            <h2 className="text-3xl font-bold tracking-tight text-balance">Not sure what you need?</h2>
+            <h2 className="text-3xl font-bold tracking-tight text-balance">Ready to get started?</h2>
             <p className="text-muted-foreground leading-relaxed text-pretty">
-              Book a free 15-minute consultation to discuss your specific situation and get a custom quote.
+              Sign up free, complete a short onboarding quiz, and pick the plan that fits your business — no waiting for a callback.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/contact">
+              <Link href="/signup">
                 <Button size="lg">
-                  Book a Call
+                  Create Free Account
                   <ArrowRight aria-hidden="true" className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
-              <Link href="/faqs">
+              <Link href="/contact">
                 <Button size="lg" variant="outline" className="bg-transparent">
-                  View FAQs
+                  Book a Call Instead
                 </Button>
               </Link>
             </div>
+            <p className="text-xs text-muted-foreground">No credit card required • Cancel anytime</p>
           </div>
         </section>
       </main>

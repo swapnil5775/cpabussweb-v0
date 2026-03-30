@@ -92,10 +92,10 @@ export default async function HomePage() {
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
-                  href="/contact"
+                  href="/signup"
                   className="inline-flex items-center justify-center px-8 py-4 rounded-xl bg-primary text-primary-foreground font-bold text-base shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all"
                 >
-                  Get Started Free
+                  Create Free Account
                 </Link>
                 <a
                   href={CALENDLY_URL}
@@ -160,26 +160,38 @@ export default async function HomePage() {
         <section className="py-24 px-6 lg:px-8 bg-card">
           <div className="mx-auto max-w-7xl">
             <div className="text-center mb-16 space-y-3">
-              <h2 className="text-3xl lg:text-4xl font-bold text-primary dark:text-foreground">How It Works</h2>
+              <h2 className="text-3xl lg:text-4xl font-bold text-primary dark:text-foreground">Get Started in 4 Steps</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                Our streamlined process takes the stress out of managing your finances.
+                Fully self-service — sign up, answer a few questions, pick your plan, and your dashboard guides the rest. No waiting for a call.
               </p>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                { icon: Upload, title: "Upload", desc: "Securely send your documents via our encrypted portal and connect your accounts." },
-                { icon: Cpu, title: "AI + Human Prep", desc: "Smart automation categorizes transactions while our team ensures every detail is accurate." },
-                { icon: ShieldCheck, title: "Human Review", desc: "A certified tax professional performs a final check on every line item before filing." },
-                { icon: Send, title: "E-file", desc: "Seamless electronic filing with instant confirmation, storage, and audit trail." },
-              ].map(({ icon: Icon, title, desc }) => (
+                { icon: Upload, step: "01", title: "Create Your Account", desc: "Sign up free in under 2 minutes. No credit card required to get started." },
+                { icon: ClipboardList, step: "02", title: "Complete Onboarding", desc: "Answer a short quiz about your business — entity type, revenue, team, and banking. Takes about 3 minutes." },
+                { icon: BarChart2, step: "03", title: "Choose a Plan & Pay", desc: "Pick Essentials, Growth, or Enterprise. Pay monthly, cancel anytime. Or stay on the free tier and upgrade later." },
+                { icon: Send, step: "04", title: "Your Dashboard Guides You", desc: "Upload documents, track deadlines, message your bookkeeper, and see your account status — all in one place." },
+              ].map(({ icon: Icon, step, title, desc }) => (
                 <div key={title} className="group p-8 rounded-2xl border border-border hover:border-primary/30 hover:shadow-xl transition-all">
-                  <div className="h-14 w-14 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                    <Icon aria-hidden="true" className="h-6 w-6" />
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="h-14 w-14 bg-primary/10 rounded-xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                      <Icon aria-hidden="true" className="h-6 w-6" />
+                    </div>
+                    <span className="text-3xl font-black text-muted-foreground/20">{step}</span>
                   </div>
                   <h3 className="text-lg font-bold mb-2">{title}</h3>
                   <p className="text-muted-foreground text-sm leading-relaxed">{desc}</p>
                 </div>
               ))}
+            </div>
+            <div className="text-center mt-10">
+              <Link
+                href="/signup"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-primary text-primary-foreground font-bold text-base shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all"
+              >
+                Start Free — No Credit Card Needed
+                <ArrowRight aria-hidden="true" className="h-4 w-4" />
+              </Link>
             </div>
           </div>
         </section>
@@ -539,10 +551,10 @@ export default async function HomePage() {
               </p>
               <div className="relative flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
                 <Link
-                  href="/contact"
+                  href="/signup"
                   className="w-full sm:w-auto px-10 py-5 rounded-2xl bg-primary-foreground text-primary font-bold text-lg hover:opacity-90 transition-all"
                 >
-                  Get Started Now
+                  Create Free Account
                 </Link>
                 <Link
                   href="/services"
@@ -552,7 +564,7 @@ export default async function HomePage() {
                 </Link>
               </div>
               <p className="relative text-primary-foreground/40 text-sm">
-                No credit card required • Free intake consultation
+                No credit card required • Self-service setup in under 5 minutes
               </p>
             </div>
           </div>
