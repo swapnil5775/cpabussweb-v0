@@ -48,5 +48,5 @@ export async function POST() {
     return_url: `${SITE_URL}/dashboard`,
   })
 
-  return NextResponse.json({ url: portalSession.url })
+  return NextResponse.redirect(portalSession.url, { status: 303 })
 }
