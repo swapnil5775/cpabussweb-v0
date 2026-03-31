@@ -199,9 +199,9 @@ export default async function DashboardPage({
             <CardHeader className="pb-2">
               <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Your Plan</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex items-center gap-2">
+              <PlanIcon className={`h-5 w-5 shrink-0 ${planStyle?.color}`} aria-hidden="true" />
               <p className="font-bold text-sm">{planConfig?.name ?? planKey}</p>
-              <p className="text-xs text-muted-foreground">{planConfig?.displayPrice ?? "—"}/month</p>
             </CardContent>
           </Card>
 
