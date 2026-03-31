@@ -14,11 +14,12 @@ import { PLANS, ONE_TIME_SERVICES } from "@/lib/stripe-plans"
 import { OnboardingCallBanner } from "@/components/dashboard/onboarding-call-banner"
 import { PaidWelcome } from "@/components/dashboard/paid-welcome"
 import { OnboardingChecklist } from "@/components/dashboard/onboarding-checklist"
+import { QBOConnectCard } from "@/components/dashboard/qbo-connect-card"
 
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ session_id?: string; plan?: string }>
+  searchParams: Promise<{ session_id?: string; plan?: string; qbo?: string }>
 }) {
   const params = await searchParams
   const supabase = await createClient()
@@ -171,6 +172,20 @@ export default async function DashboardPage({
           callScheduled={callScheduled}
         />
 
+        {/* QBO connected banner */}
+        {params.qbo === "connected" && (
+          <div className="flex items-center gap-3 rounded-2xl border border-[#2CA01C]/30 bg-[#2CA01C]/10 px-5 py-3.5">
+            <CheckCircle2 className="h-5 w-5 text-[#2CA01C] shrink-0" />
+            <p className="text-sm font-medium text-[#2CA01C]">QuickBooks connected successfully! Your books will sync shortly.</p>
+          </div>
+        )}
+        {params.qbo === "error" && (
+          <div className="flex items-center gap-3 rounded-2xl border border-destructive/30 bg-destructive/10 px-5 py-3.5">
+            <AlertCircle className="h-5 w-5 text-destructive shrink-0" />
+            <p className="text-sm font-medium text-destructive">QuickBooks connection failed. Please try again.</p>
+          </div>
+        )}
+
         {/* Getting started checklist */}
         <OnboardingChecklist
           callScheduled={callScheduled}
@@ -310,6 +325,9 @@ export default async function DashboardPage({
             </CardContent>
           </Card>
         </div>
+
+        {/* QuickBooks integration */}
+        <QBOConnectCard />
 
         {/* Recent documents */}
         <section className="space-y-3">
