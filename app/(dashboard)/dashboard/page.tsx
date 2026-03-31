@@ -7,10 +7,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import {
   CheckCircle2, Clock, FileUp, ShoppingBag, ArrowRight, CreditCard,
-  Building2, BookOpen, AlertCircle, Star, UserCircle, CalendarClock
+  Building2, BookOpen, AlertCircle, UserCircle, CalendarClock, MessageSquare,
+  Sparkles, TrendingUp, Shield, Zap
 } from "lucide-react"
 import { PLANS, ONE_TIME_SERVICES } from "@/lib/stripe-plans"
 import { OnboardingCallBanner } from "@/components/dashboard/onboarding-call-banner"
+import { PaidWelcome } from "@/components/dashboard/paid-welcome"
+import { OnboardingChecklist } from "@/components/dashboard/onboarding-checklist"
 
 export default async function DashboardPage({
   searchParams,
@@ -27,73 +30,73 @@ export default async function DashboardPage({
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 
-  const [{ data: profile }, { data: subscription }, { data: recentDocs }, { data: clientProfile }] = await Promise.all([
-    admin.from("business_profiles").select("*, onboarding_call_scheduled_at").eq("user_id", user.id).single(),
-    admin.from("subscriptions").select("*, created_at").eq("user_id", user.id).single(),
+  const [
+    { data: profile },
+    { data: subscription },
+    { data: recentDocs },
+    { data: clientProfile },
+    { data: supportTickets },
+  ] = await Promise.all([
+    admin.from("business_profiles").select("*").eq("user_id", user.id).single(),
+    admin.from("subscriptions").select("*").eq("user_id", user.id).single(),
     admin.from("documents").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(3),
-    admin.from("client_profiles").select("full_name, phone, business_address_line1, business_city, secondary_email, secondary_email_verified").eq("user_id", user.id).single(),
+    admin.from("client_profiles").select("full_name, phone, business_address_line1, business_city, secondary_email, secondary_email_verified, cpa_firm_name").eq("user_id", user.id).single(),
+    admin.from("support_tickets").select("id").eq("user_id", user.id).limit(1),
   ])
 
-  // Free tier — no subscription record, or profile selected "free"
-  const isFree = !subscription || subscription.status === "canceled" || profile?.selected_plan === "free"
-  const isPaid = !isFree && (subscription?.status === "active" || subscription?.status === "trialing")
+  const justPaid = !!params.session_id
+  const isFree = !justPaid && (!subscription || subscription.status === "canceled" || profile?.selected_plan === "free")
+  const isPaid = !isFree
+  const planKey = params.plan ?? subscription?.plan
+  const planConfig = planKey ? PLANS[planKey as keyof typeof PLANS] : null
+  const firstName = (user.user_metadata as { first_name?: string })?.first_name ?? ""
 
-  // Days since subscription started (for onboarding call prompt)
   const daysSinceSubscribed = subscription?.created_at
     ? Math.floor((Date.now() - new Date(subscription.created_at).getTime()) / (1000 * 60 * 60 * 24))
-    : null
+    : justPaid ? 0 : null
 
   const callScheduled = !!profile?.onboarding_call_scheduled_at
 
-  const isSettingUp = subscription?.status === "pending" && params.session_id
-  const planConfig = subscription?.plan ? PLANS[subscription.plan as keyof typeof PLANS] : null
-  const firstName = (user.user_metadata as { first_name?: string })?.first_name ?? ""
+  // Checklist completion
+  const profileComplete = !!(clientProfile?.full_name && clientProfile?.business_address_line1)
+  const hasDocument = !!(recentDocs && recentDocs.length > 0)
+  const hasCpa = !!clientProfile?.cpa_firm_name
+  const hasSupport = !!(supportTickets && supportTickets.length > 0)
 
-  // Contextual upsell offers based on profile
+  // Contextual upsells (free only)
   const upsells: { key: string; title: string; desc: string; price: string; icon: React.ElementType }[] = []
-
-  if (profile?.entity_type === "none") {
-    upsells.push({
-      key: "llc_formation",
-      title: ONE_TIME_SERVICES.llc_formation.name,
-      desc: ONE_TIME_SERVICES.llc_formation.description,
-      price: ONE_TIME_SERVICES.llc_formation.displayPrice,
-      icon: Building2,
-    })
+  if (isFree) {
+    if (profile?.entity_type === "none") {
+      upsells.push({
+        key: "llc_formation",
+        title: ONE_TIME_SERVICES.llc_formation.name,
+        desc: ONE_TIME_SERVICES.llc_formation.description,
+        price: ONE_TIME_SERVICES.llc_formation.displayPrice,
+        icon: Building2,
+      })
+    }
+    const month = new Date().getMonth() + 1
+    if (month >= 1 && month <= 4) {
+      upsells.push({
+        key: "tax_business",
+        title: ONE_TIME_SERVICES.tax_business.name,
+        desc: ONE_TIME_SERVICES.tax_business.description,
+        price: ONE_TIME_SERVICES.tax_business.displayPrice,
+        icon: BookOpen,
+      })
+    }
+    if (profile?.books_status === "behind_3_plus" || profile?.books_status === "never_done") {
+      upsells.push({
+        key: "catchup",
+        title: "Catchup Bookkeeping",
+        desc: "Get your historical books cleaned up before monthly service begins.",
+        price: "Custom quote",
+        icon: AlertCircle,
+      })
+    }
   }
 
-  const month = new Date().getMonth() + 1
-  if (month >= 1 && month <= 4) {
-    upsells.push({
-      key: "tax_business",
-      title: ONE_TIME_SERVICES.tax_business.name,
-      desc: ONE_TIME_SERVICES.tax_business.description,
-      price: ONE_TIME_SERVICES.tax_business.displayPrice,
-      icon: BookOpen,
-    })
-  }
-
-  if (profile?.books_status === "behind_3_plus" || profile?.books_status === "never_done") {
-    upsells.push({
-      key: "catchup",
-      title: "Catchup Bookkeeping",
-      desc: "Get your historical books cleaned up before monthly service begins.",
-      price: "Custom quote",
-      icon: AlertCircle,
-    })
-  }
-
-  // Profile completeness
-  const completenessItems = [
-    { label: "Full name", done: !!clientProfile?.full_name },
-    { label: "Phone", done: !!clientProfile?.phone },
-    { label: "Business address", done: !!clientProfile?.business_address_line1 && !!clientProfile?.business_city },
-    { label: "Secondary email", done: !!clientProfile?.secondary_email_verified },
-  ]
-  const completedCount = completenessItems.filter((i) => i.done).length
-  const completenessPercent = Math.round((completedCount / completenessItems.length) * 100)
-
-  // Upcoming tax deadlines (static, relevant based on month)
+  // Tax deadlines
   const now = new Date()
   const currentYear = now.getFullYear()
   const allDeadlines = [
@@ -112,77 +115,287 @@ export default async function DashboardPage({
     .sort((a, b) => a.date.getTime() - b.date.getTime())
     .slice(0, 3)
 
+  // ── PAID DASHBOARD ─────────────────────────────────────────────────────────
+  if (isPaid) {
+    const planFeatures: Record<string, { icon: React.ElementType; color: string }> = {
+      essentials: { icon: Shield, color: "text-blue-500" },
+      growth: { icon: TrendingUp, color: "text-purple-500" },
+      enterprise: { icon: Zap, color: "text-amber-500" },
+    }
+    const planStyle = planFeatures[planKey ?? "essentials"]
+    const PlanIcon = planStyle?.icon ?? Shield
+
+    return (
+      <div className="space-y-6">
+
+        {/* Welcome banner (just paid) */}
+        {justPaid && <PaidWelcome planName={planConfig?.name ?? planKey ?? "Premium"} firstName={firstName} />}
+
+        {/* Header */}
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <h1 className="text-2xl font-bold tracking-tight">
+                {firstName ? `Hey, ${firstName}` : "Your Dashboard"}
+              </h1>
+              <Badge className={`gap-1 text-xs ${planKey === "enterprise" ? "bg-amber-500" : planKey === "growth" ? "bg-purple-500" : "bg-blue-500"}`}>
+                <PlanIcon className="h-3 w-3" aria-hidden="true" />
+                {planConfig?.name ?? planKey} Plan
+              </Badge>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {profile?.business_name ?? user.email} — active subscription
+              {subscription?.current_period_end && (
+                <span className="ml-2 text-muted-foreground/60">
+                  · renews {new Date(subscription.current_period_end).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                </span>
+              )}
+            </p>
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            <Link href="/dashboard/support">
+              <Button variant="outline" size="sm" className="gap-1.5 bg-transparent">
+                <MessageSquare className="h-3.5 w-3.5" aria-hidden="true" />
+                Message Team
+              </Button>
+            </Link>
+            <ManageBillingButton />
+          </div>
+        </div>
+
+        {/* Onboarding call banner */}
+        <OnboardingCallBanner
+          isFree={false}
+          isPaid={true}
+          daysSinceSubscribed={daysSinceSubscribed}
+          callScheduled={callScheduled}
+        />
+
+        {/* Getting started checklist */}
+        <OnboardingChecklist
+          callScheduled={callScheduled}
+          profileComplete={profileComplete}
+          hasDocument={hasDocument}
+          hasCpa={hasCpa}
+          hasSupport={hasSupport}
+        />
+
+        {/* Status cards */}
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <Card className="border-primary/20 bg-primary/5">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Account Status</CardTitle>
+            </CardHeader>
+            <CardContent className="flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0" aria-hidden="true" />
+              <div>
+                <p className="font-bold text-sm">Active</p>
+                <p className="text-xs text-muted-foreground">Books in good standing</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Your Plan</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="font-bold text-sm">{planConfig?.name ?? planKey}</p>
+              <p className="text-xs text-muted-foreground">{planConfig?.displayPrice ?? "—"}/month</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Documents</CardTitle>
+            </CardHeader>
+            <CardContent className="flex items-center gap-2">
+              <FileUp className="h-5 w-5 text-muted-foreground shrink-0" aria-hidden="true" />
+              <div>
+                <p className="font-bold text-sm">{recentDocs?.length ?? 0} uploaded</p>
+                <Link href="/dashboard/documents" className="text-xs text-primary hover:underline">Upload more</Link>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Next Deadline</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {upcomingDeadlines[0] ? (
+                <>
+                  <p className="font-bold text-sm truncate">{upcomingDeadlines[0].label}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {upcomingDeadlines[0].date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                  </p>
+                </>
+              ) : (
+                <p className="text-sm text-muted-foreground">None upcoming</p>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Plan features + Tax deadlines */}
+        <div className="grid gap-4 sm:grid-cols-2">
+          {/* What's included */}
+          {planConfig && (
+            <Card className="border-primary/20">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-sm">
+                  <PlanIcon className={`h-4 w-4 ${planStyle?.color}`} aria-hidden="true" />
+                  {planConfig.name} Plan — What&apos;s Included
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  {planConfig.features.map((f) => (
+                    <li key={f} className="flex items-center gap-2 text-sm">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-green-500 shrink-0" aria-hidden="true" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-4 pt-3 border-t border-border flex gap-2 flex-wrap">
+                  <ManageBillingButton />
+                  {planKey !== "enterprise" && (
+                    <Link href="/onboarding">
+                      <Button size="sm" variant="outline" className="bg-transparent gap-1.5 text-xs">
+                        <Sparkles className="h-3 w-3" aria-hidden="true" />
+                        Upgrade Plan
+                      </Button>
+                    </Link>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Tax deadlines */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                <CalendarClock className="h-4 w-4" aria-hidden="true" />
+                Upcoming Tax Deadlines
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {upcomingDeadlines.length > 0 ? (
+                <ul className="space-y-3">
+                  {upcomingDeadlines.map((d) => {
+                    const daysLeft = Math.ceil((d.date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+                    const urgent = daysLeft <= 14
+                    return (
+                      <li key={d.label} className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium truncate">{d.label}</p>
+                          <p className="text-xs text-muted-foreground">{d.desc}</p>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <p className="text-xs font-semibold">
+                            {d.date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                          </p>
+                          <p className={`text-xs ${urgent ? "text-amber-600 font-medium" : "text-muted-foreground"}`}>
+                            {daysLeft === 0 ? "Today" : daysLeft === 1 ? "Tomorrow" : `${daysLeft}d`}
+                          </p>
+                        </div>
+                      </li>
+                    )
+                  })}
+                </ul>
+              ) : (
+                <p className="text-sm text-muted-foreground">No upcoming deadlines this year.</p>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Recent documents */}
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="font-semibold text-base">Recent Documents</h2>
+            <Link href="/dashboard/documents" className="text-sm text-primary hover:underline">View all</Link>
+          </div>
+          {recentDocs && recentDocs.length > 0 ? (
+            <div className="space-y-2">
+              {recentDocs.map((doc) => (
+                <div key={doc.id} className="flex items-center gap-3 px-4 py-3 rounded-xl border border-border bg-background">
+                  <FileUp className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{doc.file_name}</p>
+                    <p className="text-xs text-muted-foreground">{new Date(doc.created_at).toLocaleDateString()}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-2xl border-2 border-dashed border-border px-6 py-8 text-center">
+              <FileUp className="h-7 w-7 mx-auto text-muted-foreground mb-2" aria-hidden="true" />
+              <p className="text-sm font-medium">No documents yet</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Upload bank statements, receipts, or tax docs</p>
+              <Link href="/dashboard/documents" className="mt-3 inline-block">
+                <Button size="sm">Upload a Document</Button>
+              </Link>
+            </div>
+          )}
+        </section>
+
+      </div>
+    )
+  }
+
+  // ── FREE DASHBOARD ──────────────────────────────────────────────────────────
+  const completenessItems = [
+    { label: "Full name", done: !!clientProfile?.full_name },
+    { label: "Phone", done: !!clientProfile?.phone },
+    { label: "Business address", done: !!clientProfile?.business_address_line1 },
+    { label: "Secondary email verified", done: !!clientProfile?.secondary_email_verified },
+  ]
+  const completedCount = completenessItems.filter((i) => i.done).length
+  const completenessPercent = Math.round((completedCount / completenessItems.length) * 100)
+
   return (
     <div className="space-y-8">
-      {/* Free tier upgrade banner */}
-      {isFree && (
-        <div className="rounded-2xl border-2 border-primary/30 bg-primary/5 px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <p className="font-bold text-primary">You&apos;re on a free account</p>
-            <p className="text-sm text-muted-foreground mt-0.5">Upgrade to activate your bookkeeper, get monthly reports, and include tax filing.</p>
-          </div>
-          <Link href="/onboarding" className="shrink-0">
-            <Button size="sm">
-              View Plans
-              <ArrowRight className="h-4 w-4 ml-2" aria-hidden="true" />
-            </Button>
-          </Link>
+      {/* Upgrade banner */}
+      <div className="rounded-2xl border-2 border-primary/30 bg-primary/5 px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <p className="font-bold text-primary">You&apos;re on a free account</p>
+          <p className="text-sm text-muted-foreground mt-0.5">Upgrade to activate your bookkeeper, get monthly reports, and include tax filing.</p>
         </div>
-      )}
+        <Link href="/onboarding" className="shrink-0">
+          <Button size="sm">
+            View Plans
+            <ArrowRight className="h-4 w-4 ml-2" aria-hidden="true" />
+          </Button>
+        </Link>
+      </div>
 
-      {/* Success banner after payment */}
-      {isSettingUp && (
-        <div className="rounded-2xl bg-primary text-primary-foreground px-6 py-5 flex items-center gap-4">
-          <Star className="h-6 w-6 shrink-0" aria-hidden="true" />
-          <div>
-            <p className="font-bold">Welcome aboard! Your account is being set up.</p>
-            <p className="text-sm opacity-90 mt-0.5">Your dedicated bookkeeper will reach out within 1 business day.</p>
-          </div>
-        </div>
-      )}
+      {/* Calendly prompt for free users */}
+      <OnboardingCallBanner isFree={true} isPaid={false} daysSinceSubscribed={null} callScheduled={callScheduled} />
 
-      {/* Onboarding call prompt */}
-      <OnboardingCallBanner
-        isFree={isFree}
-        isPaid={isPaid}
-        daysSinceSubscribed={daysSinceSubscribed}
-        callScheduled={callScheduled}
-      />
-
-      {/* Overview header */}
+      {/* Header */}
       <div>
         <h1 className="text-2xl font-bold tracking-tight">
           {firstName ? `Hey, ${firstName}` : "Your Dashboard"}
         </h1>
         <p className="text-muted-foreground text-sm mt-1">
-          {profile?.business_name ?? "Your account"} — {planConfig?.name ?? subscription?.plan ?? "Free"} Plan
+          {profile?.business_name ?? "Your account"} — Free Account
         </p>
       </div>
 
-      {/* Status + Plan cards */}
+      {/* Status cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Account Status</CardTitle>
           </CardHeader>
           <CardContent className="flex items-center gap-3">
-            {subscription?.status === "active" ? (
-              <>
-                <CheckCircle2 className="h-5 w-5 text-green-600" aria-hidden="true" />
-                <div>
-                  <p className="font-semibold text-sm">Active</p>
-                  <p className="text-xs text-muted-foreground">Books in good standing</p>
-                </div>
-              </>
-            ) : (
-              <>
-                <Clock className="h-5 w-5 text-amber-500" aria-hidden="true" />
-                <div>
-                  <p className="font-semibold text-sm">Setting up</p>
-                  <p className="text-xs text-muted-foreground">We&apos;ll reach out shortly</p>
-                </div>
-              </>
-            )}
+            <Clock className="h-5 w-5 text-amber-500" aria-hidden="true" />
+            <div>
+              <p className="font-semibold text-sm">Free Tier</p>
+              <p className="text-xs text-muted-foreground">Upgrade to activate</p>
+            </div>
           </CardContent>
         </Card>
 
@@ -192,10 +405,10 @@ export default async function DashboardPage({
           </CardHeader>
           <CardContent className="flex items-center justify-between">
             <div>
-              <p className="font-semibold text-sm">{isFree ? "Free Account" : (planConfig?.name ?? subscription?.plan)}</p>
-              <p className="text-xs text-muted-foreground">{isFree ? "Upgrade to activate" : `${planConfig?.displayPrice}/mo`}</p>
+              <p className="font-semibold text-sm">Free Account</p>
+              <p className="text-xs text-muted-foreground">Upgrade to activate</p>
             </div>
-            <Badge variant={isFree ? "outline" : "default"} className="text-xs">{isFree ? "Free" : "Active"}</Badge>
+            <Badge variant="outline" className="text-xs">Free</Badge>
           </CardContent>
         </Card>
 
@@ -210,14 +423,18 @@ export default async function DashboardPage({
                 Upload Documents
               </Button>
             </Link>
-            <ManageBillingButton />
+            <Link href="/dashboard/services">
+              <Button variant="outline" size="sm" className="w-full bg-transparent justify-start">
+                <ShoppingBag className="h-4 w-4 mr-2" aria-hidden="true" />
+                Add-on Services
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       </div>
 
       {/* Profile completeness + Tax deadlines */}
       <div className="grid gap-4 sm:grid-cols-2">
-        {/* Profile completeness */}
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
@@ -228,30 +445,21 @@ export default async function DashboardPage({
           <CardContent className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-2xl font-bold">{completenessPercent}%</span>
-              {completenessPercent === 100 ? (
-                <Badge variant="default" className="text-xs">Complete</Badge>
-              ) : (
+              {completenessPercent < 100 && (
                 <Link href="/dashboard/profile">
                   <Button variant="outline" size="sm" className="text-xs bg-transparent">
-                    Complete Profile
-                    <ArrowRight className="h-3 w-3 ml-1" aria-hidden="true" />
+                    Complete Profile <ArrowRight className="h-3 w-3 ml-1" aria-hidden="true" />
                   </Button>
                 </Link>
               )}
             </div>
             <div className="w-full bg-muted rounded-full h-1.5">
-              <div
-                className="bg-primary h-1.5 rounded-full transition-all"
-                style={{ width: `${completenessPercent}%` }}
-              />
+              <div className="bg-primary h-1.5 rounded-full transition-all" style={{ width: `${completenessPercent}%` }} />
             </div>
             <ul className="space-y-1.5">
               {completenessItems.map((item) => (
                 <li key={item.label} className="flex items-center gap-2 text-xs">
-                  <CheckCircle2
-                    className={`h-3.5 w-3.5 shrink-0 ${item.done ? "text-green-600" : "text-muted-foreground/40"}`}
-                    aria-hidden="true"
-                  />
+                  <CheckCircle2 className={`h-3.5 w-3.5 shrink-0 ${item.done ? "text-green-600" : "text-muted-foreground/40"}`} aria-hidden="true" />
                   <span className={item.done ? "text-foreground" : "text-muted-foreground"}>{item.label}</span>
                 </li>
               ))}
@@ -259,7 +467,6 @@ export default async function DashboardPage({
           </CardContent>
         </Card>
 
-        {/* Tax deadlines */}
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
@@ -280,9 +487,7 @@ export default async function DashboardPage({
                         <p className="text-xs text-muted-foreground">{d.desc}</p>
                       </div>
                       <div className="text-right shrink-0">
-                        <p className="text-xs font-semibold tabular-nums">
-                          {d.date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                        </p>
+                        <p className="text-xs font-semibold">{d.date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</p>
                         <p className={`text-xs ${urgent ? "text-amber-600 font-medium" : "text-muted-foreground"}`}>
                           {daysLeft === 0 ? "Today" : daysLeft === 1 ? "Tomorrow" : `${daysLeft}d`}
                         </p>
@@ -298,7 +503,7 @@ export default async function DashboardPage({
         </Card>
       </div>
 
-      {/* Upsell offers */}
+      {/* Upsells */}
       {upsells.length > 0 && (
         <section className="space-y-4">
           <div>
@@ -325,8 +530,7 @@ export default async function DashboardPage({
                     </div>
                     <Link href={`/dashboard/services?highlight=${offer.key}`}>
                       <Button variant="outline" size="sm" className="w-full bg-transparent">
-                        Learn More
-                        <ArrowRight className="h-3.5 w-3.5 ml-2" aria-hidden="true" />
+                        Learn More <ArrowRight className="h-3.5 w-3.5 ml-2" aria-hidden="true" />
                       </Button>
                     </Link>
                   </CardContent>
@@ -341,9 +545,7 @@ export default async function DashboardPage({
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold text-base">Recent Documents</h2>
-          <Link href="/dashboard/documents" className="text-sm text-primary hover:underline">
-            View all
-          </Link>
+          <Link href="/dashboard/documents" className="text-sm text-primary hover:underline">View all</Link>
         </div>
         {recentDocs && recentDocs.length > 0 ? (
           <div className="space-y-2">
@@ -375,8 +577,8 @@ export default async function DashboardPage({
 function ManageBillingButton() {
   return (
     <form action="/api/stripe/create-portal" method="POST">
-      <Button variant="outline" size="sm" className="w-full bg-transparent justify-start" type="submit">
-        <CreditCard className="h-4 w-4 mr-2" aria-hidden="true" />
+      <Button variant="outline" size="sm" className="bg-transparent justify-start gap-1.5" type="submit">
+        <CreditCard className="h-3.5 w-3.5" aria-hidden="true" />
         Manage Billing
       </Button>
     </form>
