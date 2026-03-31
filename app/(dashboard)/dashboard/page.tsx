@@ -10,6 +10,7 @@ import {
   Building2, BookOpen, AlertCircle, Star, UserCircle, CalendarClock
 } from "lucide-react"
 import { PLANS, ONE_TIME_SERVICES } from "@/lib/stripe-plans"
+import { OnboardingCallBanner } from "@/components/dashboard/onboarding-call-banner"
 
 export default async function DashboardPage({
   searchParams,
@@ -27,14 +28,22 @@ export default async function DashboardPage({
   )
 
   const [{ data: profile }, { data: subscription }, { data: recentDocs }, { data: clientProfile }] = await Promise.all([
-    admin.from("business_profiles").select("*").eq("user_id", user.id).single(),
-    admin.from("subscriptions").select("*").eq("user_id", user.id).single(),
+    admin.from("business_profiles").select("*, onboarding_call_scheduled_at").eq("user_id", user.id).single(),
+    admin.from("subscriptions").select("*, created_at").eq("user_id", user.id).single(),
     admin.from("documents").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(3),
     admin.from("client_profiles").select("full_name, phone, business_address_line1, business_city, secondary_email, secondary_email_verified").eq("user_id", user.id).single(),
   ])
 
   // Free tier — no subscription record, or profile selected "free"
   const isFree = !subscription || subscription.status === "canceled" || profile?.selected_plan === "free"
+  const isPaid = !isFree && (subscription?.status === "active" || subscription?.status === "trialing")
+
+  // Days since subscription started (for onboarding call prompt)
+  const daysSinceSubscribed = subscription?.created_at
+    ? Math.floor((Date.now() - new Date(subscription.created_at).getTime()) / (1000 * 60 * 60 * 24))
+    : null
+
+  const callScheduled = !!profile?.onboarding_call_scheduled_at
 
   const isSettingUp = subscription?.status === "pending" && params.session_id
   const planConfig = subscription?.plan ? PLANS[subscription.plan as keyof typeof PLANS] : null
@@ -131,6 +140,14 @@ export default async function DashboardPage({
           </div>
         </div>
       )}
+
+      {/* Onboarding call prompt */}
+      <OnboardingCallBanner
+        isFree={isFree}
+        isPaid={isPaid}
+        daysSinceSubscribed={daysSinceSubscribed}
+        callScheduled={callScheduled}
+      />
 
       {/* Overview header */}
       <div>
