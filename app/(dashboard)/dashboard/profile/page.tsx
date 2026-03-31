@@ -62,7 +62,7 @@ const emptyProfile: Profile = {
   cpa_zip: "",
 }
 
-type CpaTokenRow = { id: string; client_user_id: string; token: string; label: string | null; created_at: string }
+type CpaTokenRow = { id: string; client_user_id: string; token: string; label: string | null; invited_email: string | null; created_at: string }
 
 const CPA_SITE_URL = "https://www.bookkeeping.business"
 
@@ -82,9 +82,11 @@ export default function ProfilePage() {
 
   // CPA access token state
   const [cpaToken, setCpaToken] = useState<CpaTokenRow | null>(null)
+  const [cpaEmailInput, setCpaEmailInput] = useState("")
   const [cpaLabelInput, setCpaLabelInput] = useState("")
   const [cpaLoading, setCpaLoading] = useState(false)
   const [cpaCopied, setCpaCopied] = useState(false)
+  const [cpaError, setCpaError] = useState("")
 
   useEffect(() => {
     async function load() {
@@ -136,16 +138,28 @@ export default function ProfilePage() {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function generateCpaToken() {
+    setCpaError("")
+    if (!cpaEmailInput.trim()) {
+      setCpaError("CPA email is required to send the invite.")
+      return
+    }
     setCpaLoading(true)
     const res = await fetch("/api/cpa-access", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ label: cpaLabelInput.trim() || null }),
+      body: JSON.stringify({
+        invited_email: cpaEmailInput.trim(),
+        label: cpaLabelInput.trim() || null,
+      }),
     })
     if (res.ok) {
       const data = await res.json()
       setCpaToken(data.token)
       setCpaLabelInput("")
+      setCpaEmailInput("")
+    } else {
+      const d = await res.json()
+      setCpaError(d.error ?? "Failed to generate link.")
     }
     setCpaLoading(false)
   }
@@ -163,7 +177,10 @@ export default function ProfilePage() {
     const res = await fetch("/api/cpa-access", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ label: cpaToken?.label ?? null }),
+      body: JSON.stringify({
+        invited_email: cpaToken?.invited_email ?? null,
+        label: cpaToken?.label ?? null,
+      }),
     })
     if (res.ok) {
       const data = await res.json()
@@ -611,21 +628,34 @@ export default function ProfilePage() {
             Share Access with Your CPA
           </CardTitle>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Generate a read-only link for your CPA or accountant — no account required on their end.
+            Invite your CPA or accountant by email. They must sign in with that email to view your workspace — access is private and invite-only.
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
           {!cpaToken ? (
             <div className="space-y-3">
               <div className="space-y-1.5">
+                <Label htmlFor="cpa_invite_email">CPA / Accountant Email <span className="text-destructive">*</span></Label>
+                <Input
+                  id="cpa_invite_email"
+                  type="email"
+                  value={cpaEmailInput}
+                  onChange={(e) => { setCpaEmailInput(e.target.value); setCpaError("") }}
+                  placeholder="john@smithcpa.com"
+                />
+              </div>
+              <div className="space-y-1.5">
                 <Label htmlFor="cpa_label">Label <span className="text-muted-foreground font-normal">(optional)</span></Label>
                 <Input
                   id="cpa_label"
                   value={cpaLabelInput}
                   onChange={(e) => setCpaLabelInput(e.target.value)}
-                  placeholder="e.g. Shared with John Smith CPA"
+                  placeholder="e.g. John Smith CPA"
                 />
               </div>
+              {cpaError && (
+                <p className="text-xs text-destructive">{cpaError}</p>
+              )}
               <Button
                 type="button"
                 size="sm"
@@ -634,14 +664,21 @@ export default function ProfilePage() {
                 className="gap-1.5"
               >
                 {cpaLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Share2 className="h-4 w-4" />}
-                Generate Link
+                Send Invite & Generate Link
               </Button>
             </div>
           ) : (
             <div className="space-y-3">
-              {cpaToken.label && (
-                <p className="text-xs text-muted-foreground font-medium">{cpaToken.label}</p>
-              )}
+              <div className="flex items-center gap-2 flex-wrap">
+                {cpaToken.invited_email && (
+                  <span className="text-xs bg-primary/10 text-primary rounded-full px-2.5 py-0.5 font-medium">
+                    {cpaToken.invited_email}
+                  </span>
+                )}
+                {cpaToken.label && (
+                  <span className="text-xs text-muted-foreground">{cpaToken.label}</span>
+                )}
+              </div>
               <div className="flex items-center gap-2">
                 <div className="flex-1 bg-muted rounded-lg px-3 py-2 text-sm font-mono truncate text-muted-foreground">
                   {`${CPA_SITE_URL}/cpa/${cpaToken.token}`}
@@ -658,7 +695,7 @@ export default function ProfilePage() {
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground">
-                Anyone with this link can view your business name, documents list, and tax deadlines — no account required.
+                Only {cpaToken.invited_email ?? "the invited email"} can access this link. They must be signed in to view your workspace.
               </p>
               <div className="flex gap-2">
                 <Button
