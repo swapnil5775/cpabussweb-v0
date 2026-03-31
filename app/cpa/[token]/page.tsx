@@ -1,12 +1,13 @@
-import { createClient } from "@supabase/supabase-js"
-import { notFound } from "next/navigation"
-import { BookOpenCheck, FileUp, CalendarClock, Building2, Shield } from "lucide-react"
+import { createClient } from "@/lib/supabase/server"
+import { createClient as createAdmin } from "@supabase/supabase-js"
+import { redirect } from "next/navigation"
+import { BookOpenCheck, FileUp, CalendarClock, Building2, Shield, Lock } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
-const admin = createClient(
+const admin = createAdmin(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
@@ -18,24 +19,48 @@ export default async function CpaPortalPage({
 }) {
   const { token } = await params
 
-  // Look up token
+  // 1. Require authentication — redirect to login with ?next= so they come back here
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    redirect(`/login?next=/cpa/${token}`)
+  }
+
+  // 2. Look up token
   const { data: tokenRow } = await admin
     .from("cpa_access_tokens")
-    .select("client_user_id, label")
+    .select("client_user_id, label, invited_email")
     .eq("token", token)
     .single()
 
-  if (!tokenRow) notFound()
+  // Invalid token
+  if (!tokenRow) {
+    return <AccessDenied reason="This link is invalid or has been revoked." />
+  }
+
+  // 3. Check that logged-in user's email matches the invited email
+  const userEmail = user.email?.toLowerCase().trim() ?? ""
+  const invitedEmail = tokenRow.invited_email?.toLowerCase().trim() ?? ""
+
+  if (invitedEmail && userEmail !== invitedEmail) {
+    return (
+      <AccessDenied
+        reason={`This workspace was shared with a different email address. You are signed in as ${user.email}.`}
+        showSwitch
+        token={token}
+      />
+    )
+  }
 
   const userId = tokenRow.client_user_id
 
-  // Load client data
+  // 4. Load client data
   const [
     { data: profile },
     { data: subscription },
     { data: docs },
   ] = await Promise.all([
-    admin.from("business_profiles").select("business_name, entity_type, selected_plan").eq("user_id", userId).single(),
+    admin.from("business_profiles").select("business_name, entity_type").eq("user_id", userId).single(),
     admin.from("subscriptions").select("plan, status").eq("user_id", userId).single(),
     admin.from("documents").select("file_name, document_type, created_at").eq("user_id", userId).order("created_at", { ascending: false }).limit(20),
   ])
@@ -62,11 +87,13 @@ export default async function CpaPortalPage({
     { label: "Q3 Estimated Tax", date: new Date(currentYear, 8, 15), desc: "Form 1040-ES" },
     { label: "Extended Individual / C-Corp", date: new Date(currentYear, 9, 15), desc: "If extension filed" },
   ]
-  const upcomingDeadlines = allDeadlines.filter((d) => d.date >= now).sort((a, b) => a.date.getTime() - b.date.getTime()).slice(0, 4)
+  const upcomingDeadlines = allDeadlines
+    .filter((d) => d.date >= now)
+    .sort((a, b) => a.date.getTime() - b.date.getTime())
+    .slice(0, 4)
 
   return (
     <div className="min-h-screen bg-muted/20">
-      {/* Header */}
       <header className="border-b border-border bg-background px-4 py-4">
         <div className="mx-auto max-w-4xl flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
@@ -75,22 +102,24 @@ export default async function CpaPortalPage({
             </div>
             <span className="font-bold text-primary text-sm">BookKeeping.business</span>
           </div>
-          <Badge variant="outline" className="text-xs gap-1">
-            <Shield className="h-3 w-3" />
-            Read-only CPA View
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="text-xs gap-1">
+              <Shield className="h-3 w-3" />
+              Read-only CPA View
+            </Badge>
+            <span className="text-xs text-muted-foreground hidden sm:block">{user.email}</span>
+          </div>
         </div>
       </header>
 
       <main className="mx-auto max-w-4xl px-4 py-8 space-y-6">
-        {/* Title */}
         <div>
           <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-1">
             {tokenRow.label ? `Shared with ${tokenRow.label}` : "Shared Workspace"}
           </p>
           <h1 className="text-2xl font-bold">{businessName}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            You are viewing a read-only snapshot of this client&apos;s bookkeeping workspace.
+            You have read-only access to this client&apos;s bookkeeping workspace.
           </p>
         </div>
 
@@ -112,7 +141,9 @@ export default async function CpaPortalPage({
             </CardHeader>
             <CardContent>
               <p className="text-sm font-semibold">{planName} Plan</p>
-              <p className="text-xs text-muted-foreground">{subscription?.status === "active" ? "Active subscription" : "Inactive"}</p>
+              <p className="text-xs text-muted-foreground">
+                {subscription?.status === "active" ? "Active subscription" : "Inactive"}
+              </p>
             </CardContent>
           </Card>
 
@@ -174,7 +205,9 @@ export default async function CpaPortalPage({
                         <p className="text-xs text-muted-foreground">{d.desc}</p>
                       </div>
                       <div className="text-right shrink-0">
-                        <p className="text-xs font-semibold">{d.date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</p>
+                        <p className="text-xs font-semibold">
+                          {d.date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                        </p>
                         <p className={`text-xs ${urgent ? "text-amber-600 font-medium" : "text-muted-foreground"}`}>
                           {daysLeft === 0 ? "Today" : `${daysLeft}d`}
                         </p>
@@ -187,25 +220,35 @@ export default async function CpaPortalPage({
           </Card>
         </div>
 
-        {/* CPA signup prompt */}
-        <div className="rounded-2xl border border-border bg-background px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <p className="font-semibold text-sm">Are you a CPA or bookkeeper?</p>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Create a free account to manage multiple clients and access their shared workspaces in one place.
-            </p>
-          </div>
-          <Link href="/signup" className="shrink-0">
-            <Button size="sm" variant="outline" className="bg-transparent">
-              Create free account
-            </Button>
-          </Link>
-        </div>
-
         <p className="text-center text-xs text-muted-foreground">
-          This is a read-only view. Data is managed by BookKeeping.business on behalf of the client.
+          Read-only view · Managed by BookKeeping.business · Signed in as {user.email}
         </p>
       </main>
+    </div>
+  )
+}
+
+function AccessDenied({ reason, showSwitch, token }: { reason: string; showSwitch?: boolean; token?: string }) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-muted/20 px-4">
+      <div className="w-full max-w-md text-center space-y-4">
+        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10 text-destructive mx-auto">
+          <Lock className="h-6 w-6" />
+        </div>
+        <h1 className="text-xl font-bold">Access Denied</h1>
+        <p className="text-sm text-muted-foreground">{reason}</p>
+        {showSwitch && token && (
+          <form action="/api/auth/signout" method="POST">
+            <input type="hidden" name="next" value={`/cpa/${token}`} />
+            <Button type="submit" variant="outline" size="sm">
+              Sign out and use a different account
+            </Button>
+          </form>
+        )}
+        <Link href="/dashboard">
+          <Button variant="ghost" size="sm" className="mt-2">Go to my dashboard</Button>
+        </Link>
+      </div>
     </div>
   )
 }
