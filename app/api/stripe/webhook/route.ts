@@ -52,6 +52,29 @@ export async function POST(request: Request) {
           // Fetch the full subscription object
           const sub = await stripe.subscriptions.retrieve(session.subscription as string)
           await upsertSubscription(userId, sub, session.metadata?.plan)
+
+          // Referral credit: check if this user was referred
+          try {
+            const { data: { user: newUser } } = await admin.auth.admin.getUserById(userId)
+            const refCode = (newUser?.user_metadata as Record<string, string> | undefined)?.ref_code
+            if (refCode && session.mode === "subscription") {
+              const { data: codeRow } = await admin.from("referral_codes").select("user_id").eq("code", refCode).single()
+              if (codeRow) {
+                // Find the invite
+                const { data: invite } = await admin
+                  .from("referral_invites")
+                  .select("id")
+                  .eq("referrer_id", codeRow.user_id)
+                  .eq("status", "pending")
+                  .limit(1)
+                  .single()
+                if (invite) {
+                  await admin.from("referral_invites").update({ status: "converted", referred_user_id: userId }).eq("id", invite.id)
+                  await admin.from("referral_credits").insert({ user_id: codeRow.user_id, invite_id: invite.id })
+                }
+              }
+            }
+          } catch (_) { /* non-blocking */ }
         }
 
         if (session.mode === "payment") {

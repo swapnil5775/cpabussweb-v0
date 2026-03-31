@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { CheckCircle2, Mail, User, Building2, MapPin, Loader2, AlertCircle, Briefcase } from "lucide-react"
+import { CheckCircle2, Mail, User, Building2, MapPin, Loader2, AlertCircle, Briefcase, Share2, Copy, Check, RefreshCw, Trash2 } from "lucide-react"
 
 type Profile = {
   full_name: string
@@ -62,6 +62,10 @@ const emptyProfile: Profile = {
   cpa_zip: "",
 }
 
+type CpaTokenRow = { id: string; client_user_id: string; token: string; label: string | null; created_at: string }
+
+const CPA_SITE_URL = "https://www.bookkeeping.business"
+
 export default function ProfilePage() {
   const supabase = createClient()
   const [form, setForm] = useState<Profile>(emptyProfile)
@@ -75,6 +79,12 @@ export default function ProfilePage() {
   const [otp, setOtp] = useState("")
   const [otpLoading, setOtpLoading] = useState(false)
   const [otpMsg, setOtpMsg] = useState<{ ok: boolean; text: string } | null>(null)
+
+  // CPA access token state
+  const [cpaToken, setCpaToken] = useState<CpaTokenRow | null>(null)
+  const [cpaLabelInput, setCpaLabelInput] = useState("")
+  const [cpaLoading, setCpaLoading] = useState(false)
+  const [cpaCopied, setCpaCopied] = useState(false)
 
   useEffect(() => {
     async function load() {
@@ -112,10 +122,62 @@ export default function ProfilePage() {
           })
         }
       }
+
+      // Load CPA access token
+      const cpaRes = await fetch("/api/cpa-access")
+      if (cpaRes.ok) {
+        const cpaData = await cpaRes.json()
+        setCpaToken(cpaData.token ?? null)
+      }
+
       setLoading(false)
     }
     load()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function generateCpaToken() {
+    setCpaLoading(true)
+    const res = await fetch("/api/cpa-access", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ label: cpaLabelInput.trim() || null }),
+    })
+    if (res.ok) {
+      const data = await res.json()
+      setCpaToken(data.token)
+      setCpaLabelInput("")
+    }
+    setCpaLoading(false)
+  }
+
+  async function revokeCpaToken() {
+    setCpaLoading(true)
+    await fetch("/api/cpa-access", { method: "DELETE" })
+    setCpaToken(null)
+    setCpaLoading(false)
+  }
+
+  async function regenerateCpaToken() {
+    setCpaLoading(true)
+    await fetch("/api/cpa-access", { method: "DELETE" })
+    const res = await fetch("/api/cpa-access", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ label: cpaToken?.label ?? null }),
+    })
+    if (res.ok) {
+      const data = await res.json()
+      setCpaToken(data.token)
+    }
+    setCpaLoading(false)
+  }
+
+  function copyCpaLink() {
+    if (!cpaToken) return
+    navigator.clipboard.writeText(`${CPA_SITE_URL}/cpa/${cpaToken.token}`)
+    setCpaCopied(true)
+    setTimeout(() => setCpaCopied(false), 2000)
+  }
 
   function set(field: keyof Profile, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }))
@@ -538,6 +600,92 @@ export default function ProfilePage() {
               />
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Share with CPA */}
+      <Card>
+        <CardHeader className="pb-4">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Share2 className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+            Share Access with Your CPA
+          </CardTitle>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Generate a read-only link for your CPA or accountant — no account required on their end.
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {!cpaToken ? (
+            <div className="space-y-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="cpa_label">Label <span className="text-muted-foreground font-normal">(optional)</span></Label>
+                <Input
+                  id="cpa_label"
+                  value={cpaLabelInput}
+                  onChange={(e) => setCpaLabelInput(e.target.value)}
+                  placeholder="e.g. Shared with John Smith CPA"
+                />
+              </div>
+              <Button
+                type="button"
+                size="sm"
+                onClick={generateCpaToken}
+                disabled={cpaLoading}
+                className="gap-1.5"
+              >
+                {cpaLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Share2 className="h-4 w-4" />}
+                Generate Link
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {cpaToken.label && (
+                <p className="text-xs text-muted-foreground font-medium">{cpaToken.label}</p>
+              )}
+              <div className="flex items-center gap-2">
+                <div className="flex-1 bg-muted rounded-lg px-3 py-2 text-sm font-mono truncate text-muted-foreground">
+                  {`${CPA_SITE_URL}/cpa/${cpaToken.token}`}
+                </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={copyCpaLink}
+                  className="shrink-0 gap-1.5 bg-transparent"
+                >
+                  {cpaCopied ? <Check className="h-3.5 w-3.5 text-green-600" /> : <Copy className="h-3.5 w-3.5" />}
+                  {cpaCopied ? "Copied!" : "Copy"}
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Anyone with this link can view your business name, documents list, and tax deadlines — no account required.
+              </p>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={regenerateCpaToken}
+                  disabled={cpaLoading}
+                  className="gap-1.5 bg-transparent"
+                >
+                  {cpaLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
+                  Revoke &amp; Regenerate
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  onClick={revokeCpaToken}
+                  disabled={cpaLoading}
+                  className="gap-1.5 text-destructive hover:text-destructive"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  Revoke
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
