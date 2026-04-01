@@ -105,6 +105,17 @@ type FinancialsResponse = {
     netIncome?: number | null
     equity?: number | null
   }
+  trust?: {
+    source: string
+    sourceSystem: string
+    generatedAt: string
+    reportPeriod: string
+    qboConnectedAt?: string
+    snapshotCount: number
+    lastSnapshotDate?: string | null
+    dataQualityScore: number
+    dataQualityFlags: string[]
+  }
   insights?: {
     executiveBrief: {
       headline: string
@@ -117,6 +128,7 @@ type FinancialsResponse = {
       title: string
       body: string
       metric?: string
+      evidence?: string[]
       action: string
     }>
     opportunities: Array<{
@@ -378,6 +390,96 @@ export function FinancialsDashboard() {
 
       <section className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
         <Card className="overflow-hidden">
+          <CardHeader className="border-b bg-[linear-gradient(135deg,#f8fafc,#ecfeff)]">
+            <CardTitle className="flex items-center gap-2">
+              <ShieldAlert className="h-4 w-4 text-sky-700" />
+              Source of Truth
+            </CardTitle>
+            <CardDescription>
+              This premium layer is derived from your connected accounting records, not dummy data or synthetic metrics.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4 p-5 md:grid-cols-[0.9fr_1.1fr]">
+            <div className="space-y-4">
+              <div className="rounded-2xl border bg-background px-4 py-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Primary Source</p>
+                    <p className="mt-1 font-semibold">{data.trust?.source ?? "QuickBooks Online"}</p>
+                  </div>
+                  <Badge className="bg-sky-500/10 text-sky-700 border-sky-500/20">
+                    {data.trust?.sourceSystem ?? "QBO"}
+                  </Badge>
+                </div>
+              </div>
+              <div className="rounded-2xl border bg-background px-4 py-4">
+                <div className="flex items-end justify-between gap-4">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Data Quality</p>
+                    <p className="mt-1 text-3xl font-semibold">{data.trust?.dataQualityScore ?? 0}</p>
+                  </div>
+                  <Badge variant="outline">{qualityLabel(data.trust?.dataQualityScore ?? 0)}</Badge>
+                </div>
+                <Progress value={data.trust?.dataQualityScore ?? 0} className="mt-4 h-2.5" />
+              </div>
+            </div>
+
+            <div className="grid gap-3">
+              <TrustRow label="Report period" value={data.trust?.reportPeriod ?? data.range?.label ?? "—"} />
+              <TrustRow label="Generated" value={formatDateTime(data.trust?.generatedAt ?? null)} />
+              <TrustRow label="QBO connected" value={formatDateTime(data.trust?.qboConnectedAt ?? null)} />
+              <TrustRow label="Weekly snapshots" value={String(data.trust?.snapshotCount ?? 0)} />
+              <TrustRow label="Last snapshot" value={formatDateTime(data.trust?.lastSnapshotDate ?? null)} />
+              <div className="rounded-2xl border bg-background px-4 py-4">
+                <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Data Quality Notes</p>
+                <div className="mt-3 space-y-2">
+                  {(data.trust?.dataQualityFlags ?? []).map((flag, index) => (
+                    <div key={index} className="flex items-start gap-2 text-sm">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-600" />
+                      <span>{flag}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="overflow-hidden">
+          <CardHeader className="border-b bg-[linear-gradient(135deg,#fff7ed,#fef2f2)]">
+            <CardTitle className="flex items-center gap-2">
+              <BrainCircuit className="h-4 w-4 text-amber-700" />
+              Interpretation Layer
+            </CardTitle>
+            <CardDescription>
+              Alerts and summary cards are rule-based interpretations of the QBO-backed metrics shown above.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4 p-5">
+            <div className="rounded-2xl border bg-background px-4 py-4">
+              <p className="font-medium">What is factual</p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Revenue, expenses, net income, balance sheet values, cash flow, snapshots, and report rows come directly from QuickBooks Online reports and stored weekly snapshots.
+              </p>
+            </div>
+            <div className="rounded-2xl border bg-background px-4 py-4">
+              <p className="font-medium">What is interpreted</p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Automation score, alert severity, executive brief wording, and recommended actions are deterministic rules applied to those numbers. They are not fabricated values.
+              </p>
+            </div>
+            <div className="rounded-2xl border bg-background px-4 py-4">
+              <p className="font-medium">When to be cautious</p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                If books are newly connected, unreconciled, or partially categorized, the insight layer may still be directionally useful but not yet final.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
+      <section className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
+        <Card className="overflow-hidden">
           <CardHeader className="border-b bg-slate-50/80">
             <CardTitle className="flex items-center gap-2">
               <ShieldAlert className="h-4 w-4 text-rose-600" />
@@ -399,6 +501,19 @@ export function FinancialsDashboard() {
                       </div>
                       <p className="font-semibold">{alert.title}</p>
                       <p className="text-sm text-muted-foreground">{alert.body}</p>
+                      {(alert.evidence ?? []).length > 0 && (
+                        <div className="rounded-xl border bg-white/70 px-3 py-3">
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Evidence</p>
+                          <div className="mt-2 space-y-1.5">
+                            {alert.evidence?.map((item, index) => (
+                              <div key={index} className="flex items-start gap-2 text-xs text-muted-foreground">
+                                <span className="mt-1.5 h-1 w-1 rounded-full bg-slate-500" />
+                                <span>{item}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                     {alert.severity === "positive"
                       ? <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600" />
@@ -763,4 +878,30 @@ function SnapshotRow({ label, value }: { label: string; value: number | null }) 
       <span className="font-medium">{formatCurrency(value)}</span>
     </div>
   )
+}
+
+function TrustRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-2xl border bg-background px-4 py-3">
+      <span className="text-sm text-muted-foreground">{label}</span>
+      <span className="text-sm font-medium text-right">{value}</span>
+    </div>
+  )
+}
+
+function formatDateTime(value: string | null) {
+  if (!value) return "—"
+  return new Date(value).toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  })
+}
+
+function qualityLabel(score: number) {
+  if (score >= 85) return "High confidence"
+  if (score >= 70) return "Good coverage"
+  return "Use with care"
 }

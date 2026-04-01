@@ -36,6 +36,7 @@ export type InsightAlert = {
   title: string
   body: string
   metric?: string
+  evidence?: string[]
   action: string
 }
 
@@ -108,6 +109,11 @@ export function buildAutomatedInsights(input: {
       title: "Business is running at a monthly loss",
       body: `Current monthly net income is ${formatCurrency(netIncome?.value ?? null)}. That means the current expense base is outrunning revenue.`,
       metric: netIncome?.label,
+      evidence: [
+        `Net income: ${formatCurrency(netIncome?.value ?? null)}`,
+        `Revenue: ${formatCurrency(revenue?.value ?? null)}`,
+        `Expenses: ${formatCurrency(expenses?.value ?? null)}`,
+      ],
       action: "Review the top two expense categories and stabilize margin before adding new spend.",
     })
     score -= 16
@@ -119,6 +125,10 @@ export function buildAutomatedInsights(input: {
       title: "The business is operating profitably this month",
       body: `Monthly net income is ${formatCurrency(netIncome?.value ?? null)} with margin support from current revenue levels.`,
       metric: netIncome?.label,
+      evidence: [
+        `Net income: ${formatCurrency(netIncome?.value ?? null)}`,
+        `Revenue: ${formatCurrency(revenue?.value ?? null)}`,
+      ],
       action: "Protect this by reserving cash for taxes and keeping fixed expenses from drifting upward.",
     })
     score += 4
@@ -132,6 +142,10 @@ export function buildAutomatedInsights(input: {
       title: "Operating cash flow is negative",
       body: `Operations are burning ${formatCurrency(Math.abs(operatingCashFlow?.value ?? 0))} instead of generating cash.`,
       metric: operatingCashFlow?.label,
+      evidence: [
+        `Operating cash flow: ${formatCurrency(operatingCashFlow?.value ?? null)}`,
+        `Selected period net income: ${formatCurrency(input.highlights.netIncome ?? null)}`,
+      ],
       action: "Prioritize collections, delay discretionary expenses, and review upcoming obligations before cash tightens further.",
     })
     score -= 12
@@ -148,6 +162,10 @@ export function buildAutomatedInsights(input: {
       title: "Revenue is materially down versus last month",
       body: `Revenue changed ${formatPercent(revenue?.changePercent ?? null)} month over month, which is large enough to pressure margin if spending stays flat.`,
       metric: revenue?.label,
+      evidence: [
+        `Current revenue: ${formatCurrency(revenue?.value ?? null)}`,
+        `Previous revenue: ${formatCurrency(revenue?.previousValue ?? null)}`,
+      ],
       action: "Freeze optional spend and review customer retention or sales pipeline immediately.",
     })
     score -= 10
@@ -159,6 +177,10 @@ export function buildAutomatedInsights(input: {
       title: "Revenue momentum is improving",
       body: `Revenue is up ${formatPercent(revenue?.changePercent ?? null)} versus last month.`,
       metric: revenue?.label,
+      evidence: [
+        `Current revenue: ${formatCurrency(revenue?.value ?? null)}`,
+        `Previous revenue: ${formatCurrency(revenue?.previousValue ?? null)}`,
+      ],
       action: "Use the growth to improve cash reserves before expanding recurring expenses.",
     })
     score += 4
@@ -171,6 +193,10 @@ export function buildAutomatedInsights(input: {
       title: "Expense growth is outpacing normal range",
       body: `Monthly expenses are up ${formatPercent(expenses?.changePercent ?? null)} versus last month.`,
       metric: expenses?.label,
+      evidence: [
+        `Current expenses: ${formatCurrency(expenses?.value ?? null)}`,
+        `Previous expenses: ${formatCurrency(expenses?.previousValue ?? null)}`,
+      ],
       action: "Audit the top expense drivers to confirm the increase is intentional and recurring.",
     })
     score -= 8
@@ -183,6 +209,7 @@ export function buildAutomatedInsights(input: {
       severity: "high",
       title: "Revenue has declined three months in a row",
       body: "The monthly trend line shows a sustained falloff rather than a one-month dip.",
+      evidence: input.monthlyTrend.slice(-3).map((point) => `${point.label}: ${formatCurrency(point.revenue)}`),
       action: "Treat this as a business trend, not a bookkeeping issue, and tighten forecasting assumptions.",
     })
     score -= 10
@@ -196,6 +223,10 @@ export function buildAutomatedInsights(input: {
       title: "Liabilities are heavy relative to assets",
       body: `Liabilities are running at ${formatPercent((liabilityRatio ?? 0) * 100)} of total assets.`,
       metric: liabilities?.label,
+      evidence: [
+        `Assets: ${formatCurrency(assets?.value ?? null)}`,
+        `Liabilities: ${formatCurrency(liabilities?.value ?? null)}`,
+      ],
       action: "Monitor debt service and upcoming vendor obligations before adding new commitments.",
     })
     score -= 8

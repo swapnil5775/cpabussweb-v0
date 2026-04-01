@@ -97,6 +97,29 @@ export async function GET(request: Request) {
     snapshots = snapshotRows
   }
 
+  const dataQualityFlags = [
+    conn.connected_at
+      ? `QuickBooks connected ${new Date(conn.connected_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`
+      : null,
+    summary.reportData?.rows?.length
+      ? `${summary.reportData.rows.length} report rows returned from QBO`
+      : "QuickBooks did not return line-item rows for this report yet",
+    snapshots.length > 0
+      ? `${snapshots.length} saved weekly snapshot${snapshots.length === 1 ? "" : "s"} available`
+      : "No weekly snapshots saved yet; week-over-week comparisons are limited",
+    summary.monthlyTrend.some((point) => point.revenue === null || point.expenses === null || point.netIncome === null)
+      ? "Some trend periods are incomplete because QBO returned partial report data"
+      : null,
+  ].filter(Boolean)
+
+  const dataQualityScore = Math.max(
+    52,
+    100
+      - (summary.reportData?.rows?.length ? 0 : 20)
+      - (snapshots.length > 0 ? 0 : 15)
+      - (summary.monthlyTrend.some((point) => point.revenue === null || point.expenses === null || point.netIncome === null) ? 10 : 0)
+  )
+
   const insights = buildAutomatedInsights({
     overview: summary.overview,
     monthlyTrend: summary.monthlyTrend,
@@ -118,6 +141,17 @@ export async function GET(request: Request) {
     reportData: summary.reportData,
     highlights: summary.highlights,
     snapshots,
+    trust: {
+      source: "QuickBooks Online",
+      sourceSystem: "QBO",
+      generatedAt: new Date().toISOString(),
+      reportPeriod: selectedRange.label,
+      qboConnectedAt: conn.connected_at,
+      snapshotCount: snapshots.length,
+      lastSnapshotDate: snapshots[0]?.snapshot_date ?? null,
+      dataQualityScore,
+      dataQualityFlags,
+    },
     insights,
   })
 }

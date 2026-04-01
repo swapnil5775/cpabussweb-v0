@@ -103,6 +103,27 @@ export const ONE_TIME_SERVICES = {
     displayPrice: "$199",
     trigger: "Business has employees",
   },
+  w2_1099_filing: {
+    name: "W-2 & 1099 Issuance",
+    description: "Year-end W-2 and 1099 preparation, e-filing, and recipient distribution.",
+    priceId: process.env.STRIPE_PRICE_W2_1099_FILING!,
+    displayPrice: "$149",
+    trigger: "Business has employees or contractors",
+  },
+  state_filings_support: {
+    name: "State Filings Support",
+    description: "Annual reports, amendments, and state compliance filing support.",
+    priceId: process.env.STRIPE_PRICE_STATE_FILINGS_SUPPORT!,
+    displayPrice: "$199",
+    trigger: "Entity already formed and needs ongoing compliance",
+  },
+  acquisition_file_review: {
+    name: "Acquisition File Review",
+    description: "Financial due diligence review for a business acquisition or purchase decision.",
+    priceId: process.env.STRIPE_PRICE_ACQUISITION_FILE_REVIEW!,
+    displayPrice: "$799",
+    trigger: "Business owner evaluating an acquisition or purchase",
+  },
 } as const
 
 export type ServiceKey = keyof typeof ONE_TIME_SERVICES

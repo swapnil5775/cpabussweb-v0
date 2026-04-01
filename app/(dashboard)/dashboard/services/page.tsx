@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Loader2, CheckCircle2, Building2, BookOpen, ClipboardList, Users, BarChart3 } from "lucide-react"
+import { ArrowRight, Loader2, CheckCircle2, Building2, BookOpen, ClipboardList, Users, BarChart3, FileBadge, Shield, SearchCheck } from "lucide-react"
 import { ONE_TIME_SERVICES, type ServiceKey } from "@/lib/stripe-plans"
 
 const SERVICES = [
@@ -53,6 +53,39 @@ const SERVICES = [
       "First payroll run walkthrough",
     ],
   },
+  {
+    key: "w2_1099_filing" as ServiceKey,
+    icon: FileBadge,
+    badge: "Year-End",
+    includes: [
+      "W-2 preparation for employees",
+      "1099-NEC / 1099-MISC filing",
+      "IRS + SSA e-filing included",
+      "Recipient copies distributed",
+    ],
+  },
+  {
+    key: "state_filings_support" as ServiceKey,
+    icon: Shield,
+    badge: "Compliance",
+    includes: [
+      "Annual report preparation",
+      "State amendment filing support",
+      "Compliance deadline guidance",
+      "Multi-state coordination help",
+    ],
+  },
+  {
+    key: "acquisition_file_review" as ServiceKey,
+    icon: SearchCheck,
+    badge: "Due Diligence",
+    includes: [
+      "Financial statement review",
+      "Risk flag summary",
+      "Cash flow and margin analysis",
+      "Acquisition decision memo",
+    ],
+  },
 ]
 
 export default function ServicesPage() {
@@ -89,9 +122,12 @@ export default function ServicesPage() {
 
   return (
     <div className="space-y-8">
-      <div>
+      <div className="space-y-2">
         <h1 className="text-2xl font-bold tracking-tight">Add-on Services</h1>
-        <p className="text-muted-foreground text-sm mt-1">One-time services to complement your monthly plan.</p>
+        <p className="text-muted-foreground text-sm">One-time services to complement your monthly plan.</p>
+        <p className="text-xs text-muted-foreground">
+          Expanded inside the portal so paid users can buy more of the same business services showcased on the main website without leaving the dashboard.
+        </p>
       </div>
 
       {justPaid && paidService && (
@@ -110,7 +146,7 @@ export default function ServicesPage() {
         </div>
       )}
 
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
         {SERVICES.map(({ key, icon: Icon, badge, includes }) => {
           const svc = ONE_TIME_SERVICES[key]
           const isHighlighted = highlight === key
