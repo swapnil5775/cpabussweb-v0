@@ -8,6 +8,7 @@ const admin = createAdmin(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.bookkeeping.business"
+const FIRM_REDIRECT_URI = `${SITE_URL}/api/qbo/firm-callback`
 
 export async function GET(request: Request) {
   const url = new URL(request.url)
@@ -26,7 +27,7 @@ export async function GET(request: Request) {
 
   let tokens
   try {
-    tokens = await exchangeCodeForTokens(code)
+    tokens = await exchangeCodeForTokens(code, FIRM_REDIRECT_URI)
   } catch {
     return NextResponse.redirect(`${SITE_URL}/admin?firm_qbo=error`)
   }

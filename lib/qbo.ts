@@ -1,8 +1,8 @@
 import { createClient as createAdmin } from "@supabase/supabase-js"
 
-const QBO_CLIENT_ID = process.env.QBO_CLIENT_ID!
-const QBO_CLIENT_SECRET = process.env.QBO_CLIENT_SECRET!
-const QBO_REDIRECT_URI = process.env.QBO_REDIRECT_URI!
+const QBO_CLIENT_ID = process.env.QBO_CLIENT_ID!.trim()
+const QBO_CLIENT_SECRET = process.env.QBO_CLIENT_SECRET!.trim()
+const QBO_REDIRECT_URI = process.env.QBO_REDIRECT_URI!.trim()
 const IS_SANDBOX = process.env.QBO_ENVIRONMENT === "sandbox"
 
 export const QBO_AUTH_URL = "https://appcenter.intuit.com/connect/oauth2"
@@ -19,11 +19,11 @@ export const QBO_SCOPES = [
 ].join(" ")
 
 // Build the authorization URL for OAuth redirect
-export function buildQBOAuthUrl(state: string): string {
+export function buildQBOAuthUrl(state: string, redirectUri?: string): string {
   const params = new URLSearchParams({
     client_id: QBO_CLIENT_ID,
     scope: QBO_SCOPES,
-    redirect_uri: QBO_REDIRECT_URI,
+    redirect_uri: redirectUri ?? QBO_REDIRECT_URI,
     response_type: "code",
     access_type: "offline",
     state,
@@ -32,7 +32,7 @@ export function buildQBOAuthUrl(state: string): string {
 }
 
 // Exchange authorization code for tokens
-export async function exchangeCodeForTokens(code: string): Promise<{
+export async function exchangeCodeForTokens(code: string, redirectUri?: string): Promise<{
   access_token: string
   refresh_token: string
   expires_in: number
@@ -48,7 +48,7 @@ export async function exchangeCodeForTokens(code: string): Promise<{
     body: new URLSearchParams({
       grant_type: "authorization_code",
       code,
-      redirect_uri: QBO_REDIRECT_URI,
+      redirect_uri: redirectUri ?? QBO_REDIRECT_URI,
     }),
   })
   if (!res.ok) {
