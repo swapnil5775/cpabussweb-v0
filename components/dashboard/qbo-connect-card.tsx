@@ -1,10 +1,11 @@
 "use client"
 
 import { useEffect, useState, useTransition } from "react"
+import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { CheckCircle2, Link2, Link2Off, RefreshCw, TrendingUp, Building2 } from "lucide-react"
+import { CheckCircle2, Link2, Link2Off, RefreshCw, TrendingUp, Building2, ArrowRight } from "lucide-react"
 
 type PLRow = { label: string; value: string }
 type QBOData = {
@@ -158,6 +159,15 @@ export function QBOConnectCard() {
             QuickBooks connected. Financial data will appear here once your bookkeeper starts working in your account.
           </p>
         )}
+
+        <div className="pt-3 border-t border-border">
+          <Button asChild size="sm" variant="outline" className="gap-1.5 bg-background">
+            <Link href="/dashboard/financials">
+              Open Financials
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </Button>
+        </div>
       </CardContent>
     </Card>
   )

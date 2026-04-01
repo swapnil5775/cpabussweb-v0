@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { BookOpenCheck, LayoutDashboard, FileUp, ShoppingBag, LogOut, UserCircle, MessageSquare, Gift, ShieldCheck } from "lucide-react"
+import { BookOpenCheck, LayoutDashboard, FileUp, ShoppingBag, LogOut, UserCircle, MessageSquare, Gift, ShieldCheck, LineChart } from "lucide-react"
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 
@@ -15,6 +15,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   const navItems = [
     { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
+    { href: "/dashboard/financials", label: "Financials", icon: LineChart },
     { href: "/dashboard/documents", label: "Documents", icon: FileUp },
     { href: "/dashboard/services", label: "Add-on Services", icon: ShoppingBag },
     { href: "/dashboard/support", label: "Support", icon: MessageSquare },

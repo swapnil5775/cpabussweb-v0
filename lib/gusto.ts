@@ -1,7 +1,7 @@
 import { createClient as createAdmin } from "@supabase/supabase-js"
 
-const GUSTO_CLIENT_ID = process.env.GUSTO_CLIENT_ID!.trim()
-const GUSTO_CLIENT_SECRET = process.env.GUSTO_CLIENT_SECRET!.trim()
+const GUSTO_CLIENT_ID = process.env.GUSTO_CLIENT_ID?.trim() ?? ""
+const GUSTO_CLIENT_SECRET = process.env.GUSTO_CLIENT_SECRET?.trim() ?? ""
 const IS_DEMO = process.env.GUSTO_ENVIRONMENT !== "production"
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.bookkeeping.business"
 
@@ -21,6 +21,7 @@ export const GUSTO_REDIRECT_URI = `${SITE_URL}/api/gusto/callback`
 
 // Build OAuth authorization URL for firm-level connection
 export function buildGustoAuthUrl(state: string): string {
+  assertGustoConfig()
   const params = new URLSearchParams({
     client_id: GUSTO_CLIENT_ID,
     redirect_uri: GUSTO_REDIRECT_URI,
@@ -36,6 +37,7 @@ export async function exchangeGustoCode(code: string): Promise<{
   refresh_token: string
   expires_in: number
 }> {
+  assertGustoConfig()
   const res = await fetch(GUSTO_TOKEN_URL, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -60,6 +62,7 @@ export async function refreshGustoToken(refreshToken: string): Promise<{
   refresh_token: string
   expires_in: number
 }> {
+  assertGustoConfig()
   const res = await fetch(GUSTO_TOKEN_URL, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -76,6 +79,7 @@ export async function refreshGustoToken(refreshToken: string): Promise<{
 
 // Get the stored firm access token, refreshing if needed
 export async function getFirmToken(): Promise<string> {
+  assertGustoConfig()
   const db = createAdmin(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -114,6 +118,7 @@ export async function createPartnerCompany(params: {
   last_name: string
   email: string
 }): Promise<{ company_uuid: string; access_token: string }> {
+  assertGustoConfig()
   const token = await getFirmToken()
   const res = await fetch(`${GUSTO_BASE_URL}/v1/partner_managed_companies`, {
     method: "POST",
@@ -148,6 +153,7 @@ export async function gustoFetch(
   path: string,
   options: RequestInit = {}
 ): Promise<Response> {
+  assertGustoConfig()
   return fetch(`${GUSTO_BASE_URL}${path}`, {
     ...options,
     headers: {
@@ -185,4 +191,10 @@ export async function getPayrolls(companyToken: string, companyUuid: string) {
   const res = await gustoFetch(companyToken, `/v1/companies/${companyUuid}/payrolls?include=totals`)
   if (!res.ok) return []
   return res.json()
+}
+
+function assertGustoConfig() {
+  if (!GUSTO_CLIENT_ID || !GUSTO_CLIENT_SECRET) {
+    throw new Error("Missing GUSTO_CLIENT_ID or GUSTO_CLIENT_SECRET")
+  }
 }
