@@ -1,13 +1,17 @@
 import Link from "next/link"
-import { BookOpenCheck, LayoutDashboard, FileUp, ShoppingBag, LogOut, UserCircle, MessageSquare, Gift } from "lucide-react"
+import { BookOpenCheck, LayoutDashboard, FileUp, ShoppingBag, LogOut, UserCircle, MessageSquare, Gift, ShieldCheck } from "lucide-react"
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
+
+const ADMIN_EMAIL = process.env.NOTIFICATION_EMAIL ?? "swapnil5775@gmail.com"
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) redirect("/login")
+
+  const isAdmin = user.email === ADMIN_EMAIL
 
   const navItems = [
     { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -16,6 +20,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     { href: "/dashboard/support", label: "Support", icon: MessageSquare },
     { href: "/dashboard/referral", label: "Referral", icon: Gift },
     { href: "/dashboard/profile", label: "Profile", icon: UserCircle },
+    ...(isAdmin ? [{ href: "/admin", label: "Admin", icon: ShieldCheck }] : []),
   ]
 
   return (
@@ -35,7 +40,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
               <Link
                 key={href}
                 href={href}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors"
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  label === "Admin"
+                    ? "text-amber-700 bg-amber-50 hover:bg-amber-100 dark:text-amber-400 dark:bg-amber-950/30"
+                    : "text-muted-foreground hover:text-primary hover:bg-primary/5"
+                }`}
               >
                 <Icon className="h-4 w-4" aria-hidden="true" />
                 <span className="hidden sm:inline">{label}</span>
