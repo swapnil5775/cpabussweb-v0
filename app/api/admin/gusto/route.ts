@@ -115,7 +115,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "company_uuid and access_token are required" }, { status: 400 })
     }
 
-    await admin.from("gusto_companies").upsert({
+    const { error: upsertErr } = await admin.from("gusto_companies").upsert({
       user_id,
       company_uuid,
       company_name: company_name ?? company_uuid,
@@ -124,6 +124,11 @@ export async function POST(request: Request) {
       setup_status: "active",
       updated_at: new Date().toISOString(),
     }, { onConflict: "user_id" })
+
+    if (upsertErr) {
+      console.error("Gusto link_existing upsert error:", upsertErr)
+      return NextResponse.json({ error: upsertErr.message }, { status: 500 })
+    }
 
     return NextResponse.json({ ok: true, company_uuid })
   }
