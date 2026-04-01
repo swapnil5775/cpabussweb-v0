@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import {
   CheckCircle2, AlertCircle, Link2, RefreshCw, Building2,
-  Users, Zap, Clock, BookOpen, UserPlus, Briefcase
+  Users, Zap, Clock, BookOpen, UserPlus, Briefcase, Webhook
 } from "lucide-react"
 
 type QBOConn = {
@@ -66,6 +66,12 @@ export default function AdminPage() {
   const [linkExistingInputs, setLinkExistingInputs] = useState<Record<string, { company_uuid: string; company_name: string; access_token: string; refresh_token: string }>>({})
   const [linkingExisting, setLinkingExisting] = useState<Record<string, boolean>>({})
 
+  // Webhook verification state
+  const [webhookStatus, setWebhookStatus] = useState<{ token_received: boolean; verified: boolean; verified_at: string | null; subscription_uuid: string | null } | null>(null)
+  const [webhookSubUuid, setWebhookSubUuid] = useState("a38c1e51-b743-41b6-942a-d513c4fda8e3")
+  const [verifyingWebhook, setVerifyingWebhook] = useState(false)
+  const [webhookMsg, setWebhookMsg] = useState("")
+
   useEffect(() => {
     const supabase = createClient()
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -77,6 +83,9 @@ export default function AdminPage() {
           return r.json()
         })
         .then((d) => { if (d) setData(d) })
+      fetch("/api/admin/gusto/verify-webhook")
+        .then((r) => r.ok ? r.json() : null)
+        .then((d) => { if (d) setWebhookStatus(d) })
     })
   }, [])
 
@@ -138,6 +147,24 @@ export default function AdminPage() {
       setEmpInputs((p) => ({ ...p, [userId]: { first_name: "", last_name: "", email: "", start_date: "" } }))
     }
     setAddingEmp((p) => ({ ...p, [userId]: false }))
+  }
+
+  async function verifyWebhook() {
+    setVerifyingWebhook(true)
+    setWebhookMsg("")
+    const res = await fetch("/api/admin/gusto/verify-webhook", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ subscription_uuid: webhookSubUuid.trim() }),
+    })
+    const d = await res.json()
+    if (res.ok) {
+      setWebhookMsg("✓ Webhook verified! Gusto events will now be delivered.")
+      setWebhookStatus((prev) => prev ? { ...prev, verified: true, verified_at: d.verified_at } : prev)
+    } else {
+      setWebhookMsg(d.error ?? "Verification failed")
+    }
+    setVerifyingWebhook(false)
   }
 
   async function linkExistingGusto(userId: string) {
@@ -314,6 +341,66 @@ export default function AdminPage() {
                   Connect Gusto Firm Account
                 </Button>
               </a>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Gusto Webhook Verification */}
+      <Card className={webhookStatus?.verified ? "border-green-300 bg-green-50 dark:bg-green-950/20" : "border-dashed border-amber-300"}>
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-sm">
+            <div className="flex h-6 w-6 items-center justify-center rounded bg-[#F45D48] shrink-0">
+              <Webhook className="h-3.5 w-3.5 text-white" />
+            </div>
+            Gusto Webhook
+            {webhookStatus?.verified
+              ? <Badge className="bg-green-100 text-green-700 text-xs">Verified</Badge>
+              : webhookStatus?.token_received
+                ? <Badge className="bg-amber-100 text-amber-700 text-xs">Token received — click Verify</Badge>
+                : <Badge variant="outline" className="text-amber-700 border-amber-400 text-xs">Awaiting token</Badge>
+            }
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {webhookStatus?.verified ? (
+            <p className="text-sm text-muted-foreground">
+              Webhook is active. Gusto will send payroll, employee, and document events to your server.
+              {webhookStatus.verified_at && (
+                <span className="block text-xs mt-0.5 text-muted-foreground/70">
+                  Verified {new Date(webhookStatus.verified_at).toLocaleString()}
+                </span>
+              )}
+            </p>
+          ) : (
+            <div className="space-y-2">
+              <p className="text-xs text-muted-foreground">
+                {webhookStatus?.token_received
+                  ? "Gusto sent a verification token to your server. Click Verify to complete setup."
+                  : "In the Gusto portal, click Resend on the webhook verification page. Then click Verify below."}
+              </p>
+              <div className="flex gap-2 flex-wrap items-center">
+                <Input
+                  placeholder="Webhook subscription UUID"
+                  value={webhookSubUuid}
+                  onChange={(e) => setWebhookSubUuid(e.target.value)}
+                  className="h-8 text-xs font-mono flex-1 min-w-60"
+                />
+                <Button
+                  size="sm"
+                  className="h-8 gap-1.5 bg-[#F45D48] hover:bg-[#d94a36] text-white shrink-0"
+                  disabled={verifyingWebhook || !webhookSubUuid.trim()}
+                  onClick={verifyWebhook}
+                >
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  {verifyingWebhook ? "Verifying…" : "Verify Webhook"}
+                </Button>
+              </div>
+              {webhookMsg && (
+                <p className={`text-xs font-medium ${webhookMsg.startsWith("✓") ? "text-green-600" : "text-destructive"}`}>
+                  {webhookMsg}
+                </p>
+              )}
             </div>
           )}
         </CardContent>

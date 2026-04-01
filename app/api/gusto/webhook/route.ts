@@ -7,11 +7,21 @@ const admin = createAdmin(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-// Gusto sends a verification_token on first setup — just return it
+// Gusto sends a verification_token on first setup — echo it back AND store it
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const token = searchParams.get("verification_token")
-  if (token) return new Response(token, { status: 200 })
+  if (token) {
+    // Store the token so admin can call Gusto's verify API with it
+    await admin
+      .from("gusto_firm_connection")
+      .update({
+        webhook_verification_token: token,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", "00000000-0000-0000-0000-000000000001")
+    return new Response(token, { status: 200 })
+  }
   return new Response("OK", { status: 200 })
 }
 
