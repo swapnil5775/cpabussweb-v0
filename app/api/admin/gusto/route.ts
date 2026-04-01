@@ -108,6 +108,26 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, company_uuid: result.company_uuid })
   }
 
+  // --- Link existing Gusto company (created in Gusto portal) ---
+  if (action === "link_existing") {
+    const { company_uuid, company_name, access_token, refresh_token } = body
+    if (!company_uuid || !access_token) {
+      return NextResponse.json({ error: "company_uuid and access_token are required" }, { status: 400 })
+    }
+
+    await admin.from("gusto_companies").upsert({
+      user_id,
+      company_uuid,
+      company_name: company_name ?? company_uuid,
+      access_token,
+      refresh_token: refresh_token ?? null,
+      setup_status: "active",
+      updated_at: new Date().toISOString(),
+    }, { onConflict: "user_id" })
+
+    return NextResponse.json({ ok: true, company_uuid })
+  }
+
   // --- Add employee ---
   if (action === "add_employee") {
     const { first_name, last_name, email, start_date } = body

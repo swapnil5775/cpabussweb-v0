@@ -62,6 +62,9 @@ export default function AdminPage() {
   const [gustoMsg, setGustoMsg] = useState<Record<string, string>>({})
   const [empInputs, setEmpInputs] = useState<Record<string, { first_name: string; last_name: string; email: string; start_date: string }>>({})
   const [addingEmp, setAddingEmp] = useState<Record<string, boolean>>({})
+  const [linkExistingOpen, setLinkExistingOpen] = useState<Record<string, boolean>>({})
+  const [linkExistingInputs, setLinkExistingInputs] = useState<Record<string, { company_uuid: string; company_name: string; access_token: string; refresh_token: string }>>({})
+  const [linkingExisting, setLinkingExisting] = useState<Record<string, boolean>>({})
 
   useEffect(() => {
     const supabase = createClient()
@@ -135,6 +138,31 @@ export default function AdminPage() {
       setEmpInputs((p) => ({ ...p, [userId]: { first_name: "", last_name: "", email: "", start_date: "" } }))
     }
     setAddingEmp((p) => ({ ...p, [userId]: false }))
+  }
+
+  async function linkExistingGusto(userId: string) {
+    const inp = linkExistingInputs[userId]
+    if (!inp?.company_uuid?.trim() || !inp?.access_token?.trim()) return
+    setLinkingExisting((p) => ({ ...p, [userId]: true }))
+    const res = await fetch("/api/admin/gusto", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "link_existing",
+        user_id: userId,
+        company_uuid: inp.company_uuid.trim(),
+        company_name: inp.company_name.trim() || undefined,
+        access_token: inp.access_token.trim(),
+        refresh_token: inp.refresh_token.trim() || undefined,
+      }),
+    })
+    const d = await res.json()
+    setGustoMsg((p) => ({ ...p, [userId]: res.ok ? "✓ Gusto company linked!" : d.error }))
+    if (res.ok) {
+      await loadGusto(userId)
+      setLinkExistingOpen((p) => ({ ...p, [userId]: false }))
+    }
+    setLinkingExisting((p) => ({ ...p, [userId]: false }))
   }
 
   if (authorized === null) {
@@ -437,11 +465,8 @@ export default function AdminPage() {
                       {!g ? (
                         <p className="text-sm text-muted-foreground">Loading…</p>
                       ) : !g.connected ? (
-                        <div className="space-y-2">
-                          <p className="text-xs text-muted-foreground">
-                            Create a Gusto payroll company for this client. They will never need to log into Gusto directly.
-                          </p>
-                          <div className="flex gap-2">
+                        <div className="space-y-3">
+                          <div className="flex gap-2 flex-wrap">
                             <Button
                               size="sm"
                               className="gap-1.5 bg-[#F45D48] hover:bg-[#d94a36] text-white"
@@ -449,9 +474,66 @@ export default function AdminPage() {
                               onClick={() => createGustoCompany(client.user_id, client.business_name ?? "New Company")}
                             >
                               <UserPlus className="h-3.5 w-3.5" />
-                              {gustoCreating[client.user_id] ? "Creating…" : "Create Gusto Company"}
+                              {gustoCreating[client.user_id] ? "Creating…" : "Create New Gusto Company"}
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="gap-1.5 bg-transparent"
+                              onClick={() => setLinkExistingOpen((p) => ({ ...p, [client.user_id]: !linkExistingOpen[client.user_id] }))}
+                            >
+                              <Link2 className="h-3.5 w-3.5" />
+                              Link Existing (from Portal)
                             </Button>
                           </div>
+
+                          {linkExistingOpen[client.user_id] && (() => {
+                            const li = linkExistingInputs[client.user_id] ?? { company_uuid: "", company_name: "", access_token: "", refresh_token: "" }
+                            const setLi = (patch: Partial<typeof li>) =>
+                              setLinkExistingInputs((p) => ({ ...p, [client.user_id]: { ...li, ...patch } }))
+                            return (
+                              <div className="rounded-lg border border-border bg-background p-3 space-y-2">
+                                <p className="text-xs font-medium text-muted-foreground">
+                                  Paste values from Gusto Developer Portal → Demo Partner Managed Companies
+                                </p>
+                                <div className="grid gap-2">
+                                  <Input
+                                    placeholder="Company UUID (e.g. 83e88654-eb97-…)"
+                                    className="h-8 text-xs font-mono"
+                                    value={li.company_uuid}
+                                    onChange={(e) => setLi({ company_uuid: e.target.value })}
+                                  />
+                                  <Input
+                                    placeholder="Company Name (optional, e.g. Harbor Reef Corp)"
+                                    className="h-8 text-xs"
+                                    value={li.company_name}
+                                    onChange={(e) => setLi({ company_name: e.target.value })}
+                                  />
+                                  <Input
+                                    placeholder="Access Token"
+                                    className="h-8 text-xs font-mono"
+                                    value={li.access_token}
+                                    onChange={(e) => setLi({ access_token: e.target.value })}
+                                  />
+                                  <Input
+                                    placeholder="Refresh Token (optional)"
+                                    className="h-8 text-xs font-mono"
+                                    value={li.refresh_token}
+                                    onChange={(e) => setLi({ refresh_token: e.target.value })}
+                                  />
+                                </div>
+                                <Button
+                                  size="sm"
+                                  className="h-8 gap-1.5 bg-[#F45D48] hover:bg-[#d94a36] text-white"
+                                  disabled={!li.company_uuid.trim() || !li.access_token.trim() || linkingExisting[client.user_id]}
+                                  onClick={() => linkExistingGusto(client.user_id)}
+                                >
+                                  <Link2 className="h-3.5 w-3.5" />
+                                  {linkingExisting[client.user_id] ? "Linking…" : "Link Company"}
+                                </Button>
+                              </div>
+                            )
+                          })()}
                         </div>
                       ) : (
                         <div className="space-y-4">
