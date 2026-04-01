@@ -45,7 +45,7 @@ export async function POST(request: Request) {
     process.env.GUSTO_WEBHOOK_SUBSCRIPTION_UUID
 
   if (!subscriptionUuid) {
-    return NextResponse.json({ error: "No webhook subscription UUID. Save GUSTO_WEBHOOK_SUBSCRIPTION_UUID env var or pass it in the request body." }, { status: 400 })
+    return NextResponse.json({ error: "No webhook subscription UUID provided." }, { status: 400 })
   }
 
   const { data: fc } = await admin
@@ -54,8 +54,11 @@ export async function POST(request: Request) {
     .eq("id", "00000000-0000-0000-0000-000000000001")
     .single()
 
-  if (!fc?.webhook_verification_token) {
-    return NextResponse.json({ error: "No verification token received yet. Click 'Resend' in the Gusto portal first, then try again." }, { status: 400 })
+  // Accept token from DB or manually pasted in request body
+  const verificationToken = body.manual_token?.trim() || fc?.webhook_verification_token
+
+  if (!verificationToken) {
+    return NextResponse.json({ error: "No verification token received yet. Click 'Resend' in the Gusto portal first — or paste the token manually below." }, { status: 400 })
   }
 
   let firmToken: string
@@ -72,7 +75,7 @@ export async function POST(request: Request) {
       "Content-Type": "application/json",
       "X-Gusto-API-Version": "2025-06-15",
     },
-    body: JSON.stringify({ verification_token: fc.webhook_verification_token }),
+    body: JSON.stringify({ verification_token: verificationToken }),
   })
 
   if (!res.ok) {

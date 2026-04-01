@@ -69,6 +69,7 @@ export default function AdminPage() {
   // Webhook verification state
   const [webhookStatus, setWebhookStatus] = useState<{ token_received: boolean; verified: boolean; verified_at: string | null; subscription_uuid: string | null } | null>(null)
   const [webhookSubUuid, setWebhookSubUuid] = useState("a38c1e51-b743-41b6-942a-d513c4fda8e3")
+  const [webhookManualToken, setWebhookManualToken] = useState("")
   const [verifyingWebhook, setVerifyingWebhook] = useState(false)
   const [webhookMsg, setWebhookMsg] = useState("")
 
@@ -155,7 +156,10 @@ export default function AdminPage() {
     const res = await fetch("/api/admin/gusto/verify-webhook", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ subscription_uuid: webhookSubUuid.trim() }),
+      body: JSON.stringify({
+        subscription_uuid: webhookSubUuid.trim(),
+        manual_token: webhookManualToken.trim() || undefined,
+      }),
     })
     const d = await res.json()
     if (res.ok) {
@@ -376,26 +380,32 @@ export default function AdminPage() {
             <div className="space-y-2">
               <p className="text-xs text-muted-foreground">
                 {webhookStatus?.token_received
-                  ? "Gusto sent a verification token to your server. Click Verify to complete setup."
-                  : "In the Gusto portal, click Resend on the webhook verification page. Then click Verify below."}
+                  ? "Token received automatically. Click Verify to complete."
+                  : "Token not yet received. Either click Resend in Gusto portal (auto) — or paste the token manually from the Gusto verify page."}
               </p>
-              <div className="flex gap-2 flex-wrap items-center">
+              <div className="grid gap-2">
                 <Input
-                  placeholder="Webhook subscription UUID"
+                  placeholder="Webhook Subscription UUID"
                   value={webhookSubUuid}
                   onChange={(e) => setWebhookSubUuid(e.target.value)}
-                  className="h-8 text-xs font-mono flex-1 min-w-60"
+                  className="h-8 text-xs font-mono"
                 />
-                <Button
-                  size="sm"
-                  className="h-8 gap-1.5 bg-[#F45D48] hover:bg-[#d94a36] text-white shrink-0"
-                  disabled={verifyingWebhook || !webhookSubUuid.trim()}
-                  onClick={verifyWebhook}
-                >
-                  <CheckCircle2 className="h-3.5 w-3.5" />
-                  {verifyingWebhook ? "Verifying…" : "Verify Webhook"}
-                </Button>
+                <Input
+                  placeholder="Paste verification token manually (from Gusto portal)"
+                  value={webhookManualToken}
+                  onChange={(e) => setWebhookManualToken(e.target.value)}
+                  className="h-8 text-xs font-mono"
+                />
               </div>
+              <Button
+                size="sm"
+                className="h-8 gap-1.5 bg-[#F45D48] hover:bg-[#d94a36] text-white"
+                disabled={verifyingWebhook || !webhookSubUuid.trim()}
+                onClick={verifyWebhook}
+              >
+                <CheckCircle2 className="h-3.5 w-3.5" />
+                {verifyingWebhook ? "Verifying…" : "Verify Webhook"}
+              </Button>
               {webhookMsg && (
                 <p className={`text-xs font-medium ${webhookMsg.startsWith("✓") ? "text-green-600" : "text-destructive"}`}>
                   {webhookMsg}

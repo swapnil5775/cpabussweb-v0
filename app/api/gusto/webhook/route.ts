@@ -12,14 +12,29 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const token = searchParams.get("verification_token")
   if (token) {
-    // Store the token so admin can call Gusto's verify API with it
-    await admin
+    // Check if the firm connection row exists
+    const { data: existing } = await admin
       .from("gusto_firm_connection")
-      .update({
-        webhook_verification_token: token,
-        updated_at: new Date().toISOString(),
-      })
+      .select("id")
       .eq("id", "00000000-0000-0000-0000-000000000001")
+      .single()
+
+    if (existing) {
+      // Row exists — just update the webhook token
+      await admin
+        .from("gusto_firm_connection")
+        .update({ webhook_verification_token: token, updated_at: new Date().toISOString() })
+        .eq("id", "00000000-0000-0000-0000-000000000001")
+    } else {
+      // No firm connection yet — insert a placeholder row to hold the token
+      await admin
+        .from("gusto_firm_connection")
+        .insert({
+          id: "00000000-0000-0000-0000-000000000001",
+          access_token: "pending",
+          webhook_verification_token: token,
+        })
+    }
     return new Response(token, { status: 200 })
   }
   return new Response("OK", { status: 200 })
