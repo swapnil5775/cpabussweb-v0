@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server"
 import { createClient as createAdmin } from "@supabase/supabase-js"
 import { reportToCsv } from "@/lib/qbo-financials"
 import { buildFinancialReportPdf } from "@/lib/qbo-financial-pdf"
+import { buildAutomatedInsights } from "@/lib/qbo-insights"
 import {
   buildFinancialSummary,
   getDateRange,
@@ -74,16 +75,20 @@ export async function GET(request: Request) {
 
   let snapshots: Array<{
     snapshot_date: string
+    period_start?: string
+    period_end?: string
     period_label: string | null
     revenue: number | null
     expenses: number | null
     net_income: number | null
     operating_cash_flow: number | null
+    assets: number | null
+    liabilities: number | null
   }> = []
 
   const { data: snapshotRows } = await admin
     .from("financial_snapshots")
-    .select("snapshot_date, period_label, revenue, expenses, net_income, operating_cash_flow")
+    .select("snapshot_date, period_start, period_end, period_label, revenue, expenses, net_income, operating_cash_flow, assets, liabilities")
     .eq("user_id", user.id)
     .order("snapshot_date", { ascending: false })
     .limit(6)
@@ -91,6 +96,14 @@ export async function GET(request: Request) {
   if (snapshotRows) {
     snapshots = snapshotRows
   }
+
+  const insights = buildAutomatedInsights({
+    overview: summary.overview,
+    monthlyTrend: summary.monthlyTrend,
+    snapshots,
+    topExpenses: summary.topExpenses,
+    highlights: summary.highlights,
+  })
 
   return NextResponse.json({
     connected: true,
@@ -105,6 +118,7 @@ export async function GET(request: Request) {
     reportData: summary.reportData,
     highlights: summary.highlights,
     snapshots,
+    insights,
   })
 }
 

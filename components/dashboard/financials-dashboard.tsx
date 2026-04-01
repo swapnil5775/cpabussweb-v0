@@ -12,19 +12,29 @@ import {
   YAxis,
 } from "recharts"
 import {
+  AlertTriangle,
   ArrowDownRight,
   ArrowUpRight,
+  BadgeAlert,
+  Bot,
+  BrainCircuit,
   Building2,
+  CheckCircle2,
   Download,
   FileBarChart,
+  Gauge,
   LineChart,
   LoaderCircle,
   RefreshCw,
+  ShieldAlert,
+  Sparkles,
   TrendingDown,
+  TrendingUp,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
 import {
   Select,
   SelectContent,
@@ -40,6 +50,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Separator } from "@/components/ui/separator"
 
 type ReportId = "profit-loss" | "balance-sheet" | "cash-flow"
 type PeriodId = "month" | "quarter" | "ytd" | "last6"
@@ -68,11 +79,15 @@ type FinancialsResponse = {
   topExpenses?: Array<{ label: string; value: number | null; section?: string }>
   snapshots?: Array<{
     snapshot_date: string
+    period_start?: string
+    period_end?: string
     period_label: string | null
     revenue: number | null
     expenses: number | null
     net_income: number | null
     operating_cash_flow: number | null
+    assets: number | null
+    liabilities: number | null
   }>
   reportData?: {
     title: string
@@ -89,6 +104,32 @@ type FinancialsResponse = {
     grossProfit?: number | null
     netIncome?: number | null
     equity?: number | null
+  }
+  insights?: {
+    executiveBrief: {
+      headline: string
+      summary: string
+      bullets: string[]
+    }
+    alerts: Array<{
+      id: string
+      severity: "critical" | "high" | "medium" | "positive"
+      title: string
+      body: string
+      metric?: string
+      action: string
+    }>
+    opportunities: Array<{
+      title: string
+      body: string
+      impact: string
+    }>
+    automationScore: {
+      score: number
+      label: string
+      summary: string
+      drivers: string[]
+    }
   }
 }
 
@@ -138,23 +179,17 @@ export function FinancialsDashboard() {
 
   if (loading) {
     return (
-      <div className="space-y-4">
-        <div className="flex items-center justify-between gap-3 flex-wrap">
-          <div>
-            <div className="h-7 w-48 rounded bg-muted animate-pulse" />
-            <div className="mt-2 h-4 w-72 rounded bg-muted/70 animate-pulse" />
-          </div>
-          <div className="flex gap-2">
-            <div className="h-9 w-36 rounded bg-muted animate-pulse" />
-            <div className="h-9 w-36 rounded bg-muted animate-pulse" />
-          </div>
-        </div>
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, index) => (
+      <div className="space-y-5">
+        <div className="h-56 rounded-[32px] border bg-muted/40 animate-pulse" />
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, index) => (
             <div key={index} className="h-32 rounded-2xl border bg-card animate-pulse" />
           ))}
         </div>
-        <div className="h-96 rounded-2xl border bg-card animate-pulse" />
+        <div className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
+          <div className="h-96 rounded-2xl border bg-card animate-pulse" />
+          <div className="h-96 rounded-2xl border bg-card animate-pulse" />
+        </div>
       </div>
     )
   }
@@ -165,7 +200,7 @@ export function FinancialsDashboard() {
         <CardHeader>
           <CardTitle>Connect QuickBooks to unlock Financials</CardTitle>
           <CardDescription>
-            Premium reporting needs a live QBO connection so the dashboard can pull your books, reports, and exports.
+            Premium reporting needs a live QBO connection so the dashboard can pull your books, reports, exports, and automated insights.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex gap-3 flex-wrap">
@@ -184,124 +219,144 @@ export function FinancialsDashboard() {
   const generatedAt = data.generated_at
     ? new Date(data.generated_at).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })
     : null
+  const score = data.insights?.automationScore.score ?? 0
 
   return (
     <div className="space-y-6">
-      <section className="flex items-start justify-between gap-4 flex-wrap">
-        <div className="space-y-2">
-          <div className="flex items-center gap-2 flex-wrap">
-            <h1 className="text-2xl font-bold tracking-tight">Financials</h1>
-            <Badge className="bg-emerald-500/10 text-emerald-700 border-emerald-500/20">Premium</Badge>
-          </div>
-          <p className="text-sm text-muted-foreground max-w-2xl">
-            Track the numbers your clients actually pay for: live QBO reports, richer summaries, trend lines, and export-ready financials.
-          </p>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
-            {data.company_name && (
-              <span className="inline-flex items-center gap-1.5">
-                <Building2 className="h-3.5 w-3.5" />
-                {data.company_name}
-              </span>
-            )}
-            {data.range && <span>{data.range.label}</span>}
-            {generatedAt && <span>Updated {generatedAt}</span>}
-          </div>
-        </div>
+      <section className="relative overflow-hidden rounded-[32px] border border-slate-200 bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.18),_transparent_30%),radial-gradient(circle_at_top_right,_rgba(37,99,235,0.22),_transparent_28%),linear-gradient(135deg,_#0f172a,_#111827_55%,_#1f2937)] text-slate-50 shadow-xl">
+        <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.04),transparent)]" />
+        <div className="relative grid gap-6 p-6 lg:grid-cols-[1.25fr_0.9fr] lg:p-8">
+          <div className="space-y-5">
+            <div className="flex items-center gap-2 flex-wrap">
+              <Badge className="border-emerald-400/25 bg-emerald-400/10 text-emerald-200">
+                <Sparkles className="h-3 w-3" />
+                Premium CFO Automation
+              </Badge>
+              <Badge className="border-slate-300/10 bg-slate-200/10 text-slate-200">
+                <Bot className="h-3 w-3" />
+                Fully Automated
+              </Badge>
+            </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
-          <Select value={report} onValueChange={(value) => setReport(value as ReportId)}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Choose report" />
-            </SelectTrigger>
-            <SelectContent>
-              {REPORT_OPTIONS.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
+            <div className="space-y-3">
+              <h1 className="max-w-3xl text-3xl font-semibold tracking-tight md:text-4xl">
+                {data.insights?.executiveBrief.headline ?? "Financial automation is active"}
+              </h1>
+              <p className="max-w-2xl text-sm leading-6 text-slate-300 md:text-base">
+                {data.insights?.executiveBrief.summary ??
+                  "Live QBO reports, alerts, and executive insight cards are generated automatically from your books."}
+              </p>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              {(data.insights?.executiveBrief.bullets ?? []).slice(0, 4).map((bullet, index) => (
+                <div key={index} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-sm">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-300" />
+                    <p className="text-sm text-slate-100">{bullet}</p>
+                  </div>
+                </div>
               ))}
-            </SelectContent>
-          </Select>
+            </div>
 
-          <Select value={period} onValueChange={(value) => setPeriod(value as PeriodId)}>
-            <SelectTrigger className="w-[170px]">
-              <SelectValue placeholder="Choose period" />
-            </SelectTrigger>
-            <SelectContent>
-              {PERIOD_OPTIONS.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            <div className="flex items-center gap-2 text-xs text-slate-300 flex-wrap">
+              {data.company_name && (
+                <span className="inline-flex items-center gap-1.5">
+                  <Building2 className="h-3.5 w-3.5" />
+                  {data.company_name}
+                </span>
+              )}
+              {data.range && <span>{data.range.label}</span>}
+              {generatedAt && <span>Updated {generatedAt}</span>}
+            </div>
+          </div>
 
-          <Button variant="outline" asChild>
-            <a href={exportHref}>
-              <Download className="h-4 w-4" />
-              Export CSV
-            </a>
-          </Button>
+          <div className="grid gap-4">
+            <Card className="border-white/10 bg-white/6 text-slate-50 shadow-none backdrop-blur">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <Gauge className="h-4 w-4 text-emerald-300" />
+                  Automation Score
+                </CardTitle>
+                <CardDescription className="text-slate-300">
+                  Deterministic score based on cash, margin, liabilities, and trend stability.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-end justify-between gap-4">
+                  <div>
+                    <p className="text-4xl font-semibold">{score}</p>
+                    <p className="text-sm text-slate-300">{data.insights?.automationScore.label}</p>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-black/15 px-3 py-2 text-right">
+                    <p className="text-[11px] uppercase tracking-[0.2em] text-slate-400">Mode</p>
+                    <p className="text-sm font-medium">Insight + Alerting</p>
+                  </div>
+                </div>
+                <Progress value={score} className="h-2.5 bg-white/10 [&_[data-slot=progress-indicator]]:bg-emerald-400" />
+                <p className="text-sm text-slate-300">{data.insights?.automationScore.summary}</p>
+                <div className="space-y-2">
+                  {(data.insights?.automationScore.drivers ?? []).map((driver, index) => (
+                    <div key={index} className="flex items-start gap-2 text-sm text-slate-200">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-300" />
+                      <span>{driver}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
 
-          <Button variant="outline" asChild>
-            <a href={pdfHref}>
-              <FileBarChart className="h-4 w-4" />
-              Export PDF
-            </a>
-          </Button>
+            <div className="flex flex-wrap gap-2">
+              <Select value={report} onValueChange={(value) => setReport(value as ReportId)}>
+                <SelectTrigger className="w-[180px] border-white/10 bg-white/6 text-slate-50">
+                  <SelectValue placeholder="Choose report" />
+                </SelectTrigger>
+                <SelectContent>
+                  {REPORT_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
-          <Button variant="ghost" onClick={() => setRefreshNonce((value) => value + 1)}>
-            <RefreshCw className="h-4 w-4" />
-            Refresh
-          </Button>
+              <Select value={period} onValueChange={(value) => setPeriod(value as PeriodId)}>
+                <SelectTrigger className="w-[170px] border-white/10 bg-white/6 text-slate-50">
+                  <SelectValue placeholder="Choose period" />
+                </SelectTrigger>
+                <SelectContent>
+                  {PERIOD_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Button variant="outline" className="border-white/10 bg-white/6 text-slate-50 hover:bg-white/10 hover:text-slate-50" asChild>
+                <a href={exportHref}>
+                  <Download className="h-4 w-4" />
+                  CSV
+                </a>
+              </Button>
+              <Button variant="outline" className="border-white/10 bg-white/6 text-slate-50 hover:bg-white/10 hover:text-slate-50" asChild>
+                <a href={pdfHref}>
+                  <FileBarChart className="h-4 w-4" />
+                  PDF
+                </a>
+              </Button>
+              <Button variant="ghost" className="text-slate-50 hover:bg-white/10 hover:text-slate-50" onClick={() => setRefreshNonce((value) => value + 1)}>
+                <RefreshCw className="h-4 w-4" />
+                Refresh
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 
-      {(data.snapshots ?? []).length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Weekly Snapshot History</CardTitle>
-            <CardDescription>
-              Saved weekly rollups from Supabase. These are the records used for digest emails and week-over-week comparison.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-            {data.snapshots?.map((snapshot) => (
-              <div key={snapshot.snapshot_date} className="rounded-2xl border p-4 space-y-2">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm font-semibold">
-                    {snapshot.period_label ?? new Date(snapshot.snapshot_date).toLocaleDateString("en-US")}
-                  </p>
-                  <Badge variant="outline">
-                    {new Date(snapshot.snapshot_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                  </Badge>
-                </div>
-                <div className="grid gap-1 text-sm">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-muted-foreground">Revenue</span>
-                    <span className="font-medium">{formatCurrency(snapshot.revenue)}</span>
-                  </div>
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-muted-foreground">Expenses</span>
-                    <span className="font-medium">{formatCurrency(snapshot.expenses)}</span>
-                  </div>
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-muted-foreground">Net income</span>
-                    <span className="font-medium">{formatCurrency(snapshot.net_income)}</span>
-                  </div>
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-muted-foreground">Op. cash flow</span>
-                    <span className="font-medium">{formatCurrency(snapshot.operating_cash_flow)}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      )}
-
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {(data.overview ?? []).map((item) => (
-          <Card key={item.key} className="relative overflow-hidden">
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {(data.overview ?? []).slice(0, 4).map((item) => (
+          <Card key={item.key} className="overflow-hidden border-slate-200/80">
             <CardHeader className="pb-3">
               <CardDescription>{item.label}</CardDescription>
               <CardTitle className="text-2xl">{formatMetric(item.value, item.format)}</CardTitle>
@@ -321,17 +376,119 @@ export function FinancialsDashboard() {
         ))}
       </section>
 
-      <section className="grid gap-4 xl:grid-cols-[1.5fr_0.9fr]">
+      <section className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
+        <Card className="overflow-hidden">
+          <CardHeader className="border-b bg-slate-50/80">
+            <CardTitle className="flex items-center gap-2">
+              <ShieldAlert className="h-4 w-4 text-rose-600" />
+              Alert Center
+            </CardTitle>
+            <CardDescription>
+              Automated exceptions and business health signals generated from your live metrics and saved snapshots.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4 p-5">
+            {(data.insights?.alerts ?? []).length > 0 ? (
+              data.insights?.alerts.map((alert) => (
+                <div key={alert.id} className={`rounded-2xl border p-4 ${alertTone(alert.severity)}`}>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Badge className={alertBadgeClass(alert.severity)}>{alertLabel(alert.severity)}</Badge>
+                        {alert.metric && <span className="text-xs text-muted-foreground">{alert.metric}</span>}
+                      </div>
+                      <p className="font-semibold">{alert.title}</p>
+                      <p className="text-sm text-muted-foreground">{alert.body}</p>
+                    </div>
+                    {alert.severity === "positive"
+                      ? <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600" />
+                      : alert.severity === "critical"
+                        ? <ShieldAlert className="h-5 w-5 shrink-0 text-rose-600" />
+                        : <AlertTriangle className="h-5 w-5 shrink-0 text-amber-600" />}
+                  </div>
+                  <Separator className="my-3" />
+                  <p className="text-sm font-medium">{alert.action}</p>
+                </div>
+              ))
+            ) : (
+              <div className="rounded-2xl border border-dashed px-6 py-10 text-center">
+                <CheckCircle2 className="mx-auto mb-3 h-6 w-6 text-emerald-600" />
+                <p className="font-medium">No active alerts</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Current trend signals look stable enough that the system is not escalating any exceptions right now.
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <div className="grid gap-4">
+          <Card className="overflow-hidden">
+            <CardHeader className="border-b bg-[linear-gradient(135deg,#f8fafc,#eef2ff)]">
+              <CardTitle className="flex items-center gap-2">
+                <BrainCircuit className="h-4 w-4 text-indigo-600" />
+                Executive Brief
+              </CardTitle>
+              <CardDescription>Plain-English summary generated automatically from the books.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4 p-5">
+              <div>
+                <p className="text-lg font-semibold">{data.insights?.executiveBrief.headline}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{data.insights?.executiveBrief.summary}</p>
+              </div>
+              <div className="space-y-3">
+                {(data.insights?.executiveBrief.bullets ?? []).map((bullet, index) => (
+                  <div key={index} className="flex items-start gap-3">
+                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-indigo-500" />
+                    <p className="text-sm">{bullet}</p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="overflow-hidden">
+            <CardHeader className="border-b bg-[linear-gradient(135deg,#f0fdf4,#ecfeff)]">
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-emerald-600" />
+                Recommended Actions
+              </CardTitle>
+              <CardDescription>
+                Automated opportunities surfaced from margin, cash, and expense behavior.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-3 p-5">
+              {(data.insights?.opportunities ?? []).length > 0 ? (
+                data.insights?.opportunities.map((item, index) => (
+                  <div key={index} className="rounded-2xl border bg-background px-4 py-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="font-semibold">{item.title}</p>
+                      <Badge variant="outline">{item.impact}</Badge>
+                    </div>
+                    <p className="mt-2 text-sm text-muted-foreground">{item.body}</p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  The system does not see a strong optimization opportunity beyond the current active alerts.
+                </p>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      <section className="grid gap-4 xl:grid-cols-[1.45fr_0.85fr]">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <LineChart className="h-4 w-4 text-primary" />
               Monthly Performance
             </CardTitle>
-            <CardDescription>Six-month trend pulled directly from QBO profit and loss data.</CardDescription>
+            <CardDescription>Six-month trend across revenue, expenses, and net income.</CardDescription>
           </CardHeader>
           <CardContent className="pt-2">
-            <div className="h-[320px]">
+            <div className="h-[340px]">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={buildTrendChartData(data.monthlyTrend ?? [])}>
                   <defs>
@@ -376,9 +533,7 @@ export function FinancialsDashboard() {
                   <div key={expense.label} className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
                       <p className="text-sm font-medium truncate">{expense.label}</p>
-                      {expense.section && (
-                        <p className="text-xs text-muted-foreground truncate">{expense.section}</p>
-                      )}
+                      {expense.section && <p className="text-xs text-muted-foreground truncate">{expense.section}</p>}
                     </div>
                     <span className="text-sm font-semibold tabular-nums">{formatCurrency(expense.value)}</span>
                   </div>
@@ -398,33 +553,59 @@ export function FinancialsDashboard() {
                 Premium Highlights
               </CardTitle>
               <CardDescription className="text-slate-300">
-                A cleaner client-facing view than exposing raw QuickBooks screens.
+                Core owner-facing signals the platform keeps current without requiring a human analyst.
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-3 text-sm">
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-slate-300">Gross profit</span>
-                <span className="font-semibold">{formatCurrency(data.highlights?.grossProfit ?? null)}</span>
-              </div>
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-slate-300">Net income</span>
-                <span className="font-semibold">{formatCurrency(data.highlights?.netIncome ?? null)}</span>
-              </div>
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-slate-300">Equity</span>
-                <span className="font-semibold">{formatCurrency(data.highlights?.equity ?? null)}</span>
-              </div>
+              <HighlightRow label="Gross profit" value={data.highlights?.grossProfit ?? null} />
+              <HighlightRow label="Net income" value={data.highlights?.netIncome ?? null} />
+              <HighlightRow label="Equity" value={data.highlights?.equity ?? null} />
+              <HighlightRow label="Active alerts" value={data.insights?.alerts?.length ?? 0} numeric />
             </CardContent>
           </Card>
         </div>
       </section>
+
+      {(data.snapshots ?? []).length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BadgeAlert className="h-4 w-4 text-primary" />
+              Weekly Snapshot History
+            </CardTitle>
+            <CardDescription>
+              Saved weekly rollups in Supabase used by digest emails and recurring automated comparisons.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {data.snapshots?.map((snapshot) => (
+              <div key={snapshot.snapshot_date} className="rounded-2xl border p-4 space-y-3">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-semibold">
+                    {snapshot.period_label ?? new Date(snapshot.snapshot_date).toLocaleDateString("en-US")}
+                  </p>
+                  <Badge variant="outline">
+                    {new Date(snapshot.snapshot_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                  </Badge>
+                </div>
+                <div className="grid gap-1 text-sm">
+                  <SnapshotRow label="Revenue" value={snapshot.revenue} />
+                  <SnapshotRow label="Expenses" value={snapshot.expenses} />
+                  <SnapshotRow label="Net income" value={snapshot.net_income} />
+                  <SnapshotRow label="Cash flow" value={snapshot.operating_cash_flow} />
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader className="flex flex-row items-start justify-between gap-4">
           <div>
             <CardTitle>{reportLabel}</CardTitle>
             <CardDescription>
-              Full report detail with section-level drill-down. Export stays aligned with the table below.
+              Full report detail with section-level drill-down. Export files stay aligned with the table below.
             </CardDescription>
           </div>
           {data.reportData?.title && (
@@ -525,4 +706,61 @@ function formatChange(changePercent: number | null | undefined) {
   if (changePercent === null || changePercent === undefined) return "No prior comparison"
   const abs = Math.abs(changePercent).toFixed(1)
   return `${abs}% vs last month`
+}
+
+function alertTone(severity: "critical" | "high" | "medium" | "positive") {
+  switch (severity) {
+    case "critical":
+      return "border-rose-200 bg-rose-50"
+    case "high":
+      return "border-amber-200 bg-amber-50"
+    case "positive":
+      return "border-emerald-200 bg-emerald-50"
+    default:
+      return "border-slate-200 bg-slate-50"
+  }
+}
+
+function alertBadgeClass(severity: "critical" | "high" | "medium" | "positive") {
+  switch (severity) {
+    case "critical":
+      return "bg-rose-500/10 text-rose-700 border-rose-500/20"
+    case "high":
+      return "bg-amber-500/10 text-amber-700 border-amber-500/20"
+    case "positive":
+      return "bg-emerald-500/10 text-emerald-700 border-emerald-500/20"
+    default:
+      return "bg-slate-500/10 text-slate-700 border-slate-500/20"
+  }
+}
+
+function alertLabel(severity: "critical" | "high" | "medium" | "positive") {
+  switch (severity) {
+    case "critical":
+      return "Critical"
+    case "high":
+      return "High"
+    case "positive":
+      return "Positive"
+    default:
+      return "Watch"
+  }
+}
+
+function HighlightRow({ label, value, numeric = false }: { label: string; value: number | null; numeric?: boolean }) {
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <span className="text-slate-300">{label}</span>
+      <span className="font-semibold">{numeric ? String(value ?? 0) : formatCurrency(value)}</span>
+    </div>
+  )
+}
+
+function SnapshotRow({ label, value }: { label: string; value: number | null }) {
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <span className="text-muted-foreground">{label}</span>
+      <span className="font-medium">{formatCurrency(value)}</span>
+    </div>
+  )
 }
