@@ -36,6 +36,7 @@ type AdminData = {
   clients: Client[]
   firm_connected: boolean
   firm_token_expires: string | null
+  gusto_connected: boolean
 }
 
 type GustoState = {
@@ -240,6 +241,49 @@ export default function AdminPage() {
                 <Button size="sm" className="gap-1.5 bg-[#2CA01C] hover:bg-[#238a17] text-white">
                   <Link2 className="h-3.5 w-3.5" />
                   Connect QBOA Firm Account
+                </Button>
+              </a>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Gusto Firm Connection */}
+      <Card className={data?.gusto_connected ? "border-[#F45D48]/30 bg-[#F45D48]/5" : "border-dashed border-amber-300"}>
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-sm">
+            <div className="flex h-6 w-6 items-center justify-center rounded bg-[#F45D48] shrink-0">
+              <span className="text-[10px] font-black text-white">G</span>
+            </div>
+            Gusto Firm Connection
+            {data?.gusto_connected
+              ? <Badge className="bg-[#F45D48]/10 text-[#F45D48] text-xs">Connected</Badge>
+              : <Badge variant="outline" className="text-amber-700 border-amber-400 text-xs">Not connected</Badge>
+            }
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {data?.gusto_connected ? (
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">
+                Your Gusto accountant account is connected. Use the Gusto Payroll Setup section below to create payroll companies for clients.
+              </p>
+              <a href="/api/gusto/connect">
+                <Button size="sm" variant="outline" className="gap-1.5 bg-transparent mt-1">
+                  <RefreshCw className="h-3.5 w-3.5" />
+                  Reconnect Gusto
+                </Button>
+              </a>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                Connect your Gusto accountant account to create and manage payroll companies for clients without them ever logging into Gusto.
+              </p>
+              <a href="/api/gusto/connect">
+                <Button size="sm" className="gap-1.5 bg-[#F45D48] hover:bg-[#d94a36] text-white">
+                  <Link2 className="h-3.5 w-3.5" />
+                  Connect Gusto Firm Account
                 </Button>
               </a>
             </div>

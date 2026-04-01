@@ -32,11 +32,12 @@ export async function GET() {
   const userIds = subs.map((s) => s.user_id)
 
   // Get profiles + QBO connections in parallel
-  const [{ data: profiles }, { data: qboConns }, { data: clientProfiles }, firmConn] = await Promise.all([
+  const [{ data: profiles }, { data: qboConns }, { data: clientProfiles }, firmConn, gustoFirmConn] = await Promise.all([
     admin.from("business_profiles").select("user_id, business_name, business_type, entity_type, selected_plan").in("user_id", userIds),
     admin.from("qbo_connections").select("user_id, realm_id, company_name, setup_status, connected_at, firm_managed").in("user_id", userIds),
     admin.from("client_profiles").select("user_id, full_name").in("user_id", userIds),
     admin.from("qbo_firm_connection").select("token_expires_at, connected_at").eq("id", "00000000-0000-0000-0000-000000000001").single(),
+    admin.from("gusto_firm_connection").select("token_expires_at").eq("id", "00000000-0000-0000-0000-000000000001").single(),
   ])
 
   const profileMap = Object.fromEntries((profiles ?? []).map((p) => [p.user_id, p]))
@@ -60,6 +61,7 @@ export async function GET() {
     clients,
     firm_connected: !!firmConn.data,
     firm_token_expires: firmConn.data?.token_expires_at ?? null,
+    gusto_connected: !!gustoFirmConn.data,
   })
 }
 
