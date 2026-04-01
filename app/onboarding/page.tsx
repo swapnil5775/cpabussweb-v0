@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect, Suspense } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -194,8 +194,21 @@ const ACH_OPTIONS = [
 ]
 
 export default function OnboardingPage() {
-  const [step, setStep] = useState(1)
+  return (
+    <Suspense>
+      <OnboardingPageInner />
+    </Suspense>
+  )
+}
+
+function OnboardingPageInner() {
+  const searchParams = useSearchParams()
+  const resuming = searchParams.get("resume") === "true"
+  const startStep = Math.max(1, parseInt(searchParams.get("step") ?? "1", 10))
+
+  const [step, setStep] = useState(startStep)
   const [loading, setLoading] = useState(false)
+  const [prefilling, setPrefilling] = useState(resuming)
   const [error, setError] = useState("")
   const [ownerErrors, setOwnerErrors] = useState<Record<string, string>>({})
   const router = useRouter()
@@ -210,6 +223,46 @@ export default function OnboardingPage() {
     bankAccountsCount: "", creditCardsCount: "", hasAchVendors: "",
     selectedPlan: "",
   })
+
+  // Pre-fill from saved profile when resuming
+  useEffect(() => {
+    if (!resuming) return
+    fetch("/api/onboarding")
+      .then((r) => r.json())
+      .then(({ businessProfile: bp, clientProfile: cp }) => {
+        if (!bp && !cp) return
+        setData((prev) => ({
+          ...prev,
+          businessName: bp?.business_name ?? prev.businessName,
+          businessType: bp?.business_type ?? prev.businessType,
+          ownerFirstName: cp?.owner_first_name ?? prev.ownerFirstName,
+          ownerLastName: cp?.owner_last_name ?? prev.ownerLastName,
+          ownerEmail: cp?.owner_email ?? prev.ownerEmail,
+          ownerPhone: cp?.phone ?? prev.ownerPhone,
+          ein: bp?.ein ?? prev.ein,
+          businessAddress: cp?.business_address_line1 ?? prev.businessAddress,
+          businessCity: cp?.business_city ?? prev.businessCity,
+          businessState: bp?.business_state ?? prev.businessState,
+          businessZip: bp?.business_zip ?? prev.businessZip,
+          entityType: bp?.entity_type ?? prev.entityType,
+          revenueRange: bp?.revenue_range ?? prev.revenueRange,
+          booksStatus: bp?.books_status ?? prev.booksStatus,
+          bookkeepingPlatform: bp?.bookkeeping_platform ?? prev.bookkeepingPlatform,
+          workerTypes: Array.isArray(bp?.worker_types) ? bp.worker_types : prev.workerTypes,
+          employeeCount: bp?.employee_count ?? prev.employeeCount,
+          headcount: bp?.headcount ?? prev.headcount,
+          needsPayroll: bp?.needs_payroll ?? prev.needsPayroll,
+          payrollPlatform: bp?.payroll_platform ?? prev.payrollPlatform,
+          bankAccountsCount: bp?.bank_accounts_count ?? prev.bankAccountsCount,
+          creditCardsCount: bp?.credit_cards_count ?? prev.creditCardsCount,
+          hasAchVendors: bp?.has_ach_vendors ?? prev.hasAchVendors,
+          selectedPlan: bp?.selected_plan ?? prev.selectedPlan,
+        }))
+      })
+      .catch(() => {})
+      .finally(() => setPrefilling(false))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   function set(field: keyof OnboardingData, value: string | number) {
     setData((prev) => ({ ...prev, [field]: value }))
@@ -281,6 +334,17 @@ export default function OnboardingPage() {
   const progress = ((step - 1) / (TOTAL_STEPS - 1)) * 100
   const empCost = calcEmployeeCost(data.employeeCount)
 
+  if (prefilling) {
+    return (
+      <div className="min-h-screen bg-muted/30 flex items-center justify-center">
+        <div className="flex items-center gap-3 text-muted-foreground">
+          <Loader2 className="h-5 w-5 animate-spin" />
+          <span className="text-sm">Loading your saved profile…</span>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-muted/30 flex flex-col">
       {/* Header */}
@@ -291,7 +355,14 @@ export default function OnboardingPage() {
           </div>
           <span className="font-bold text-primary">BookKeeping.business</span>
         </Link>
-        <span className="text-sm text-muted-foreground">Step {step} of {TOTAL_STEPS}</span>
+        <div className="flex items-center gap-3">
+          {resuming && (
+            <Link href="/dashboard/upgrade" className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-2">
+              ← Back to upgrade
+            </Link>
+          )}
+          <span className="text-sm text-muted-foreground">Step {step} of {TOTAL_STEPS}</span>
+        </div>
       </header>
 
       {/* Progress bar */}

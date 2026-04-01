@@ -50,7 +50,7 @@ export async function POST(request: Request) {
         payment_method_types: ["card"],
         line_items: [{ price: planConfig.priceId, quantity: 1 }],
         success_url: `${SITE_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}&plan=${plan}`,
-        cancel_url: `${SITE_URL}/onboarding`,
+        cancel_url: `${SITE_URL}/dashboard/upgrade`,
         customer_email: user.email,
         metadata: { user_id: user.id, plan },
         subscription_data: { metadata: { user_id: user.id, plan } },

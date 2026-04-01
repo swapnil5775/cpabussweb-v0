@@ -385,7 +385,7 @@ export default async function DashboardPage({
           <p className="font-bold text-primary">You&apos;re on a free account</p>
           <p className="text-sm text-muted-foreground mt-0.5">Upgrade to activate your bookkeeper, get monthly reports, and include tax filing.</p>
         </div>
-        <Link href="/onboarding" className="shrink-0">
+        <Link href="/dashboard/upgrade" className="shrink-0">
           <Button size="sm">
             View Plans
             <ArrowRight className="h-4 w-4 ml-2" aria-hidden="true" />

@@ -5,6 +5,38 @@ import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 import { createClient as createServiceClient } from "@supabase/supabase-js"
 
+export async function GET() {
+  const cookieStore = await cookies()
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return cookieStore.getAll() },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
+        },
+      },
+    }
+  )
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  if (authError || !user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+
+  const admin = createServiceClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
+  const [{ data: bp }, { data: cp }] = await Promise.all([
+    admin.from("business_profiles").select("*").eq("user_id", user.id).single(),
+    admin.from("client_profiles").select("*").eq("user_id", user.id).single(),
+  ])
+
+  return NextResponse.json({ businessProfile: bp, clientProfile: cp })
+}
+
 export async function POST(request: Request) {
   const body = await request.json()
   const {
