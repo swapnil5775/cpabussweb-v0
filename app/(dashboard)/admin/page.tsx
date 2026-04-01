@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import {
   CheckCircle2, AlertCircle, Link2, RefreshCw, Building2,
-  Users, Zap, Clock, BookOpen
+  Users, Zap, Clock, BookOpen, UserPlus, Briefcase
 } from "lucide-react"
 
 type QBOConn = {
@@ -38,6 +38,14 @@ type AdminData = {
   firm_token_expires: string | null
 }
 
+type GustoState = {
+  connected: boolean
+  company_uuid?: string
+  company_name?: string
+  setup_status?: string
+  employees?: { uuid: string; first_name: string; last_name: string; email: string }[]
+}
+
 export default function AdminPage() {
   const [authorized, setAuthorized] = useState<boolean | null>(null)
   const [data, setData] = useState<AdminData | null>(null)
@@ -45,6 +53,14 @@ export default function AdminPage() {
   const [nameInputs, setNameInputs] = useState<Record<string, string>>({})
   const [linking, startLink] = useTransition()
   const [linkMsg, setLinkMsg] = useState<Record<string, string>>({})
+
+  // Gusto state per client
+  const [gustoData, setGustoData] = useState<Record<string, GustoState>>({})
+  const [gustoExpanded, setGustoExpanded] = useState<Record<string, boolean>>({})
+  const [gustoCreating, setGustoCreating] = useState<Record<string, boolean>>({})
+  const [gustoMsg, setGustoMsg] = useState<Record<string, string>>({})
+  const [empInputs, setEmpInputs] = useState<Record<string, { first_name: string; last_name: string; email: string; start_date: string }>>({})
+  const [addingEmp, setAddingEmp] = useState<Record<string, boolean>>({})
 
   useEffect(() => {
     const supabase = createClient()
@@ -81,6 +97,43 @@ export default function AdminPage() {
       setLinkMsg((prev) => ({ ...prev, [userId]: res.ok ? "✓ Linked! Client notified." : d.error }))
       if (res.ok) { reload(); setRealmInputs((p) => ({ ...p, [userId]: "" })) }
     })
+  }
+
+  async function loadGusto(userId: string) {
+    const r = await fetch(`/api/admin/gusto?user_id=${userId}`)
+    const d = await r.json()
+    setGustoData((prev) => ({ ...prev, [userId]: d }))
+  }
+
+  async function createGustoCompany(userId: string, companyName: string) {
+    setGustoCreating((p) => ({ ...p, [userId]: true }))
+    const res = await fetch("/api/admin/gusto", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "create_company", user_id: userId, company_name: companyName }),
+    })
+    const d = await res.json()
+    setGustoMsg((p) => ({ ...p, [userId]: res.ok ? "✓ Gusto company created!" : d.error }))
+    if (res.ok) await loadGusto(userId)
+    setGustoCreating((p) => ({ ...p, [userId]: false }))
+  }
+
+  async function addEmployee(userId: string) {
+    const emp = empInputs[userId]
+    if (!emp?.first_name || !emp?.last_name || !emp?.email || !emp?.start_date) return
+    setAddingEmp((p) => ({ ...p, [userId]: true }))
+    const res = await fetch("/api/admin/gusto", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "add_employee", user_id: userId, ...emp }),
+    })
+    const d = await res.json()
+    setGustoMsg((p) => ({ ...p, [userId]: res.ok ? `✓ Employee ${emp.first_name} added!` : d.error }))
+    if (res.ok) {
+      await loadGusto(userId)
+      setEmpInputs((p) => ({ ...p, [userId]: { first_name: "", last_name: "", email: "", start_date: "" } }))
+    }
+    setAddingEmp((p) => ({ ...p, [userId]: false }))
   }
 
   if (authorized === null) {
@@ -287,6 +340,127 @@ export default function AdminPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Gusto Payroll Section */}
+      {(data?.clients.length ?? 0) > 0 && (
+        <div className="space-y-3">
+          <h2 className="font-semibold text-base flex items-center gap-2">
+            <Briefcase className="h-4 w-4 text-[#F45D48]" />
+            Gusto Payroll Setup
+          </h2>
+          <div className="space-y-2">
+            {data!.clients.map((client) => {
+              const g = gustoData[client.user_id]
+              const expanded = gustoExpanded[client.user_id]
+              const emp = empInputs[client.user_id] ?? { first_name: "", last_name: "", email: "", start_date: "" }
+
+              return (
+                <div key={client.user_id} className="rounded-xl border border-border bg-background overflow-hidden">
+                  <div className="flex items-center gap-3 px-4 py-3">
+                    <div className="flex h-7 w-7 items-center justify-center rounded bg-[#F45D48]/10 shrink-0">
+                      <span className="text-[10px] font-black text-[#F45D48]">G</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{client.business_name ?? "Unnamed Business"}</p>
+                      <p className="text-xs text-muted-foreground">{client.full_name}</p>
+                    </div>
+                    {g?.connected ? (
+                      <Badge className="text-xs bg-green-100 text-green-700 shrink-0">
+                        <CheckCircle2 className="h-3 w-3 mr-1" />
+                        Connected · {g.employees?.length ?? 0} employees
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="text-xs text-muted-foreground shrink-0">Not set up</Badge>
+                    )}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-7 text-xs bg-transparent shrink-0"
+                      onClick={() => {
+                        if (!g) loadGusto(client.user_id)
+                        setGustoExpanded((p) => ({ ...p, [client.user_id]: !expanded }))
+                      }}
+                    >
+                      {expanded ? "Collapse" : "Manage"}
+                    </Button>
+                  </div>
+
+                  {expanded && (
+                    <div className="border-t border-border bg-muted/20 px-4 py-4 space-y-4">
+                      {!g ? (
+                        <p className="text-sm text-muted-foreground">Loading…</p>
+                      ) : !g.connected ? (
+                        <div className="space-y-2">
+                          <p className="text-xs text-muted-foreground">
+                            Create a Gusto payroll company for this client. They will never need to log into Gusto directly.
+                          </p>
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              className="gap-1.5 bg-[#F45D48] hover:bg-[#d94a36] text-white"
+                              disabled={gustoCreating[client.user_id]}
+                              onClick={() => createGustoCompany(client.user_id, client.business_name ?? "New Company")}
+                            >
+                              <UserPlus className="h-3.5 w-3.5" />
+                              {gustoCreating[client.user_id] ? "Creating…" : "Create Gusto Company"}
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          <div className="text-xs text-muted-foreground space-y-0.5">
+                            <p><span className="font-medium">Company UUID:</span> {g.company_uuid}</p>
+                            <p><span className="font-medium">Status:</span> {g.setup_status}</p>
+                          </div>
+
+                          {/* Employee list */}
+                          {(g.employees?.length ?? 0) > 0 && (
+                            <div className="space-y-1">
+                              <p className="text-xs font-medium">Employees</p>
+                              {g.employees!.map((e) => (
+                                <div key={e.uuid} className="flex items-center gap-2 text-xs text-muted-foreground">
+                                  <Users className="h-3 w-3 shrink-0" />
+                                  {e.first_name} {e.last_name} — {e.email}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Add employee */}
+                          <div className="space-y-2">
+                            <p className="text-xs font-medium">Add Employee</p>
+                            <div className="grid grid-cols-2 gap-2">
+                              <Input placeholder="First name" className="h-8 text-xs" value={emp.first_name}
+                                onChange={(e) => setEmpInputs((p) => ({ ...p, [client.user_id]: { ...emp, first_name: e.target.value } }))} />
+                              <Input placeholder="Last name" className="h-8 text-xs" value={emp.last_name}
+                                onChange={(e) => setEmpInputs((p) => ({ ...p, [client.user_id]: { ...emp, last_name: e.target.value } }))} />
+                              <Input placeholder="Email" type="email" className="h-8 text-xs" value={emp.email}
+                                onChange={(e) => setEmpInputs((p) => ({ ...p, [client.user_id]: { ...emp, email: e.target.value } }))} />
+                              <Input placeholder="Start date (YYYY-MM-DD)" className="h-8 text-xs" value={emp.start_date}
+                                onChange={(e) => setEmpInputs((p) => ({ ...p, [client.user_id]: { ...emp, start_date: e.target.value } }))} />
+                            </div>
+                            <Button size="sm" className="h-8 gap-1.5" onClick={() => addEmployee(client.user_id)}
+                              disabled={addingEmp[client.user_id]}>
+                              <UserPlus className="h-3.5 w-3.5" />
+                              {addingEmp[client.user_id] ? "Adding…" : "Add Employee"}
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+
+                      {gustoMsg[client.user_id] && (
+                        <p className={`text-xs font-medium ${gustoMsg[client.user_id].startsWith("✓") ? "text-green-600" : "text-destructive"}`}>
+                          {gustoMsg[client.user_id]}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
           </div>
         </div>
       )}
