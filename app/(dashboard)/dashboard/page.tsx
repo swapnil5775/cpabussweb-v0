@@ -15,6 +15,7 @@ import { OnboardingCallBanner } from "@/components/dashboard/onboarding-call-ban
 import { PaidWelcome } from "@/components/dashboard/paid-welcome"
 import { OnboardingChecklist } from "@/components/dashboard/onboarding-checklist"
 import { QBOConnectCard } from "@/components/dashboard/qbo-connect-card"
+import { DocumentVaultCallout } from "@/components/dashboard/document-vault-callout"
 
 export default async function DashboardPage({
   searchParams,
@@ -185,6 +186,9 @@ export default async function DashboardPage({
             <p className="text-sm font-medium text-destructive">QuickBooks connection failed. Please try again.</p>
           </div>
         )}
+
+        {/* Document vault callout — shown until first upload */}
+        {!hasDocument && <DocumentVaultCallout />}
 
         {/* Getting started checklist */}
         <OnboardingChecklist

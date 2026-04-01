@@ -118,6 +118,18 @@ export default function DocumentsPage() {
       review_status: "pending",
     })
 
+    // Notify admin via email (fire and forget)
+    fetch("/api/documents/notify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        file_name: file.name,
+        document_type: catId,
+        tax_year: selectedYear,
+        file_size_bytes: file.size,
+      }),
+    }).catch(() => {})
+
     await fetchDocs()
     setUploading(null)
     e.target.value = ""
