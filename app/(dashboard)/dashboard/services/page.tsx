@@ -213,6 +213,7 @@ export default function ServicesPage() {
   const [orders, setOrders] = useState<ServiceOrder[]>([])
   const [ordersLoading, setOrdersLoading] = useState(true)
   const [resumeLookupLoading, setResumeLookupLoading] = useState(false)
+  const [resumeOrderId, setResumeOrderId] = useState<string | null>(null)
   const [error, setError] = useState("")
 
   useEffect(() => {
@@ -233,23 +234,34 @@ export default function ServicesPage() {
     async function pollForOrderBySession() {
       setResumeLookupLoading(true)
 
-      await fetch("/api/service-orders/finalize", {
+      const finalizeResponse = await fetch("/api/service-orders/finalize", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ session_id: sessionId }),
       }).catch(() => null)
+
+      const finalizeData = await finalizeResponse?.json().catch(() => ({}))
+      if (!cancelled && finalizeData?.order_id) {
+        setResumeOrderId(finalizeData.order_id)
+        window.location.href = `/dashboard/services/orders/${finalizeData.order_id}/intake`
+        return
+      }
 
       for (let attempt = 0; attempt < 7; attempt += 1) {
         const response = await fetch(`/api/service-orders?session_id=${encodeURIComponent(sessionId)}`)
         const data = await response.json().catch(() => ({}))
         const order = data?.orders?.[0]
         if (!cancelled && order?.id) {
+          setResumeOrderId(order.id)
           window.location.href = `/dashboard/services/orders/${order.id}/intake`
           return
         }
         await new Promise((resolve) => setTimeout(resolve, 1000))
       }
-      if (!cancelled) setResumeLookupLoading(false)
+      if (!cancelled) {
+        setResumeLookupLoading(false)
+        setError("Could not auto-open your intake form. Use Continue Intake in My Service Orders below.")
+      }
     }
     pollForOrderBySession()
     return () => { cancelled = true }
@@ -322,6 +334,11 @@ export default function ServicesPage() {
                 ? "Preparing your intake form. Redirecting now..."
                 : "Your intake form is ready in your order tracker below."}
             </p>
+            {!resumeLookupLoading && resumeOrderId && (
+              <Link href={`/dashboard/services/orders/${resumeOrderId}/intake`} className="mt-2 inline-block">
+                <Button size="sm">Continue to Intake</Button>
+              </Link>
+            )}
           </div>
         </div>
       )}
@@ -342,6 +359,8 @@ export default function ServicesPage() {
         <CardContent className="space-y-3">
           {ordersLoading ? (
             <p className="text-sm text-muted-foreground">Loading orders...</p>
+          ) : justPaid && resumeLookupLoading ? (
+            <p className="text-sm text-muted-foreground">Payment received. Creating your service order...</p>
           ) : orders.length === 0 ? (
             <p className="text-sm text-muted-foreground">No paid service orders yet.</p>
           ) : (
