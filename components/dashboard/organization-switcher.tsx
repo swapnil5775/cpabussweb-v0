@@ -66,12 +66,12 @@ export function OrganizationSwitcher() {
   }
 
   return (
-    <div className="hidden md:flex items-center gap-2">
+    <div className="hidden md:flex items-center gap-1.5">
       <Building2 className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
       <select
         value={activeOrganizationId}
         onChange={(event) => switchOrganization(event.target.value)}
-        className="h-8 rounded-md border border-border bg-background px-2 text-sm"
+        className="h-8 w-36 rounded-md border border-border bg-background px-2 text-sm"
         disabled={pending || organizations.length === 0}
       >
         {organizations.map((org) => (
@@ -81,9 +81,15 @@ export function OrganizationSwitcher() {
         ))}
       </select>
       {!showCreate ? (
-        <Button variant="outline" size="sm" className="h-8 gap-1.5 px-2 bg-transparent" onClick={() => setShowCreate(true)}>
-          <Plus className="h-3.5 w-3.5" aria-hidden="true" />
-          Org
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-7 w-7 p-0 bg-transparent"
+          onClick={() => setShowCreate(true)}
+          aria-label="Add organization"
+          title="Add organization"
+        >
+          <Plus className="h-3 w-3" aria-hidden="true" />
         </Button>
       ) : (
         <div className="flex items-center gap-2">

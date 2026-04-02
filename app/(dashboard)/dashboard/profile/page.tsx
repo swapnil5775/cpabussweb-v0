@@ -1,13 +1,14 @@
 "use client"
 
 import { useState, useEffect, useTransition } from "react"
+import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { CheckCircle2, Mail, User, Building2, MapPin, Loader2, AlertCircle, Briefcase, Share2, Copy, Check, RefreshCw, Trash2, Gift, Send } from "lucide-react"
+import { CheckCircle2, Mail, User, Building2, MapPin, Loader2, AlertCircle, Briefcase, Share2, Copy, Check, RefreshCw, Trash2, Gift, Send, MessageSquare, CreditCard } from "lucide-react"
 
 type Profile = {
   full_name: string
@@ -330,6 +331,26 @@ export default function ProfilePage() {
         <h1 className="text-2xl font-bold tracking-tight">Your Profile</h1>
         <p className="text-sm text-muted-foreground mt-1">Manage account details, referral invites, and secure access links.</p>
       </div>
+
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">Account Actions</CardTitle>
+        </CardHeader>
+        <CardContent className="grid gap-2 sm:grid-cols-2">
+          <Link href="/dashboard/support">
+            <Button variant="outline" className="w-full justify-start gap-2 bg-transparent">
+              <MessageSquare className="h-4 w-4" aria-hidden="true" />
+              Message Team
+            </Button>
+          </Link>
+          <form action="/api/stripe/create-portal" method="POST">
+            <Button variant="outline" className="w-full justify-start gap-2 bg-transparent" type="submit">
+              <CreditCard className="h-4 w-4" aria-hidden="true" />
+              Manage Billing
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader className="pb-3">

@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import {
-  CheckCircle2, Clock, FileUp, ShoppingBag, ArrowRight, CreditCard,
-  Building2, BookOpen, AlertCircle, UserCircle, CalendarClock, MessageSquare,
+  CheckCircle2, Clock, FileUp, ShoppingBag, ArrowRight,
+  Building2, BookOpen, AlertCircle, UserCircle, CalendarClock,
   Sparkles, TrendingUp, Shield, Zap
 } from "lucide-react"
 import { PLANS, ONE_TIME_SERVICES } from "@/lib/stripe-plans"
@@ -163,15 +163,12 @@ export default async function DashboardPage({
               )}
             </p>
           </div>
-          <div className="flex gap-2 flex-wrap">
-            <Link href="/dashboard/support">
-              <Button variant="outline" size="sm" className="gap-1.5 bg-transparent">
-                <MessageSquare className="h-3.5 w-3.5" aria-hidden="true" />
-                Message Team
-              </Button>
-            </Link>
-            <ManageBillingButton />
-          </div>
+          <Link href="/dashboard/profile">
+            <Button variant="outline" size="sm" className="gap-1.5 bg-transparent">
+              <UserCircle className="h-3.5 w-3.5" aria-hidden="true" />
+              Profile Settings
+            </Button>
+          </Link>
         </div>
 
         {/* Onboarding call banner */}
@@ -286,7 +283,12 @@ export default async function DashboardPage({
                   ))}
                 </ul>
                 <div className="mt-4 pt-3 border-t border-border flex gap-2 flex-wrap">
-                  <ManageBillingButton />
+                  <Link href="/dashboard/profile">
+                    <Button size="sm" variant="outline" className="bg-transparent gap-1.5 text-xs">
+                      <UserCircle className="h-3 w-3" aria-hidden="true" />
+                      Profile Settings
+                    </Button>
+                  </Link>
                   {planKey !== "enterprise" && (
                     <Link href="/onboarding">
                       <Button size="sm" variant="outline" className="bg-transparent gap-1.5 text-xs">
@@ -609,15 +611,4 @@ function profileNameFromEmail(email: string | undefined) {
   if (!email) return "Primary Organization"
   const userPart = email.split("@")[0] || "Primary Organization"
   return `${userPart.replace(/[._-]/g, " ")} Org`
-}
-
-function ManageBillingButton() {
-  return (
-    <form action="/api/stripe/create-portal" method="POST">
-      <Button variant="outline" size="sm" className="bg-transparent justify-start gap-1.5" type="submit">
-        <CreditCard className="h-3.5 w-3.5" aria-hidden="true" />
-        Manage Billing
-      </Button>
-    </form>
-  )
 }
