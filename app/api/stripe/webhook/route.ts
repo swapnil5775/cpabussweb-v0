@@ -2,6 +2,8 @@ import { NextResponse } from "next/server"
 import { stripe } from "@/lib/stripe"
 import { createClient } from "@supabase/supabase-js"
 import type Stripe from "stripe"
+import { Resend } from "resend"
+import { buildOrderNumber, getServiceName } from "@/lib/service-intake"
 
 // Disable body parsing — Stripe needs the raw body for signature verification
 export const dynamic = "force-dynamic"
@@ -10,6 +12,8 @@ const admin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.bookkeeping.business"
 
 async function upsertSubscription(
   userId: string,
@@ -50,6 +54,44 @@ async function resolveDefaultOrganizationId(userId: string): Promise<string | nu
     .eq("is_default", true)
     .maybeSingle()
   return defaultOrg?.id ?? null
+}
+
+async function sendServiceOrderEmail(params: {
+  userId: string
+  organizationId: string
+  orderId: string
+  orderNumber: string
+  serviceType: string | null | undefined
+}) {
+  if (!resend) return
+  const { data } = await admin.auth.admin.getUserById(params.userId)
+  const to = data.user?.email
+  if (!to) return
+
+  const serviceName = getServiceName(params.serviceType)
+  const intakeUrl = `${SITE_URL}/dashboard/services/orders/${params.orderId}/intake`
+
+  await resend.emails.send({
+    from: `BookKeeping.business <noreply@${process.env.RESEND_VERIFIED_DOMAIN}>`,
+    to,
+    subject: `${serviceName} order received — ${params.orderNumber}`,
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:24px">
+        <h2 style="margin:0 0 8px">Order Confirmed: ${serviceName}</h2>
+        <p style="margin:0 0 12px;color:#475569">Order Number: <strong>${params.orderNumber}</strong></p>
+        <p style="margin:0 0 18px;color:#475569">
+          Payment is complete. Please finish your intake form so our team can begin work immediately.
+          You can submit now or continue later using the same link.
+        </p>
+        <a href="${intakeUrl}" style="display:inline-block;background:#0f172a;color:#fff;text-decoration:none;padding:12px 16px;border-radius:8px;font-weight:600">
+          Complete Intake Form
+        </a>
+        <p style="margin-top:18px;color:#64748b;font-size:12px">
+          Timeline starts after intake submission. You will receive status updates by email.
+        </p>
+      </div>
+    `,
+  })
 }
 
 export async function POST(request: Request) {
@@ -112,15 +154,46 @@ export async function POST(request: Request) {
               .maybeSingle()
             effectiveOrgId = defaultOrg?.id
           }
+          if (!effectiveOrgId) break
+
+          const orderNumber = buildOrderNumber(session.id, session.created ? new Date(session.created * 1000).toISOString() : new Date().toISOString())
           // Record one-time service order as paid
-          await admin.from("service_orders").insert({
+          const orderPayload = {
             user_id: userId,
-            organization_id: effectiveOrgId ?? null,
+            organization_id: effectiveOrgId,
+            order_number: orderNumber,
             service_type: session.metadata?.service_type,
             amount_cents: session.amount_total,
             stripe_checkout_session_id: session.id,
             status: "paid",
-          })
+            intake_status: "pending",
+            intake_answers: {},
+            updated_at: new Date().toISOString(),
+          }
+          const { data: insertedOrder } = await admin
+            .from("service_orders")
+            .upsert(orderPayload, { onConflict: "stripe_checkout_session_id", ignoreDuplicates: true })
+            .select("id, order_number")
+            .maybeSingle()
+
+          const savedOrder = insertedOrder
+            ? insertedOrder
+            : (await admin
+              .from("service_orders")
+              .select("id, order_number")
+              .eq("stripe_checkout_session_id", session.id)
+              .maybeSingle()
+            ).data
+
+          if (savedOrder?.id) {
+            await sendServiceOrderEmail({
+              userId,
+              organizationId: effectiveOrgId,
+              orderId: savedOrder.id,
+              orderNumber: savedOrder.order_number ?? orderNumber,
+              serviceType: session.metadata?.service_type,
+            })
+          }
         }
         break
       }

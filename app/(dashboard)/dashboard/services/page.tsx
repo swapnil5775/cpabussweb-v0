@@ -1,6 +1,7 @@
 "use client"
 
-import { type ComponentType, useState } from "react"
+import { type ComponentType, useEffect, useState } from "react"
+import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import {
   ArrowRight,
@@ -14,6 +15,7 @@ import {
   Loader2,
   SearchCheck,
   Shield,
+  Timer,
   TrendingUp,
   Users,
 } from "lucide-react"
@@ -191,13 +193,60 @@ function getService(serviceKey: ServiceKey) {
   return ONE_TIME_SERVICES[serviceKey]
 }
 
+type ServiceOrder = {
+  id: string
+  order_number: string | null
+  service_type: string
+  service_name: string
+  status: string
+  intake_status: string
+  created_at: string
+  tracker: Array<{ label: string; done: boolean }>
+}
+
 export default function ServicesPage() {
   const searchParams = useSearchParams()
   const highlight = searchParams.get("highlight")
   const justPaid = searchParams.get("session_id")
   const paidService = searchParams.get("service")
   const [loading, setLoading] = useState<string | null>(null)
+  const [orders, setOrders] = useState<ServiceOrder[]>([])
+  const [ordersLoading, setOrdersLoading] = useState(true)
+  const [resumeLookupLoading, setResumeLookupLoading] = useState(false)
   const [error, setError] = useState("")
+
+  useEffect(() => {
+    async function loadOrders() {
+      const response = await fetch("/api/service-orders")
+      const data = await response.json().catch(() => ({}))
+      if (response.ok) setOrders(data.orders ?? [])
+      setOrdersLoading(false)
+    }
+    loadOrders()
+  }, [])
+
+  useEffect(() => {
+    if (!justPaid) return
+    const sessionId = justPaid
+
+    let cancelled = false
+    async function pollForOrderBySession() {
+      setResumeLookupLoading(true)
+      for (let attempt = 0; attempt < 7; attempt += 1) {
+        const response = await fetch(`/api/service-orders?session_id=${encodeURIComponent(sessionId)}`)
+        const data = await response.json().catch(() => ({}))
+        const order = data?.orders?.[0]
+        if (!cancelled && order?.id) {
+          window.location.href = `/dashboard/services/orders/${order.id}/intake`
+          return
+        }
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+      }
+      if (!cancelled) setResumeLookupLoading(false)
+    }
+    pollForOrderBySession()
+    return () => { cancelled = true }
+  }, [justPaid])
 
   async function handleOrder(serviceKey: ServiceKey | "catchup") {
     if (serviceKey === "catchup") {
@@ -237,14 +286,14 @@ export default function ServicesPage() {
         <CardHeader className="pb-3">
           <CardTitle className="text-base">How this works</CardTitle>
           <CardDescription>
-            Choose a one-time service, complete secure checkout, and the team schedules kickoff within 1 business day with a document checklist.
+            Choose a one-time service, complete secure checkout, and submit the service intake form so the team can start without waiting on a kickoff call.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-3 sm:grid-cols-3">
           {[
             "Pick the service matching your current need.",
             "Checkout now or request a quote for cleanup projects.",
-            "We confirm scope, call date, and required documents.",
+            "Submit intake details and track progress from your order tracker.",
           ].map((item, index) => (
             <div key={item} className="rounded-xl border bg-background px-3 py-3 text-sm text-muted-foreground">
               <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-foreground">
@@ -262,7 +311,9 @@ export default function ServicesPage() {
           <div>
             <p className="text-sm font-semibold text-green-900">Service ordered successfully</p>
             <p className="text-sm text-green-800">
-              Our team will contact you within 1 business day to start onboarding this engagement.
+              {resumeLookupLoading
+                ? "Preparing your intake form. Redirecting now..."
+                : "Your intake form is ready in your order tracker below."}
             </p>
           </div>
         </div>
@@ -273,6 +324,61 @@ export default function ServicesPage() {
           {error}
         </div>
       )}
+
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">My Service Orders</CardTitle>
+          <CardDescription>
+            Track status, resume intake, and monitor timeline updates for each paid service.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {ordersLoading ? (
+            <p className="text-sm text-muted-foreground">Loading orders...</p>
+          ) : orders.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No paid service orders yet.</p>
+          ) : (
+            orders.map((order) => (
+              <div key={order.id} className="rounded-xl border bg-background p-4 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <p className="text-sm font-semibold">{order.service_name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {order.order_number ?? "Order pending"} · {new Date(order.created_at).toLocaleDateString("en-US")}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge variant={order.intake_status === "submitted" ? "default" : "secondary"}>
+                      {order.intake_status === "submitted" ? "Intake Submitted" : "Intake Pending"}
+                    </Badge>
+                    <Link href={`/dashboard/services/orders/${order.id}/intake`}>
+                      <Button size="sm" variant={order.intake_status === "submitted" ? "outline" : "default"}>
+                        {order.intake_status === "submitted" ? "View Intake" : "Continue Intake"}
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+                <div className="grid gap-2 md:grid-cols-5">
+                  {order.tracker.map((step) => (
+                    <div
+                      key={step.label}
+                      className={`rounded-lg border px-2.5 py-2 text-[11px] ${step.done ? "bg-primary/5 border-primary/20 text-foreground" : "text-muted-foreground"}`}
+                    >
+                      {step.label}
+                    </div>
+                  ))}
+                </div>
+                {order.intake_status !== "submitted" ? (
+                  <p className="flex items-center gap-1.5 text-xs text-amber-700">
+                    <Timer className="h-3.5 w-3.5" />
+                    Complete intake to let the team start work.
+                  </p>
+                ) : null}
+              </div>
+            ))
+          )}
+        </CardContent>
+      </Card>
 
       <div className="space-y-5">
         {SERVICE_CATEGORIES.map((category) => (
