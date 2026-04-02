@@ -4,7 +4,6 @@ import { type ComponentType, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import {
   ArrowRight,
-  BadgeCheck,
   BookOpen,
   Briefcase,
   Building2,
@@ -15,7 +14,6 @@ import {
   Loader2,
   SearchCheck,
   Shield,
-  Sparkles,
   TrendingUp,
   Users,
 } from "lucide-react"
@@ -40,36 +38,13 @@ type ServiceCategory = {
   services: ServiceCard[]
 }
 
-const CATEGORY_STYLES = [
-  {
-    shell: "border-emerald-200/70 bg-emerald-50/70",
-    badge: "border-emerald-300/40 bg-emerald-100/70 text-emerald-800",
-    icon: "bg-emerald-500/10 text-emerald-700",
-  },
-  {
-    shell: "border-sky-200/70 bg-sky-50/70",
-    badge: "border-sky-300/40 bg-sky-100/70 text-sky-800",
-    icon: "bg-sky-500/10 text-sky-700",
-  },
-  {
-    shell: "border-amber-200/70 bg-amber-50/70",
-    badge: "border-amber-300/40 bg-amber-100/70 text-amber-800",
-    icon: "bg-amber-500/10 text-amber-700",
-  },
-  {
-    shell: "border-violet-200/70 bg-violet-50/70",
-    badge: "border-violet-300/40 bg-violet-100/70 text-violet-800",
-    icon: "bg-violet-500/10 text-violet-700",
-  },
-] as const
-
 const SERVICE_CATEGORIES: ServiceCategory[] = [
   {
     id: "tax-prep",
     title: "Tax Prep",
-    subtitle: "One-time filing work for the current year, prior year catch-up, or year-end form delivery.",
-    audience: "Best for owners, couples, and businesses that need a return prepared or worker forms filed without changing their monthly bookkeeping plan.",
-    timing: "Order when you need this year's filing completed, last year's return cleaned up, or January form season handled.",
+    subtitle: "One-time filing services for current-year filing, prior-year cleanup, and year-end form work.",
+    audience: "Owners and businesses that need filing support without changing monthly bookkeeping plans.",
+    timing: "Use this when you need filing this year, prior-year returns cleaned up, or January form compliance.",
     services: [
       {
         key: "tax_individual",
@@ -77,7 +52,7 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
         badge: "Current or Prior Year",
         includes: [
           "Federal 1040 return with schedules",
-          "State filing support for the primary state",
+          "Primary state filing support",
           "Organizer review before filing",
           "Secure document checklist after checkout",
         ],
@@ -89,7 +64,7 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
         includes: [
           "1120-S, 1120, or 1065 preparation",
           "Federal and state filing support",
-          "K-1 coordination for owners or partners",
+          "K-1 coordination",
           "Books-to-return review before submission",
         ],
       },
@@ -98,9 +73,9 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
         icon: FileBadge,
         badge: "Year-End Forms",
         includes: [
-          "W-2 or 1099 preparation and e-filing",
+          "W-2 and 1099 preparation and e-filing",
           "Recipient copy distribution support",
-          "Deadline planning and checklist",
+          "Deadline checklist",
           "One-time year-end compliance engagement",
         ],
       },
@@ -109,9 +84,9 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
   {
     id: "business-services",
     title: "Business Services",
-    subtitle: "Operational and compliance support for active businesses that need one-time help outside the monthly plan.",
-    audience: "Best for established businesses that need cleanup, state filings, or payroll implementation without a separate advisory engagement.",
-    timing: "Order when you are behind on books, need compliance filings handled, or need payroll turned on correctly this year.",
+    subtitle: "Operational and compliance services for active businesses needing one-time support.",
+    audience: "Existing businesses handling compliance, payroll setup, strategic review, or cleanup.",
+    timing: "Use this when books are behind, compliance filings are due, or owner-level strategy support is needed.",
     services: [
       {
         key: "registered_agent_services",
@@ -121,7 +96,7 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
           "Registered agent update coordination",
           "State notice routing support",
           "Compliance calendar guidance",
-          "One-time setup for the current filing cycle",
+          "Current-cycle setup and handling",
         ],
       },
       {
@@ -132,7 +107,7 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
           "Annual reports and amendment coordination",
           "State filing checklist and deadlines",
           "Multi-state compliance support",
-          "One-time filing package for the current cycle",
+          "Current-cycle filing package",
         ],
       },
       {
@@ -151,10 +126,10 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
         icon: TrendingUp,
         badge: "Owner Review",
         includes: [
-          "One-time business strategy call",
+          "One-time strategy call",
           "Financial and KPI review packet",
-          "Priority issues and next-step guidance",
-          "Ideal for current-year decisions or cleanup planning",
+          "Priority issues and next steps",
+          "Current-year planning and cleanup guidance",
         ],
       },
       {
@@ -173,9 +148,9 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
   {
     id: "acquisition",
     title: "Acquisition",
-    subtitle: "Due diligence support for buyers reviewing a business, file transfer, or takeover before committing.",
-    audience: "Best for buyers, investors, or operators reviewing another company’s books before acquiring assets, stock, or clients.",
-    timing: "Order before signing, during due diligence, or when inheriting books from another accountant or seller.",
+    subtitle: "Due diligence support before buying a business or taking over historical books.",
+    audience: "Buyers, investors, and operators reviewing financial quality before a transaction.",
+    timing: "Use this before signing or during due diligence when you need risk flags quickly.",
     services: [
       {
         key: "acquisition_file_review",
@@ -183,7 +158,7 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
         badge: "Due Diligence",
         includes: [
           "Financial statement and ledger review",
-          "Risk flag summary before purchase",
+          "Risk flag summary",
           "Cash flow and margin readout",
           "Decision memo for handoff discussion",
         ],
@@ -193,9 +168,9 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
   {
     id: "new-business-opening",
     title: "New Business Opening",
-    subtitle: "Formation and first-time setup services for owners starting operations or formalizing a new entity.",
-    audience: "Best for founders opening a new LLC, getting their EIN, or setting up core admin systems before first revenue or payroll.",
-    timing: "Order when launching a new business this year or formalizing an existing side business into a proper entity.",
+    subtitle: "Formation and first-year setup support for new founders and newly formalized entities.",
+    audience: "Founders launching a new LLC and setting up core operating systems correctly.",
+    timing: "Use this when launching this year or formalizing a side business into a legal entity.",
     services: [
       {
         key: "llc_formation",
@@ -205,14 +180,14 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
           "Formation paperwork support",
           "EIN application assistance",
           "Operating agreement template guidance",
-          "Kickoff checklist for first-year compliance",
+          "First-year compliance kickoff checklist",
         ],
       },
     ],
   },
 ]
 
-function formatService(serviceKey: ServiceKey) {
+function getService(serviceKey: ServiceKey) {
   return ONE_TIME_SERVICES[serviceKey]
 }
 
@@ -250,50 +225,44 @@ export default function ServicesPage() {
   }
 
   return (
-    <div className="space-y-8">
-      <section className="relative overflow-hidden rounded-[28px] border border-slate-200 bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.18),_transparent_32%),radial-gradient(circle_at_top_right,_rgba(37,99,235,0.14),_transparent_28%),linear-gradient(135deg,_#ffffff,_#f8fafc_55%,_#eef6ff)] p-6 shadow-sm">
-        <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.45),transparent)]" />
-        <div className="relative space-y-4">
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge className="border-slate-200 bg-white/90 text-slate-700">
-              <Sparkles className="mr-1 h-3 w-3" />
-              Premium Add-on Services
-            </Badge>
-            <Badge variant="outline" className="bg-white/70">
-              One-time engagements
-            </Badge>
-          </div>
-          <div className="max-w-3xl space-y-2">
-            <h1 className="text-3xl font-semibold tracking-tight text-slate-900">Order specialized services without leaving your client portal.</h1>
-            <p className="text-sm leading-6 text-slate-600 md:text-base">
-              These are one-time arrangements for the current year, prior year cleanup, launch work, or transaction-specific projects.
-              After checkout, our team reviews your order, schedules a kickoff call, and sends the exact document checklist needed to start.
-            </p>
-          </div>
-          <div className="grid gap-3 md:grid-cols-3">
-            {[
-              "Choose the one-time service that matches your current need.",
-              "Complete secure checkout or request a quote for larger cleanup work.",
-              "Our team schedules the kickoff call and document intake from there.",
-            ].map((step, index) => (
-              <div key={step} className="rounded-2xl border border-white/70 bg-white/80 px-4 py-3 text-sm text-slate-700 shadow-sm">
-                <div className="mb-2 flex h-7 w-7 items-center justify-center rounded-full bg-slate-900 text-xs font-semibold text-white">
-                  {index + 1}
-                </div>
-                {step}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <h1 className="text-2xl font-bold tracking-tight">Add-on Services</h1>
+        <p className="text-sm text-muted-foreground">
+          One-time services for filing, compliance, setup, and due diligence ordered directly from your dashboard.
+        </p>
+      </div>
+
+      <Card className="border-primary/20 bg-primary/5">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">How this works</CardTitle>
+          <CardDescription>
+            Choose a one-time service, complete secure checkout, and the team schedules kickoff within 1 business day with a document checklist.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-3 sm:grid-cols-3">
+          {[
+            "Pick the service matching your current need.",
+            "Checkout now or request a quote for cleanup projects.",
+            "We confirm scope, call date, and required documents.",
+          ].map((item, index) => (
+            <div key={item} className="rounded-xl border bg-background px-3 py-3 text-sm text-muted-foreground">
+              <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-foreground">
+                Step {index + 1}
+              </span>
+              {item}
+            </div>
+          ))}
+        </CardContent>
+      </Card>
 
       {justPaid && paidService && (
-        <div className="flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4">
-          <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" aria-hidden="true" />
-          <div className="space-y-1">
-            <p className="font-semibold text-emerald-950">Service ordered successfully</p>
-            <p className="text-sm text-emerald-800">
-              Your order is in. Our team will reach out within 1 business day to confirm scope, timing, and the documents needed to start.
+        <div className="flex items-start gap-3 rounded-2xl border border-green-300/40 bg-green-50 px-4 py-3">
+          <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-green-700" aria-hidden="true" />
+          <div>
+            <p className="text-sm font-semibold text-green-900">Service ordered successfully</p>
+            <p className="text-sm text-green-800">
+              Our team will contact you within 1 business day to start onboarding this engagement.
             </p>
           </div>
         </div>
@@ -305,107 +274,102 @@ export default function ServicesPage() {
         </div>
       )}
 
-      <div className="space-y-6">
-        {SERVICE_CATEGORIES.map((category, categoryIndex) => {
-          const palette = CATEGORY_STYLES[categoryIndex % CATEGORY_STYLES.length]
-
-          return (
-            <section key={category.id} className={`rounded-[28px] border p-5 shadow-sm md:p-6 ${palette.shell}`}>
-              <div className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
-                <div className="space-y-4">
-                  <div className="space-y-3">
-                    <Badge className={palette.badge}>
-                      <BadgeCheck className="mr-1 h-3 w-3" />
-                      {category.title}
-                    </Badge>
-                    <div>
-                      <h2 className="text-2xl font-semibold tracking-tight text-slate-900">{category.title}</h2>
-                      <p className="mt-2 text-sm leading-6 text-slate-700">{category.subtitle}</p>
-                    </div>
-                  </div>
-
-                  <div className="rounded-2xl border border-white/70 bg-white/80 p-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Who It&apos;s For</p>
-                    <p className="mt-2 text-sm leading-6 text-slate-700">{category.audience}</p>
-                  </div>
-
-                  <div className="rounded-2xl border border-white/70 bg-white/80 p-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">When To Order</p>
-                    <p className="mt-2 text-sm leading-6 text-slate-700">{category.timing}</p>
-                  </div>
+      <div className="space-y-5">
+        {SERVICE_CATEGORIES.map((category) => (
+          <Card key={category.id}>
+            <CardHeader className="space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <CardTitle className="text-xl">{category.title}</CardTitle>
+                <Badge variant="secondary">{category.services.length} services</Badge>
+              </div>
+              <CardDescription className="text-sm">{category.subtitle}</CardDescription>
+              <div className="grid gap-3 md:grid-cols-2">
+                <div className="rounded-xl border bg-muted/30 px-3 py-3 text-sm text-muted-foreground">
+                  <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-foreground">
+                    Who It&apos;s For
+                  </span>
+                  {category.audience}
                 </div>
-
-                <div className="grid gap-4 xl:grid-cols-2 2xl:grid-cols-3">
-                  {category.services.map(({ key, icon: Icon, badge, includes }) => {
-                    const isCatchup = key === "catchup"
-                    const service = isCatchup ? null : formatService(key)
-                    const isHighlighted = highlight === key
-
-                    return (
-                      <Card
-                        key={key}
-                        className={`border-white/80 bg-white/90 shadow-sm ${isHighlighted ? "ring-2 ring-primary/30" : ""}`}
-                      >
-                        <CardHeader className="space-y-4 pb-3">
-                          <div className="flex items-start justify-between gap-3">
-                            <div className={`flex h-11 w-11 items-center justify-center rounded-2xl ${palette.icon}`}>
-                              <Icon className="h-5 w-5" aria-hidden="true" />
-                            </div>
-                            <div className="flex flex-col items-end gap-2">
-                              {badge && <Badge variant="outline">{badge}</Badge>}
-                              <span className="text-xl font-black text-slate-900">
-                                {isCatchup ? "Custom Quote" : service?.displayPrice}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="space-y-1">
-                            <CardTitle className="text-base text-slate-950">
-                              {isCatchup ? "Catchup Bookkeeping" : service?.name}
-                            </CardTitle>
-                            <CardDescription className="text-sm text-slate-600">
-                              {isCatchup
-                                ? "Historical reconciliation and cleanup for businesses that are behind on their books."
-                                : service?.description}
-                            </CardDescription>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                          <ul className="space-y-2">
-                            {includes.map((item) => (
-                              <li key={item} className="flex gap-2 text-sm text-slate-600">
-                                <div className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-                                <span>{item}</span>
-                              </li>
-                            ))}
-                          </ul>
-
-                          <Button
-                            className="w-full"
-                            variant={isHighlighted ? "default" : "outline"}
-                            disabled={loading === key}
-                            onClick={() => handleOrder(key)}
-                          >
-                            {loading === key ? (
-                              <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
-                                Processing...
-                              </>
-                            ) : (
-                              <>
-                                {isCatchup ? "Request a Quote" : "Add to Account"}
-                                <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
-                              </>
-                            )}
-                          </Button>
-                        </CardContent>
-                      </Card>
-                    )
-                  })}
+                <div className="rounded-xl border bg-muted/30 px-3 py-3 text-sm text-muted-foreground">
+                  <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-foreground">
+                    When To Order
+                  </span>
+                  {category.timing}
                 </div>
               </div>
-            </section>
-          )
-        })}
+            </CardHeader>
+
+            <CardContent>
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                {category.services.map(({ key, icon: Icon, badge, includes }) => {
+                  const isCatchup = key === "catchup"
+                  const service = isCatchup ? null : getService(key)
+                  const isHighlighted = highlight === key
+
+                  return (
+                    <div
+                      key={key}
+                      className={`rounded-2xl border bg-background p-4 ${isHighlighted ? "border-primary ring-1 ring-primary/30" : ""}`}
+                    >
+                      <div className="mb-3 flex items-start justify-between gap-2">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                          <Icon className="h-5 w-5" aria-hidden="true" />
+                        </div>
+                        <div className="text-right">
+                          {badge && (
+                            <Badge variant="outline" className="mb-2 text-[11px]">
+                              {badge}
+                            </Badge>
+                          )}
+                          <p className="text-lg font-bold leading-none">
+                            {isCatchup ? "Custom Quote" : service?.displayPrice}
+                          </p>
+                        </div>
+                      </div>
+
+                      <h3 className="text-sm font-semibold">
+                        {isCatchup ? "Catchup Bookkeeping" : service?.name}
+                      </h3>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        {isCatchup
+                          ? "Historical reconciliation and cleanup for businesses behind on books."
+                          : service?.description}
+                      </p>
+
+                      <ul className="mt-3 space-y-1.5">
+                        {includes.map((item) => (
+                          <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
+                            <div className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <Button
+                        className="mt-4 w-full"
+                        variant={isHighlighted ? "default" : "outline"}
+                        disabled={loading === key}
+                        onClick={() => handleOrder(key)}
+                      >
+                        {loading === key ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
+                            Processing...
+                          </>
+                        ) : (
+                          <>
+                            {isCatchup ? "Request a Quote" : "Add to Account"}
+                            <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  )
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
     </div>
   )
