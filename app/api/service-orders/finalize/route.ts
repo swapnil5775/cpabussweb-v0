@@ -55,6 +55,9 @@ export async function POST(request: Request) {
   if (session.mode !== "payment") {
     return NextResponse.json({ error: "Session is not a one-time service payment" }, { status: 400 })
   }
+  if (session.payment_status !== "paid") {
+    return NextResponse.json({ error: "Payment not completed yet" }, { status: 409 })
+  }
 
   const userId = session.metadata?.user_id
   if (!userId || userId !== user.id) {
@@ -86,5 +89,15 @@ export async function POST(request: Request) {
     .maybeSingle()
 
   if (createError) return NextResponse.json({ error: createError.message }, { status: 500 })
-  return NextResponse.json({ ok: true, order_id: created?.id ?? null })
+  if (created?.id) return NextResponse.json({ ok: true, order_id: created.id })
+
+  const { data: fetched } = await admin
+    .from("service_orders")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("stripe_checkout_session_id", sessionId)
+    .maybeSingle()
+
+  if (fetched?.id) return NextResponse.json({ ok: true, order_id: fetched.id })
+  return NextResponse.json({ ok: false, order_id: null }, { status: 202 })
 }
