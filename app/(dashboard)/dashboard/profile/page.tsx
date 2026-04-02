@@ -333,56 +333,82 @@ export default function ProfilePage() {
       </div>
 
       <Card>
-        <CardHeader className="pb-3">
+        <CardHeader className="pb-2">
           <CardTitle className="text-base">Account Actions</CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-2 sm:grid-cols-2">
+        <CardContent className="flex flex-wrap items-center gap-2">
           <Link href="/dashboard/support">
-            <Button variant="outline" className="w-full justify-start gap-2 bg-transparent">
-              <MessageSquare className="h-4 w-4" aria-hidden="true" />
+            <Button variant="outline" size="sm" className="h-8 rounded-full gap-1.5 px-3 bg-transparent">
+              <MessageSquare className="h-3.5 w-3.5" aria-hidden="true" />
               Message Team
             </Button>
           </Link>
           <form action="/api/stripe/create-portal" method="POST">
-            <Button variant="outline" className="w-full justify-start gap-2 bg-transparent" type="submit">
-              <CreditCard className="h-4 w-4" aria-hidden="true" />
+            <Button variant="outline" size="sm" className="h-8 rounded-full gap-1.5 px-3 bg-transparent" type="submit">
+              <CreditCard className="h-3.5 w-3.5" aria-hidden="true" />
               Manage Billing
             </Button>
           </form>
+          <p className="w-full pt-1 text-xs text-muted-foreground">
+            Quick actions for support and subscription management.
+          </p>
         </CardContent>
       </Card>
 
       <Card>
-        <CardHeader className="pb-3">
+        <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-base">
             <Gift className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
             Referral Program
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid gap-3 md:grid-cols-[1fr_auto]">
-            <div className="rounded-lg bg-muted px-3 py-2 text-sm font-mono text-muted-foreground truncate">{referralLink}</div>
-            <Button size="sm" variant="outline" className="gap-1.5 bg-transparent" onClick={copyReferralLink} disabled={!referralCode}>
+        <CardContent className="space-y-2.5">
+          <div className="flex items-center gap-2">
+            <div className="min-w-0 flex-1 rounded-lg border bg-muted/40 px-3 py-1.5 text-[13px] font-mono text-muted-foreground truncate">
+              {referralLink}
+            </div>
+            <Button
+              size="icon"
+              variant="outline"
+              className="h-8 w-8 shrink-0 bg-transparent"
+              onClick={copyReferralLink}
+              disabled={!referralCode}
+              title={refCopied ? "Copied" : "Copy referral link"}
+            >
               {refCopied ? <Check className="h-3.5 w-3.5 text-green-600" /> : <Copy className="h-3.5 w-3.5" />}
-              {refCopied ? "Copied!" : "Copy Link"}
             </Button>
           </div>
-          <div className="grid gap-3 md:grid-cols-[1fr_auto]">
+          <div className="flex items-center gap-2">
             <Input
               type="email"
               value={refInviteEmail}
               onChange={(e) => setRefInviteEmail(e.target.value)}
               placeholder="Invite by email (owner@company.com)"
+              className="h-9"
               disabled={refPending || referralInvites.length >= 3}
             />
-            <Button size="sm" className="gap-1.5" onClick={sendReferralInvite} disabled={refPending || !refInviteEmail || referralInvites.length >= 3}>
+            <Button
+              size="sm"
+              className="h-9 shrink-0 gap-1.5 px-3"
+              onClick={sendReferralInvite}
+              disabled={refPending || !refInviteEmail || referralInvites.length >= 3}
+            >
               <Send className="h-3.5 w-3.5" />
-              {refPending ? "Sending..." : "Send Invite"}
+              {refPending ? "Sending" : "Send"}
             </Button>
           </div>
-          <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
-            <p>{referralInvites.length}/3 invites used</p>
-            <p>{referralAvailableCredits} credits available</p>
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="secondary" className="h-6 rounded-full px-2.5 text-[11px]">
+              {referralInvites.length}/3 invites used
+            </Badge>
+            <Badge variant="secondary" className="h-6 rounded-full px-2.5 text-[11px]">
+              {referralAvailableCredits} credits available
+            </Badge>
+            {refCopied && (
+              <Badge className="h-6 rounded-full px-2.5 text-[11px] bg-green-600">
+                Link copied
+              </Badge>
+            )}
           </div>
           {refInviteMsg && (
             <p className={`text-xs ${refInviteMsg === "Invite sent." ? "text-green-600" : "text-destructive"}`}>{refInviteMsg}</p>
