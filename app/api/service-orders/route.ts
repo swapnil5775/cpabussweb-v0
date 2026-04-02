@@ -39,12 +39,11 @@ export async function GET(request: Request) {
     .from("service_orders")
     .select("id, order_number, service_type, amount_cents, status, intake_status, created_at, updated_at, stripe_checkout_session_id")
     .eq("user_id", user.id)
-    .eq("organization_id", organizationId)
     .order("created_at", { ascending: false })
 
-  if (sessionId) {
-    query = query.eq("stripe_checkout_session_id", sessionId).limit(1)
-  }
+  query = sessionId
+    ? query.eq("stripe_checkout_session_id", sessionId).limit(1)
+    : query.eq("organization_id", organizationId)
 
   const { data, error: ordersError } = await query
   if (ordersError) {

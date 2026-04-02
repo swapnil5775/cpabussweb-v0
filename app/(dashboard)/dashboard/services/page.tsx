@@ -232,6 +232,13 @@ export default function ServicesPage() {
     let cancelled = false
     async function pollForOrderBySession() {
       setResumeLookupLoading(true)
+
+      await fetch("/api/service-orders/finalize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ session_id: sessionId }),
+      }).catch(() => null)
+
       for (let attempt = 0; attempt < 7; attempt += 1) {
         const response = await fetch(`/api/service-orders?session_id=${encodeURIComponent(sessionId)}`)
         const data = await response.json().catch(() => ({}))
