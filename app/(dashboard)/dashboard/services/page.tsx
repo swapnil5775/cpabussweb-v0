@@ -6,6 +6,7 @@ import {
   ArrowRight,
   BadgeCheck,
   BookOpen,
+  Briefcase,
   Building2,
   CalendarRange,
   CheckCircle2,
@@ -15,6 +16,7 @@ import {
   SearchCheck,
   Shield,
   Sparkles,
+  TrendingUp,
   Users,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -112,6 +114,17 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
     timing: "Order when you are behind on books, need compliance filings handled, or need payroll turned on correctly this year.",
     services: [
       {
+        key: "registered_agent_services",
+        icon: Briefcase,
+        badge: "Annual Compliance",
+        includes: [
+          "Registered agent update coordination",
+          "State notice routing support",
+          "Compliance calendar guidance",
+          "One-time setup for the current filing cycle",
+        ],
+      },
+      {
         key: "state_filings_support",
         icon: Shield,
         badge: "Compliance",
@@ -131,6 +144,17 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
           "Pay schedule and direct deposit setup",
           "Employee onboarding baseline",
           "First-run readiness checklist",
+        ],
+      },
+      {
+        key: "business_consultation_review",
+        icon: TrendingUp,
+        badge: "Owner Review",
+        includes: [
+          "One-time business strategy call",
+          "Financial and KPI review packet",
+          "Priority issues and next-step guidance",
+          "Ideal for current-year decisions or cleanup planning",
         ],
       },
       {
@@ -311,7 +335,7 @@ export default function ServicesPage() {
                   </div>
                 </div>
 
-                <div className="grid gap-4 xl:grid-cols-2">
+                <div className="grid gap-4 xl:grid-cols-2 2xl:grid-cols-3">
                   {category.services.map(({ key, icon: Icon, badge, includes }) => {
                     const isCatchup = key === "catchup"
                     const service = isCatchup ? null : formatService(key)

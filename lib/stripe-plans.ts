@@ -117,6 +117,20 @@ export const ONE_TIME_SERVICES = {
     displayPrice: "$199",
     trigger: "Entity already formed and needs ongoing compliance",
   },
+  registered_agent_services: {
+    name: "Registered Agent Services",
+    description: "Registered agent coordination, state notices, and annual compliance support.",
+    priceId: process.env.STRIPE_PRICE_REGISTERED_AGENT_SERVICES!,
+    displayPrice: "$149",
+    trigger: "Business needs registered agent updates or annual compliance handling",
+  },
+  business_consultation_review: {
+    name: "Business Consultation & Financial Review",
+    description: "A one-time strategy session with financial review, KPI analysis, and next-step recommendations.",
+    priceId: process.env.STRIPE_PRICE_BUSINESS_CONSULTATION_REVIEW!,
+    displayPrice: "$249",
+    trigger: "Owner wants strategic guidance or a one-time financial review",
+  },
   acquisition_file_review: {
     name: "Acquisition File Review",
     description: "Financial due diligence review for a business acquisition or purchase decision.",
