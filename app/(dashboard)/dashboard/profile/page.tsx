@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { CheckCircle2, Mail, User, Building2, MapPin, Loader2, AlertCircle, Briefcase, Share2, Copy, Check, RefreshCw, Trash2 } from "lucide-react"
+import { CheckCircle2, Mail, User, Building2, MapPin, Loader2, AlertCircle, Briefcase, Share2, Copy, Check, RefreshCw, Trash2, Gift, Send } from "lucide-react"
 
 type Profile = {
   full_name: string
@@ -63,8 +63,11 @@ const emptyProfile: Profile = {
 }
 
 type CpaTokenRow = { id: string; client_user_id: string; token: string; label: string | null; invited_email: string | null; created_at: string }
+type Invite = { id: string; invited_email: string; status: string; created_at: string }
+type Credit = { id: string; redeemed: boolean; created_at: string }
 
 const CPA_SITE_URL = "https://www.bookkeeping.business"
+const SITE_URL = "https://www.bookkeeping.business"
 
 export default function ProfilePage() {
   const supabase = createClient()
@@ -87,6 +90,13 @@ export default function ProfilePage() {
   const [cpaLoading, setCpaLoading] = useState(false)
   const [cpaCopied, setCpaCopied] = useState(false)
   const [cpaError, setCpaError] = useState("")
+  const [referralCode, setReferralCode] = useState<string | null>(null)
+  const [referralInvites, setReferralInvites] = useState<Invite[]>([])
+  const [referralCredits, setReferralCredits] = useState<Credit[]>([])
+  const [refCopied, setRefCopied] = useState(false)
+  const [refInviteEmail, setRefInviteEmail] = useState("")
+  const [refInviteMsg, setRefInviteMsg] = useState("")
+  const [refPending, startRefTransition] = useTransition()
 
   useEffect(() => {
     async function load() {
@@ -130,6 +140,13 @@ export default function ProfilePage() {
       if (cpaRes.ok) {
         const cpaData = await cpaRes.json()
         setCpaToken(cpaData.token ?? null)
+      }
+      const refRes = await fetch("/api/referral")
+      if (refRes.ok) {
+        const refData = await refRes.json()
+        setReferralCode(refData.code ?? null)
+        setReferralInvites(refData.invites ?? [])
+        setReferralCredits(refData.credits ?? [])
       }
 
       setLoading(false)
@@ -194,6 +211,42 @@ export default function ProfilePage() {
     navigator.clipboard.writeText(`${CPA_SITE_URL}/cpa/${cpaToken.token}`)
     setCpaCopied(true)
     setTimeout(() => setCpaCopied(false), 2000)
+  }
+
+  const referralLink = referralCode ? `${SITE_URL}/r/${referralCode}` : "Loading..."
+  const referralAvailableCredits = referralCredits.filter((credit) => !credit.redeemed).length
+
+  function copyReferralLink() {
+    if (!referralCode) return
+    navigator.clipboard.writeText(referralLink)
+    setRefCopied(true)
+    setTimeout(() => setRefCopied(false), 2000)
+  }
+
+  function sendReferralInvite() {
+    if (!refInviteEmail.trim() || referralInvites.length >= 3) return
+    startRefTransition(async () => {
+      const res = await fetch("/api/referral/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: refInviteEmail.trim() }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setRefInviteEmail("")
+        setRefInviteMsg("Invite sent.")
+        const refreshRes = await fetch("/api/referral")
+        if (refreshRes.ok) {
+          const refreshData = await refreshRes.json()
+          setReferralCode(refreshData.code ?? null)
+          setReferralInvites(refreshData.invites ?? [])
+          setReferralCredits(refreshData.credits ?? [])
+        }
+      } else {
+        setRefInviteMsg(data.error ?? "Failed to send invite.")
+      }
+      setTimeout(() => setRefInviteMsg(""), 3500)
+    })
   }
 
   function set(field: keyof Profile, value: string) {
@@ -272,11 +325,49 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="space-y-8 max-w-2xl">
+    <div className="space-y-6 max-w-4xl">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Your Profile</h1>
-        <p className="text-sm text-muted-foreground mt-1">Keep your contact and address details up to date.</p>
+        <p className="text-sm text-muted-foreground mt-1">Manage account details, referral invites, and secure access links.</p>
       </div>
+
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Gift className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+            Referral Program
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid gap-3 md:grid-cols-[1fr_auto]">
+            <div className="rounded-lg bg-muted px-3 py-2 text-sm font-mono text-muted-foreground truncate">{referralLink}</div>
+            <Button size="sm" variant="outline" className="gap-1.5 bg-transparent" onClick={copyReferralLink} disabled={!referralCode}>
+              {refCopied ? <Check className="h-3.5 w-3.5 text-green-600" /> : <Copy className="h-3.5 w-3.5" />}
+              {refCopied ? "Copied!" : "Copy Link"}
+            </Button>
+          </div>
+          <div className="grid gap-3 md:grid-cols-[1fr_auto]">
+            <Input
+              type="email"
+              value={refInviteEmail}
+              onChange={(e) => setRefInviteEmail(e.target.value)}
+              placeholder="Invite by email (owner@company.com)"
+              disabled={refPending || referralInvites.length >= 3}
+            />
+            <Button size="sm" className="gap-1.5" onClick={sendReferralInvite} disabled={refPending || !refInviteEmail || referralInvites.length >= 3}>
+              <Send className="h-3.5 w-3.5" />
+              {refPending ? "Sending..." : "Send Invite"}
+            </Button>
+          </div>
+          <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
+            <p>{referralInvites.length}/3 invites used</p>
+            <p>{referralAvailableCredits} credits available</p>
+          </div>
+          {refInviteMsg && (
+            <p className={`text-xs ${refInviteMsg === "Invite sent." ? "text-green-600" : "text-destructive"}`}>{refInviteMsg}</p>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Personal info */}
       <Card>

@@ -2,13 +2,13 @@
 
 import { useState, useEffect, useRef, useTransition } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import {
-  MessageSquare, Send, Plus, ArrowLeft, Lock, ArrowRight, Loader2, CheckCircle2
+  MessageSquare, Send, Plus, ArrowLeft, Lock, ArrowRight, Loader2, CheckCircle2, RefreshCw
 } from "lucide-react"
 import Link from "next/link"
 
@@ -205,24 +205,27 @@ export default function SupportPage() {
   // List view
   return (
     <div className="space-y-6 max-w-2xl">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Support & Requests</h1>
-          <p className="text-sm text-muted-foreground mt-1">Ask questions or submit requests to your bookkeeping team.</p>
+          <h1 className="text-2xl font-bold tracking-tight">Support</h1>
+          <p className="text-xs text-muted-foreground mt-1">Open a ticket in seconds. Team replies within 1 business day.</p>
         </div>
-        <Button onClick={() => { setShowNew(true); setSendMsg(null) }} className="gap-2 shrink-0">
-          <Plus className="h-4 w-4" aria-hidden="true" />
-          New Request
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={load} className="gap-1.5 bg-transparent">
+            <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
+            Refresh
+          </Button>
+          <Button size="sm" onClick={() => { setShowNew(true); setSendMsg(null) }} className="gap-2 shrink-0">
+            <Plus className="h-4 w-4" aria-hidden="true" />
+            New Ticket
+          </Button>
+        </div>
       </div>
 
       {/* New ticket form */}
       {showNew && (
         <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">New Support Request</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 pt-6">
             <div className="space-y-1.5">
               <Label htmlFor="subject">Subject</Label>
               <Input
@@ -238,7 +241,7 @@ export default function SupportPage() {
                 id="message"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Describe your question or request in detail…"
+                placeholder="Describe your question or request in detail..."
                 rows={4}
                 className="resize-none"
               />
@@ -249,12 +252,12 @@ export default function SupportPage() {
                 {sendMsg.text}
               </div>
             )}
-            <div className="flex gap-3">
-              <Button onClick={handleSubmitNew} disabled={sending || !subject.trim() || !message.trim()} className="gap-2">
+            <div className="flex items-center gap-2">
+              <Button size="sm" onClick={handleSubmitNew} disabled={sending || !subject.trim() || !message.trim()} className="gap-2">
                 {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" aria-hidden="true" />}
-                Send Request
+                Send Ticket
               </Button>
-              <Button variant="ghost" onClick={() => setShowNew(false)}>Cancel</Button>
+              <Button size="sm" variant="ghost" onClick={() => setShowNew(false)}>Cancel</Button>
             </div>
           </CardContent>
         </Card>
@@ -262,13 +265,13 @@ export default function SupportPage() {
 
       {/* Ticket list */}
       {tickets.length === 0 && !showNew ? (
-        <div className="rounded-2xl border-2 border-dashed border-border px-6 py-14 text-center">
+        <div className="rounded-2xl border-2 border-dashed border-border px-6 py-10 text-center">
           <MessageSquare className="h-8 w-8 mx-auto text-muted-foreground mb-3" aria-hidden="true" />
-          <p className="text-sm font-medium">No requests yet</p>
-          <p className="text-xs text-muted-foreground mt-1">Submit a question or request and your team will respond within 1 business day.</p>
+          <p className="text-sm font-medium">No tickets yet</p>
+          <p className="text-xs text-muted-foreground mt-1">Create your first support ticket in one click.</p>
           <Button className="mt-4 gap-2" size="sm" onClick={() => setShowNew(true)}>
             <Plus className="h-4 w-4" aria-hidden="true" />
-            New Request
+            Open Ticket
           </Button>
         </div>
       ) : (
