@@ -4,6 +4,7 @@ import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 import { createClient as createServiceClient } from "@supabase/supabase-js"
+import { resolveActiveOrganizationId } from "@/lib/organizations"
 
 async function getUser() {
   const cookieStore = await cookies()
@@ -30,12 +31,15 @@ const admin = () => createServiceClient(
 export async function GET() {
   const { data: { user }, error } = await getUser()
   if (error || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  const cookieStore = await cookies()
+  const orgId = await resolveActiveOrganizationId({ admin: admin(), userId: user.id, cookieStore, suggestedName: "Primary Organization" })
 
   const { data: profile } = await admin()
     .from("client_profiles")
     .select("full_name, phone, business_address_line1, business_address_line2, business_city, business_state, business_zip, personal_address_line1, personal_address_line2, personal_city, personal_state, personal_zip, secondary_email, secondary_email_verified, cpa_firm_name, cpa_full_name, cpa_email, cpa_phone, cpa_address_line1, cpa_address_line2, cpa_city, cpa_state, cpa_zip")
     .eq("user_id", user.id)
-    .single()
+    .eq("organization_id", orgId)
+    .maybeSingle()
 
   return NextResponse.json({ profile: profile ?? null })
 }
@@ -43,6 +47,8 @@ export async function GET() {
 export async function POST(request: Request) {
   const { data: { user }, error } = await getUser()
   if (error || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  const cookieStore = await cookies()
+  const orgId = await resolveActiveOrganizationId({ admin: admin(), userId: user.id, cookieStore, suggestedName: "Primary Organization" })
 
   const body = await request.json()
   const {
@@ -59,7 +65,8 @@ export async function POST(request: Request) {
     .from("client_profiles")
     .select("secondary_email, secondary_email_verified")
     .eq("user_id", user.id)
-    .single()
+    .eq("organization_id", orgId)
+    .maybeSingle()
 
   const emailChanged = existing?.secondary_email !== secondary_email
   const secondary_email_verified = emailChanged ? false : (existing?.secondary_email_verified ?? false)
@@ -68,6 +75,7 @@ export async function POST(request: Request) {
     .from("client_profiles")
     .upsert({
       user_id: user.id,
+      organization_id: orgId,
       full_name: full_name ?? null,
       phone: phone ?? null,
       business_address_line1: business_address_line1 ?? null,
@@ -92,7 +100,7 @@ export async function POST(request: Request) {
       cpa_state: cpa_state || null,
       cpa_zip: cpa_zip || null,
       updated_at: new Date().toISOString(),
-    }, { onConflict: "user_id" })
+    }, { onConflict: "organization_id" })
 
   if (upsertError) {
     console.error("Profile save error:", upsertError)

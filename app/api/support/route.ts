@@ -5,6 +5,7 @@ import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 import { createClient as createServiceClient } from "@supabase/supabase-js"
 import { Resend } from "resend"
+import { resolveActiveOrganizationId } from "@/lib/organizations"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const NOTIFICATION_EMAIL = process.env.NOTIFICATION_EMAIL ?? "swapnil5775@gmail.com"
@@ -35,11 +36,14 @@ const admin = () => createServiceClient(
 export async function GET() {
   const { data: { user }, error } = await getAuthUser()
   if (error || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  const cookieStore = await cookies()
+  const orgId = await resolveActiveOrganizationId({ admin: admin(), userId: user.id, cookieStore, suggestedName: "Primary Organization" })
 
   const { data: tickets } = await admin()
     .from("support_tickets")
     .select("*, support_messages(id, body, is_staff, created_at)")
     .eq("user_id", user.id)
+    .eq("organization_id", orgId)
     .order("updated_at", { ascending: false })
 
   return NextResponse.json({ tickets: tickets ?? [] })
@@ -49,19 +53,23 @@ export async function GET() {
 export async function POST(request: Request) {
   const { data: { user }, error } = await getAuthUser()
   if (error || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  const cookieStore = await cookies()
+  const orgId = await resolveActiveOrganizationId({ admin: admin(), userId: user.id, cookieStore, suggestedName: "Primary Organization" })
 
   // Check paid plan
   const { data: subscription } = await admin()
     .from("subscriptions")
     .select("status, plan")
     .eq("user_id", user.id)
-    .single()
+    .eq("organization_id", orgId)
+    .maybeSingle()
 
   const { data: bizProfile } = await admin()
     .from("business_profiles")
     .select("selected_plan")
     .eq("user_id", user.id)
-    .single()
+    .eq("organization_id", orgId)
+    .maybeSingle()
 
   const isPaid = subscription?.status === "active" || subscription?.status === "trialing"
   const isFree = !isPaid || bizProfile?.selected_plan === "free"
@@ -85,7 +93,7 @@ export async function POST(request: Request) {
 
     const { data: ticket, error: ticketErr } = await admin()
       .from("support_tickets")
-      .insert({ user_id: user.id, subject: subject.trim(), status: "open" })
+      .insert({ user_id: user.id, organization_id: orgId, subject: subject.trim(), status: "open" })
       .select()
       .single()
 
@@ -100,11 +108,12 @@ export async function POST(request: Request) {
       .update({ updated_at: new Date().toISOString(), status: "open" })
       .eq("id", ticketId)
       .eq("user_id", user.id)
+      .eq("organization_id", orgId)
   }
 
   const { error: msgErr } = await admin()
     .from("support_messages")
-    .insert({ ticket_id: ticketId, user_id: user.id, body: message.trim(), is_staff: false })
+    .insert({ ticket_id: ticketId, user_id: user.id, organization_id: orgId, body: message.trim(), is_staff: false })
 
   if (msgErr) {
     return NextResponse.json({ error: "Failed to send message" }, { status: 500 })

@@ -10,6 +10,17 @@ const admin = createAdmin(
 )
 const ADMIN_EMAIL = process.env.NOTIFICATION_EMAIL!
 
+async function resolveOrganizationId(userId: string, organizationId?: string | null) {
+  if (organizationId) return organizationId
+  const { data: defaultOrg } = await admin
+    .from("organizations")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("is_default", true)
+    .maybeSingle()
+  return defaultOrg?.id ?? null
+}
+
 async function requireAdmin() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -25,13 +36,17 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url)
   const userId = searchParams.get("user_id")
+  const organizationId = searchParams.get("organization_id")
   if (!userId) return NextResponse.json({ error: "user_id required" }, { status: 400 })
+  const orgId = await resolveOrganizationId(userId, organizationId)
+  if (!orgId) return NextResponse.json({ error: "organization_id required" }, { status: 400 })
 
   const { data: gc } = await admin
     .from("gusto_companies")
     .select("*")
     .eq("user_id", userId)
-    .single()
+    .eq("organization_id", orgId)
+    .maybeSingle()
 
   if (!gc) return NextResponse.json({ connected: false })
 
@@ -61,8 +76,10 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json()
-  const { action, user_id } = body
+  const { action, user_id, organization_id } = body
   if (!user_id) return NextResponse.json({ error: "user_id required" }, { status: 400 })
+  const orgId = await resolveOrganizationId(user_id, organization_id)
+  if (!orgId) return NextResponse.json({ error: "organization_id required" }, { status: 400 })
 
   // --- Create company ---
   if (action === "create_company") {
@@ -77,7 +94,8 @@ export async function POST(request: Request) {
       .from("client_profiles")
       .select("full_name")
       .eq("user_id", user_id)
-      .single()
+      .eq("organization_id", orgId)
+      .maybeSingle()
 
     const nameParts = (cp?.full_name ?? "Business Owner").split(" ")
     const first_name = nameParts[0]
@@ -98,12 +116,13 @@ export async function POST(request: Request) {
 
     await admin.from("gusto_companies").upsert({
       user_id,
+      organization_id: orgId,
       company_uuid: result.company_uuid,
       company_name,
       access_token: result.access_token,
       setup_status: "active",
       updated_at: new Date().toISOString(),
-    }, { onConflict: "user_id" })
+    }, { onConflict: "organization_id" })
 
     return NextResponse.json({ ok: true, company_uuid: result.company_uuid })
   }
@@ -117,13 +136,14 @@ export async function POST(request: Request) {
 
     const { error: upsertErr } = await admin.from("gusto_companies").upsert({
       user_id,
+      organization_id: orgId,
       company_uuid,
       company_name: company_name ?? company_uuid,
       access_token,
       refresh_token: refresh_token ?? null,
       setup_status: "active",
       updated_at: new Date().toISOString(),
-    }, { onConflict: "user_id" })
+    }, { onConflict: "organization_id" })
 
     if (upsertErr) {
       console.error("Gusto link_existing upsert error:", upsertErr)
@@ -144,7 +164,8 @@ export async function POST(request: Request) {
       .from("gusto_companies")
       .select("company_uuid, access_token")
       .eq("user_id", user_id)
-      .single()
+      .eq("organization_id", orgId)
+      .maybeSingle()
 
     if (!gc) return NextResponse.json({ error: "Gusto company not set up for this client" }, { status: 400 })
 

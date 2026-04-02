@@ -3,6 +3,8 @@ import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { createClient as createAdmin } from "@supabase/supabase-js"
 import { qboFetch } from "@/lib/qbo"
+import { cookies } from "next/headers"
+import { resolveActiveOrganizationId } from "@/lib/organizations"
 
 const admin = createAdmin(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -13,12 +15,20 @@ export async function GET() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  const cookieStore = await cookies()
+  const orgId = await resolveActiveOrganizationId({
+    admin,
+    userId: user.id,
+    cookieStore,
+    suggestedName: "Primary Organization",
+  })
 
   const { data: conn } = await admin
     .from("qbo_connections")
     .select("realm_id, company_name, connected_at")
     .eq("user_id", user.id)
-    .single()
+    .eq("organization_id", orgId)
+    .maybeSingle()
 
   if (!conn) return NextResponse.json({ connected: false })
 
@@ -28,8 +38,8 @@ export async function GET() {
   const endDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()).padStart(2, "0")}`
 
   const [plRes, bsRes] = await Promise.all([
-    qboFetch(user.id, `/reports/ProfitAndLoss?start_date=${startDate}&end_date=${endDate}&minorversion=65`),
-    qboFetch(user.id, `/reports/BalanceSheet?date=${endDate}&minorversion=65`),
+    qboFetch(user.id, orgId, `/reports/ProfitAndLoss?start_date=${startDate}&end_date=${endDate}&minorversion=65`),
+    qboFetch(user.id, orgId, `/reports/BalanceSheet?date=${endDate}&minorversion=65`),
   ])
 
   let profitLoss = null

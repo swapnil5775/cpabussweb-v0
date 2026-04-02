@@ -3,6 +3,8 @@ import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { createClient as createAdmin } from "@supabase/supabase-js"
 import { Resend } from "resend"
+import { cookies } from "next/headers"
+import { resolveActiveOrganizationId } from "@/lib/organizations"
 
 const admin = createAdmin(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -16,13 +18,20 @@ export async function POST(request: Request) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  const cookieStore = await cookies()
+  const orgId = await resolveActiveOrganizationId({
+    admin,
+    userId: user.id,
+    cookieStore,
+    suggestedName: "Primary Organization",
+  })
 
   const { file_name, document_type, tax_year, file_size_bytes } = await request.json()
 
   // Get client details for the email
   const [{ data: bp }, { data: cp }] = await Promise.all([
-    admin.from("business_profiles").select("business_name, business_type").eq("user_id", user.id).single(),
-    admin.from("client_profiles").select("full_name").eq("user_id", user.id).single(),
+    admin.from("business_profiles").select("business_name, business_type").eq("user_id", user.id).eq("organization_id", orgId).maybeSingle(),
+    admin.from("client_profiles").select("full_name").eq("user_id", user.id).eq("organization_id", orgId).maybeSingle(),
   ])
 
   const businessName = bp?.business_name ?? "Unknown Business"

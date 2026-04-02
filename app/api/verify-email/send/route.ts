@@ -5,6 +5,7 @@ import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 import { createClient as createServiceClient } from "@supabase/supabase-js"
 import { Resend } from "resend"
+import { resolveActiveOrganizationId } from "@/lib/organizations"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -39,18 +40,25 @@ export async function POST(request: Request) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
+  const orgId = await resolveActiveOrganizationId({
+    admin,
+    userId: user.id,
+    cookieStore,
+    suggestedName: "Primary Organization",
+  })
 
   // Store code (upsert client_profiles row)
   const { error } = await admin
     .from("client_profiles")
     .upsert({
       user_id: user.id,
+      organization_id: orgId,
       secondary_email: email,
       secondary_email_verified: false,
       secondary_email_code: code,
       secondary_email_code_expires_at: expires,
       updated_at: new Date().toISOString(),
-    }, { onConflict: "user_id" })
+    }, { onConflict: "organization_id" })
 
   if (error) {
     console.error("OTP store error:", error)

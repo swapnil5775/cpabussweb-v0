@@ -21,7 +21,7 @@ export async function GET(request: Request) {
 
   const { data: subscriptions } = await admin
     .from("subscriptions")
-    .select("user_id, plan, status")
+    .select("user_id, organization_id, plan, status")
     .in("status", ["active", "trialing"])
 
   if (!subscriptions?.length) {
@@ -29,30 +29,32 @@ export async function GET(request: Request) {
   }
 
   const userIds = subscriptions.map((sub) => sub.user_id)
+  const organizationIds = subscriptions.map((sub) => sub.organization_id).filter(Boolean)
   const [{ data: qboConnections }, { data: profiles }, { data: clientProfiles }] = await Promise.all([
-    admin.from("qbo_connections").select("user_id, company_name").in("user_id", userIds),
-    admin.from("business_profiles").select("user_id, business_name").in("user_id", userIds),
-    admin.from("client_profiles").select("user_id, full_name, secondary_email, secondary_email_verified").in("user_id", userIds),
+    admin.from("qbo_connections").select("user_id, organization_id, company_name").in("user_id", userIds),
+    admin.from("business_profiles").select("user_id, organization_id, business_name").in("user_id", userIds),
+    admin.from("client_profiles").select("user_id, organization_id, full_name, secondary_email, secondary_email_verified").in("user_id", userIds),
   ])
 
-  const qboUsers = new Set((qboConnections ?? []).map((row) => row.user_id))
-  const profileMap = Object.fromEntries((profiles ?? []).map((row) => [row.user_id, row]))
-  const clientProfileMap = Object.fromEntries((clientProfiles ?? []).map((row) => [row.user_id, row]))
+  const qboOrgKeys = new Set((qboConnections ?? []).map((row) => `${row.user_id}:${row.organization_id}`))
+  const profileMap = Object.fromEntries((profiles ?? []).map((row) => [`${row.user_id}:${row.organization_id}`, row]))
+  const clientProfileMap = Object.fromEntries((clientProfiles ?? []).map((row) => [`${row.user_id}:${row.organization_id}`, row]))
 
   let processed = 0
   let sent = 0
   let skipped = 0
-  const errors: Array<{ user_id: string; error: string }> = []
+  const errors: Array<{ user_id: string; organization_id: string | null; error: string }> = []
 
   for (const sub of subscriptions) {
-    if (!qboUsers.has(sub.user_id)) {
+    const key = `${sub.user_id}:${sub.organization_id}`
+    if (!qboOrgKeys.has(key)) {
       skipped += 1
       continue
     }
 
     try {
-      const weekly = await buildWeeklySnapshot(sub.user_id)
-      const recipient = await resolveRecipient(sub.user_id, clientProfileMap[sub.user_id])
+      const weekly = await buildWeeklySnapshot(sub.user_id, sub.organization_id)
+      const recipient = await resolveRecipient(sub.user_id, clientProfileMap[key])
       if (!recipient) {
         skipped += 1
         continue
@@ -60,6 +62,7 @@ export async function GET(request: Request) {
 
       const upsertPayload = {
         user_id: sub.user_id,
+        organization_id: sub.organization_id,
         snapshot_date: weekly.currentWeek.range.end,
         period_start: weekly.currentWeek.range.start,
         period_end: weekly.currentWeek.range.end,
@@ -82,13 +85,14 @@ export async function GET(request: Request) {
         .from("financial_snapshots")
         .select("id, email_sent_at")
         .eq("user_id", sub.user_id)
+        .eq("organization_id", sub.organization_id)
         .eq("period_start", weekly.currentWeek.range.start)
         .eq("period_end", weekly.currentWeek.range.end)
         .maybeSingle()
 
       const { data: snapshotRow, error: snapshotError } = await admin
         .from("financial_snapshots")
-        .upsert(upsertPayload, { onConflict: "user_id,period_start,period_end" })
+        .upsert(upsertPayload, { onConflict: "organization_id,period_start,period_end" })
         .select("id, email_sent_at")
         .single()
 
@@ -102,10 +106,10 @@ export async function GET(request: Request) {
         await resend.emails.send({
           from: `BookKeeping.business <noreply@${process.env.RESEND_VERIFIED_DOMAIN}>`,
           to: recipient.email,
-          subject: `${profileMap[sub.user_id]?.business_name ?? "Your business"} weekly financial digest`,
+          subject: `${profileMap[key]?.business_name ?? "Your business"} weekly financial digest`,
           html: buildDigestHtml({
             recipientName: recipient.firstName,
-            businessName: profileMap[sub.user_id]?.business_name ?? qboConnections?.find((row) => row.user_id === sub.user_id)?.company_name ?? "Your business",
+            businessName: profileMap[key]?.business_name ?? qboConnections?.find((row) => row.user_id === sub.user_id && row.organization_id === sub.organization_id)?.company_name ?? "Your business",
             current: weekly.currentWeek,
             previous: weekly.previousWeek,
           }),
@@ -123,6 +127,7 @@ export async function GET(request: Request) {
     } catch (error) {
       errors.push({
         user_id: sub.user_id,
+        organization_id: sub.organization_id,
         error: error instanceof Error ? error.message : "Unknown error",
       })
     }

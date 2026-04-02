@@ -4,6 +4,8 @@ import { createClient } from "@/lib/supabase/server"
 import { createClient as createAdmin } from "@supabase/supabase-js"
 import { randomBytes } from "crypto"
 import { Resend } from "resend"
+import { cookies } from "next/headers"
+import { resolveActiveOrganizationId } from "@/lib/organizations"
 
 const admin = createAdmin(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -20,12 +22,15 @@ export async function GET() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  const cookieStore = await cookies()
+  const orgId = await resolveActiveOrganizationId({ admin, userId: user.id, cookieStore, suggestedName: "Primary Organization" })
 
   const { data } = await admin
     .from("cpa_access_tokens")
     .select("*")
     .eq("client_user_id", user.id)
-    .single()
+    .eq("organization_id", orgId)
+    .maybeSingle()
 
   return NextResponse.json({ token: data ?? null })
 }
@@ -34,6 +39,8 @@ export async function POST(request: Request) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  const cookieStore = await cookies()
+  const orgId = await resolveActiveOrganizationId({ admin, userId: user.id, cookieStore, suggestedName: "Primary Organization" })
 
   const body = await request.json().catch(() => ({}))
   const label: string | null = body.label ?? null
@@ -52,7 +59,8 @@ export async function POST(request: Request) {
     .from("business_profiles")
     .select("business_name")
     .eq("user_id", user.id)
-    .single()
+    .eq("organization_id", orgId)
+    .maybeSingle()
 
   const businessName = profile?.business_name ?? "your client"
   const portalUrl = `${SITE_URL}/cpa/${token}`
@@ -60,7 +68,7 @@ export async function POST(request: Request) {
   // Upsert token (one per client — regenerates if already exists)
   const { data, error } = await admin
     .from("cpa_access_tokens")
-    .upsert({ client_user_id: user.id, token, label, invited_email }, { onConflict: "client_user_id" })
+    .upsert({ client_user_id: user.id, organization_id: orgId, token, label, invited_email }, { onConflict: "organization_id" })
     .select()
     .single()
 
@@ -102,7 +110,9 @@ export async function DELETE() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  const cookieStore = await cookies()
+  const orgId = await resolveActiveOrganizationId({ admin, userId: user.id, cookieStore, suggestedName: "Primary Organization" })
 
-  await admin.from("cpa_access_tokens").delete().eq("client_user_id", user.id)
+  await admin.from("cpa_access_tokens").delete().eq("client_user_id", user.id).eq("organization_id", orgId)
   return NextResponse.json({ ok: true })
 }

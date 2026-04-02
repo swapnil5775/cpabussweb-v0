@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { createClient as createServiceClient } from "@supabase/supabase-js"
+import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -16,6 +17,7 @@ import { PaidWelcome } from "@/components/dashboard/paid-welcome"
 import { OnboardingChecklist } from "@/components/dashboard/onboarding-checklist"
 import { QBOConnectCard } from "@/components/dashboard/qbo-connect-card"
 import { DocumentVaultCallout } from "@/components/dashboard/document-vault-callout"
+import { resolveActiveOrganizationId } from "@/lib/organizations"
 
 export default async function DashboardPage({
   searchParams,
@@ -31,6 +33,13 @@ export default async function DashboardPage({
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
+  const cookieStore = await cookies()
+  const organizationId = await resolveActiveOrganizationId({
+    admin,
+    userId: user.id,
+    cookieStore,
+    suggestedName: profileNameFromEmail(user.email),
+  })
 
   const [
     { data: profile },
@@ -39,11 +48,11 @@ export default async function DashboardPage({
     { data: clientProfile },
     { data: supportTickets },
   ] = await Promise.all([
-    admin.from("business_profiles").select("*").eq("user_id", user.id).single(),
-    admin.from("subscriptions").select("*").eq("user_id", user.id).single(),
-    admin.from("documents").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(3),
-    admin.from("client_profiles").select("full_name, phone, business_address_line1, business_city, secondary_email, secondary_email_verified, cpa_firm_name").eq("user_id", user.id).single(),
-    admin.from("support_tickets").select("id").eq("user_id", user.id).limit(1),
+    admin.from("business_profiles").select("*").eq("user_id", user.id).eq("organization_id", organizationId).maybeSingle(),
+    admin.from("subscriptions").select("*").eq("user_id", user.id).eq("organization_id", organizationId).maybeSingle(),
+    admin.from("documents").select("*").eq("user_id", user.id).eq("organization_id", organizationId).order("created_at", { ascending: false }).limit(3),
+    admin.from("client_profiles").select("full_name, phone, business_address_line1, business_city, secondary_email, secondary_email_verified, cpa_firm_name").eq("user_id", user.id).eq("organization_id", organizationId).maybeSingle(),
+    admin.from("support_tickets").select("id").eq("user_id", user.id).eq("organization_id", organizationId).limit(1),
   ])
 
   const justPaid = !!params.session_id
@@ -594,6 +603,12 @@ export default async function DashboardPage({
       </section>
     </div>
   )
+}
+
+function profileNameFromEmail(email: string | undefined) {
+  if (!email) return "Primary Organization"
+  const userPart = email.split("@")[0] || "Primary Organization"
+  return `${userPart.replace(/[._-]/g, " ")} Org`
 }
 
 function ManageBillingButton() {

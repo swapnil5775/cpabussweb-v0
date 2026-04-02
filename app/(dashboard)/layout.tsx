@@ -2,6 +2,7 @@ import Link from "next/link"
 import { BookOpenCheck, LayoutDashboard, FileUp, ShoppingBag, LogOut, UserCircle, MessageSquare, ShieldCheck, LineChart } from "lucide-react"
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
+import { OrganizationSwitcher } from "@/components/dashboard/organization-switcher"
 
 const ADMIN_EMAIL = process.env.NOTIFICATION_EMAIL ?? "swapnil5775@gmail.com"
 
@@ -35,7 +36,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <span className="font-bold text-sm text-primary hidden sm:block">BookKeeping.business</span>
           </Link>
 
-          <nav className="flex items-center gap-1">
+          <div className="flex items-center gap-3">
+            <OrganizationSwitcher />
+            <nav className="flex items-center gap-1">
             {navItems.map(({ href, label, icon: Icon }) => (
               <Link
                 key={href}
@@ -50,7 +53,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
                 <span className="hidden sm:inline">{label}</span>
               </Link>
             ))}
-          </nav>
+            </nav>
+          </div>
 
           <div className="flex items-center gap-2">
             <form action="/api/auth/signout" method="POST">

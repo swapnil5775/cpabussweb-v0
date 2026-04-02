@@ -47,7 +47,7 @@ const REPORT_PATHS: Record<FinancialReportId, string> = {
   "cash-flow": "CashFlow",
 }
 
-export async function buildFinancialSummary(userId: string, reportId: FinancialReportId, period: string): Promise<FinancialSummaryPayload> {
+export async function buildFinancialSummary(userId: string, organizationId: string | null, reportId: FinancialReportId, period: string): Promise<FinancialSummaryPayload> {
   const selectedRange = getDateRange(period)
   const currentMonthRange = getDateRange("month")
   const previousMonthRange = getPreviousMonthRange()
@@ -63,14 +63,14 @@ export async function buildFinancialSummary(userId: string, reportId: FinancialR
     selectedCashFlowResponse,
     trendResponses,
   ] = await Promise.all([
-    fetchQBOFinancialReport(userId, reportId, selectedRange),
-    reportId === "profit-loss" ? Promise.resolve(null) : fetchQBOFinancialReport(userId, "profit-loss", selectedRange),
-    fetchQBOFinancialReport(userId, "profit-loss", currentMonthRange),
-    fetchQBOFinancialReport(userId, "profit-loss", previousMonthRange),
-    fetchQBOFinancialReport(userId, "balance-sheet", { start: currentMonthRange.start, end: currentMonthRange.end, label: currentMonthRange.label }),
-    fetchQBOFinancialReport(userId, "balance-sheet", { start: previousMonthRange.start, end: previousMonthRange.end, label: previousMonthRange.label }),
-    fetchQBOFinancialReport(userId, "cash-flow", selectedRange),
-    Promise.all(trendRanges.map((range) => fetchQBOFinancialReport(userId, "profit-loss", range))),
+    fetchQBOFinancialReport(userId, organizationId, reportId, selectedRange),
+    reportId === "profit-loss" ? Promise.resolve(null) : fetchQBOFinancialReport(userId, organizationId, "profit-loss", selectedRange),
+    fetchQBOFinancialReport(userId, organizationId, "profit-loss", currentMonthRange),
+    fetchQBOFinancialReport(userId, organizationId, "profit-loss", previousMonthRange),
+    fetchQBOFinancialReport(userId, organizationId, "balance-sheet", { start: currentMonthRange.start, end: currentMonthRange.end, label: currentMonthRange.label }),
+    fetchQBOFinancialReport(userId, organizationId, "balance-sheet", { start: previousMonthRange.start, end: previousMonthRange.end, label: previousMonthRange.label }),
+    fetchQBOFinancialReport(userId, organizationId, "cash-flow", selectedRange),
+    Promise.all(trendRanges.map((range) => fetchQBOFinancialReport(userId, organizationId, "profit-loss", range))),
   ])
 
   const selectedReport = selectedReportResponse ? parseFinancialReport(selectedReportResponse) : null
@@ -198,7 +198,7 @@ export type WeeklySnapshotPayload = {
   }
 }
 
-export async function buildWeeklySnapshot(userId: string): Promise<WeeklySnapshotPayload> {
+export async function buildWeeklySnapshot(userId: string, organizationId: string | null): Promise<WeeklySnapshotPayload> {
   const currentWeek = getLastCompletedWeekRange()
   const previousWeek = getPriorWeekRange(currentWeek)
 
@@ -210,12 +210,12 @@ export async function buildWeeklySnapshot(userId: string): Promise<WeeklySnapsho
     currentCashFlowResponse,
     previousCashFlowResponse,
   ] = await Promise.all([
-    fetchQBOFinancialReport(userId, "profit-loss", currentWeek),
-    fetchQBOFinancialReport(userId, "profit-loss", previousWeek),
-    fetchQBOFinancialReport(userId, "balance-sheet", currentWeek),
-    fetchQBOFinancialReport(userId, "balance-sheet", previousWeek),
-    fetchQBOFinancialReport(userId, "cash-flow", currentWeek),
-    fetchQBOFinancialReport(userId, "cash-flow", previousWeek),
+    fetchQBOFinancialReport(userId, organizationId, "profit-loss", currentWeek),
+    fetchQBOFinancialReport(userId, organizationId, "profit-loss", previousWeek),
+    fetchQBOFinancialReport(userId, organizationId, "balance-sheet", currentWeek),
+    fetchQBOFinancialReport(userId, organizationId, "balance-sheet", previousWeek),
+    fetchQBOFinancialReport(userId, organizationId, "cash-flow", currentWeek),
+    fetchQBOFinancialReport(userId, organizationId, "cash-flow", previousWeek),
   ])
 
   const currentPL = currentPLResponse ? parseFinancialReport(currentPLResponse) : null
@@ -260,7 +260,7 @@ export async function buildWeeklySnapshot(userId: string): Promise<WeeklySnapsho
   }
 }
 
-export async function fetchQBOFinancialReport(userId: string, reportId: FinancialReportId, range: DateRange) {
+export async function fetchQBOFinancialReport(userId: string, organizationId: string | null, reportId: FinancialReportId, range: DateRange) {
   const params = new URLSearchParams({ minorversion: "65" })
   if (reportId === "balance-sheet") {
     params.set("date", range.end)
@@ -269,7 +269,7 @@ export async function fetchQBOFinancialReport(userId: string, reportId: Financia
     params.set("end_date", range.end)
   }
 
-  const response = await qboFetch(userId, `/reports/${REPORT_PATHS[reportId]}?${params.toString()}`)
+  const response = await qboFetch(userId, organizationId, `/reports/${REPORT_PATHS[reportId]}?${params.toString()}`)
   if (!response?.ok) return null
   return response.json()
 }

@@ -5,6 +5,7 @@ import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 import { stripe } from "@/lib/stripe"
 import { PLANS, ONE_TIME_SERVICES, type PlanKey, type ServiceKey } from "@/lib/stripe-plans"
+import { getAdminClient, resolveActiveOrganizationId } from "@/lib/organizations"
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.bookkeeping.business"
 
@@ -31,6 +32,13 @@ export async function POST(request: Request) {
   if (authError || !user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
+  const admin = getAdminClient()
+  const organizationId = await resolveActiveOrganizationId({
+    admin,
+    userId: user.id,
+    cookieStore,
+    suggestedName: "Primary Organization",
+  })
 
   // Stripe not configured yet — signal the frontend to use the contact form fallback
   if (!process.env.STRIPE_SECRET_KEY) {
@@ -52,8 +60,8 @@ export async function POST(request: Request) {
         success_url: `${SITE_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}&plan=${plan}`,
         cancel_url: `${SITE_URL}/dashboard/upgrade`,
         customer_email: user.email,
-        metadata: { user_id: user.id, plan },
-        subscription_data: { metadata: { user_id: user.id, plan } },
+        metadata: { user_id: user.id, organization_id: organizationId, plan },
+        subscription_data: { metadata: { user_id: user.id, organization_id: organizationId, plan } },
       })
 
       return NextResponse.json({ url: session.url })
@@ -73,7 +81,7 @@ export async function POST(request: Request) {
         success_url: `${SITE_URL}/dashboard/services?session_id={CHECKOUT_SESSION_ID}&service=${serviceType}`,
         cancel_url: `${SITE_URL}/dashboard/services`,
         customer_email: user.email,
-        metadata: { user_id: user.id, service_type: serviceType },
+        metadata: { user_id: user.id, organization_id: organizationId, service_type: serviceType },
       })
 
       return NextResponse.json({ url: session.url })

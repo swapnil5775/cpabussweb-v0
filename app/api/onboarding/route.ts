@@ -4,6 +4,7 @@ import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 import { createClient as createServiceClient } from "@supabase/supabase-js"
+import { resolveActiveOrganizationId } from "@/lib/organizations"
 
 export async function GET() {
   const cookieStore = await cookies()
@@ -28,10 +29,16 @@ export async function GET() {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
+  const orgId = await resolveActiveOrganizationId({
+    admin,
+    userId: user.id,
+    cookieStore,
+    suggestedName: "Primary Organization",
+  })
 
   const [{ data: bp }, { data: cp }] = await Promise.all([
-    admin.from("business_profiles").select("*").eq("user_id", user.id).single(),
-    admin.from("client_profiles").select("*").eq("user_id", user.id).single(),
+    admin.from("business_profiles").select("*").eq("user_id", user.id).eq("organization_id", orgId).maybeSingle(),
+    admin.from("client_profiles").select("*").eq("user_id", user.id).eq("organization_id", orgId).maybeSingle(),
   ])
 
   return NextResponse.json({ businessProfile: bp, clientProfile: cp })
@@ -75,10 +82,17 @@ export async function POST(request: Request) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
+  const orgId = await resolveActiveOrganizationId({
+    admin,
+    userId: user.id,
+    cookieStore,
+    suggestedName: businessName ?? "Primary Organization",
+  })
 
   // Save business profile
   const { error: bpError } = await admin.from("business_profiles").upsert({
     user_id: user.id,
+    organization_id: orgId,
     business_name: businessName ?? null,
     business_type: businessType ?? null,
     entity_type: entityType ?? null,
@@ -99,7 +113,7 @@ export async function POST(request: Request) {
     business_zip: businessZip ?? null,
     onboarding_completed_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
-  }, { onConflict: "user_id" })
+  }, { onConflict: "organization_id" })
 
   if (bpError) {
     console.error("Business profile save error:", bpError)
@@ -111,6 +125,7 @@ export async function POST(request: Request) {
     const fullName = [ownerFirstName, ownerLastName].filter(Boolean).join(" ")
     await admin.from("client_profiles").upsert({
       user_id: user.id,
+      organization_id: orgId,
       ...(fullName && { full_name: fullName }),
       ...(ownerFirstName && { owner_first_name: ownerFirstName }),
       ...(ownerLastName && { owner_last_name: ownerLastName }),
@@ -120,7 +135,7 @@ export async function POST(request: Request) {
       ...(businessCity && { business_city: businessCity }),
       ...(businessAddress && { business_address: businessAddress }),
       updated_at: new Date().toISOString(),
-    }, { onConflict: "user_id" })
+    }, { onConflict: "organization_id" })
   }
 
   return NextResponse.json({ success: true })

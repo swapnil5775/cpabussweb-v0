@@ -13,11 +13,24 @@ const admin = createClient(
 
 async function upsertSubscription(
   userId: string,
+  organizationId: string | undefined,
   subscription: Stripe.Subscription,
   plan?: string
 ) {
+  let effectiveOrgId = organizationId
+  if (!effectiveOrgId) {
+    const { data: defaultOrg } = await admin
+      .from("organizations")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("is_default", true)
+      .maybeSingle()
+    effectiveOrgId = defaultOrg?.id
+  }
+
   const data: Record<string, unknown> = {
     user_id: userId,
+    organization_id: effectiveOrgId ?? null,
     stripe_customer_id: subscription.customer as string,
     stripe_subscription_id: subscription.id,
     status: subscription.status,
@@ -26,7 +39,17 @@ async function upsertSubscription(
   }
   if (plan) data.plan = plan
 
-  await admin.from("subscriptions").upsert(data, { onConflict: "user_id" })
+  await admin.from("subscriptions").upsert(data, { onConflict: "organization_id" })
+}
+
+async function resolveDefaultOrganizationId(userId: string): Promise<string | null> {
+  const { data: defaultOrg } = await admin
+    .from("organizations")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("is_default", true)
+    .maybeSingle()
+  return defaultOrg?.id ?? null
 }
 
 export async function POST(request: Request) {
@@ -46,12 +69,13 @@ export async function POST(request: Request) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session
         const userId = session.metadata?.user_id
+        const organizationId = session.metadata?.organization_id
         if (!userId) break
 
         if (session.mode === "subscription" && session.subscription) {
           // Fetch the full subscription object
           const sub = await stripe.subscriptions.retrieve(session.subscription as string)
-          await upsertSubscription(userId, sub, session.metadata?.plan)
+          await upsertSubscription(userId, organizationId, sub, session.metadata?.plan)
 
           // Referral credit: check if this user was referred
           try {
@@ -78,9 +102,20 @@ export async function POST(request: Request) {
         }
 
         if (session.mode === "payment") {
+          let effectiveOrgId = organizationId
+          if (!effectiveOrgId) {
+            const { data: defaultOrg } = await admin
+              .from("organizations")
+              .select("id")
+              .eq("user_id", userId)
+              .eq("is_default", true)
+              .maybeSingle()
+            effectiveOrgId = defaultOrg?.id
+          }
           // Record one-time service order as paid
           await admin.from("service_orders").insert({
             user_id: userId,
+            organization_id: effectiveOrgId ?? null,
             service_type: session.metadata?.service_type,
             amount_cents: session.amount_total,
             stripe_checkout_session_id: session.id,
@@ -93,8 +128,9 @@ export async function POST(request: Request) {
       case "customer.subscription.updated": {
         const sub = event.data.object as Stripe.Subscription
         const userId = sub.metadata?.user_id
+        const organizationId = sub.metadata?.organization_id
         if (!userId) break
-        await upsertSubscription(userId, sub)
+        await upsertSubscription(userId, organizationId, sub)
         break
       }
 
@@ -102,10 +138,13 @@ export async function POST(request: Request) {
         const sub = event.data.object as Stripe.Subscription
         const userId = sub.metadata?.user_id
         if (!userId) break
+        const organizationId = sub.metadata?.organization_id ?? await resolveDefaultOrganizationId(userId)
+        if (!organizationId) break
         await admin
           .from("subscriptions")
           .update({ status: "canceled", updated_at: new Date().toISOString() })
           .eq("user_id", userId)
+          .eq("organization_id", organizationId)
         break
       }
     }

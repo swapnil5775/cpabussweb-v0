@@ -29,7 +29,7 @@ export default async function CpaPortalPage({
   // 2. Look up token
   const { data: tokenRow } = await admin
     .from("cpa_access_tokens")
-    .select("client_user_id, label, invited_email")
+    .select("client_user_id, organization_id, label, invited_email")
     .eq("token", token)
     .single()
 
@@ -53,6 +53,20 @@ export default async function CpaPortalPage({
   }
 
   const userId = tokenRow.client_user_id
+  let organizationId = tokenRow.organization_id
+  if (!organizationId) {
+    const { data: defaultOrg } = await admin
+      .from("organizations")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("is_default", true)
+      .maybeSingle()
+    organizationId = defaultOrg?.id ?? null
+  }
+
+  if (!organizationId) {
+    return <AccessDenied reason="No active organization found for this shared workspace." />
+  }
 
   // 4. Load client data
   const [
@@ -60,9 +74,9 @@ export default async function CpaPortalPage({
     { data: subscription },
     { data: docs },
   ] = await Promise.all([
-    admin.from("business_profiles").select("business_name, entity_type").eq("user_id", userId).single(),
-    admin.from("subscriptions").select("plan, status").eq("user_id", userId).single(),
-    admin.from("documents").select("file_name, document_type, created_at").eq("user_id", userId).order("created_at", { ascending: false }).limit(20),
+    admin.from("business_profiles").select("business_name, entity_type").eq("user_id", userId).eq("organization_id", organizationId).maybeSingle(),
+    admin.from("subscriptions").select("plan, status").eq("user_id", userId).eq("organization_id", organizationId).maybeSingle(),
+    admin.from("documents").select("file_name, document_type, created_at").eq("user_id", userId).eq("organization_id", organizationId).order("created_at", { ascending: false }).limit(20),
   ])
 
   const businessName = profile?.business_name ?? "This Business"

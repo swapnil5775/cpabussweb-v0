@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic"
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { createClient as createAdmin } from "@supabase/supabase-js"
+import { cookies } from "next/headers"
 import { reportToCsv } from "@/lib/qbo-financials"
 import { buildFinancialReportPdf } from "@/lib/qbo-financial-pdf"
 import { buildAutomatedInsights } from "@/lib/qbo-insights"
@@ -11,6 +12,7 @@ import {
   getDateRange,
   normalizeReport,
 } from "@/lib/qbo-financial-server"
+import { resolveActiveOrganizationId } from "@/lib/organizations"
 
 const admin = createAdmin(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -21,12 +23,20 @@ export async function GET(request: Request) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  const cookieStore = await cookies()
+  const orgId = await resolveActiveOrganizationId({
+    admin,
+    userId: user.id,
+    cookieStore,
+    suggestedName: "Primary Organization",
+  })
 
   const { data: conn } = await admin
     .from("qbo_connections")
     .select("realm_id, company_name, connected_at")
     .eq("user_id", user.id)
-    .single()
+    .eq("organization_id", orgId)
+    .maybeSingle()
 
   if (!conn) return NextResponse.json({ connected: false })
 
@@ -34,7 +44,7 @@ export async function GET(request: Request) {
   const reportId = normalizeReport(url.searchParams.get("report"))
   const period = url.searchParams.get("period") ?? "last6"
   const format = url.searchParams.get("format")
-  const summary = await buildFinancialSummary(user.id, reportId, period)
+  const summary = await buildFinancialSummary(user.id, orgId, reportId, period)
   const selectedRange = getDateRange(period)
 
   if (format === "csv") {
@@ -90,6 +100,7 @@ export async function GET(request: Request) {
     .from("financial_snapshots")
     .select("snapshot_date, period_start, period_end, period_label, revenue, expenses, net_income, operating_cash_flow, assets, liabilities")
     .eq("user_id", user.id)
+    .eq("organization_id", orgId)
     .order("snapshot_date", { ascending: false })
     .limit(6)
 

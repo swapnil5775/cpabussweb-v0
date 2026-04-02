@@ -5,6 +5,7 @@ import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 import { stripe } from "@/lib/stripe"
 import { createClient } from "@supabase/supabase-js"
+import { resolveActiveOrganizationId } from "@/lib/organizations"
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.bookkeeping.business"
 
@@ -32,12 +33,19 @@ export async function POST() {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
+  const organizationId = await resolveActiveOrganizationId({
+    admin,
+    userId: user.id,
+    cookieStore,
+    suggestedName: "Primary Organization",
+  })
 
   const { data: sub } = await admin
     .from("subscriptions")
     .select("stripe_customer_id")
     .eq("user_id", user.id)
-    .single()
+    .eq("organization_id", organizationId)
+    .maybeSingle()
 
   if (!sub?.stripe_customer_id) {
     return NextResponse.json({ error: "No billing account found" }, { status: 404 })

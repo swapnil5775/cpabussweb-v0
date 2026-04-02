@@ -12,6 +12,17 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 const ADMIN_EMAIL = process.env.NOTIFICATION_EMAIL!
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.bookkeeping.business"
 
+async function resolveOrganizationId(userId: string, organizationId?: string | null) {
+  if (organizationId) return organizationId
+  const { data: defaultOrg } = await admin
+    .from("organizations")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("is_default", true)
+    .maybeSingle()
+  return defaultOrg?.id ?? null
+}
+
 // GET /api/admin/link-qbo — list all clients with subscription status + QBO status
 export async function GET() {
   const supabase = await createClient()
@@ -23,38 +34,38 @@ export async function GET() {
   // Get all paid subscriptions
   const { data: subs } = await admin
     .from("subscriptions")
-    .select("user_id, plan, status, created_at")
+    .select("user_id, organization_id, plan, status, created_at")
     .in("status", ["active", "trialing"])
     .order("created_at", { ascending: false })
 
   if (!subs || subs.length === 0) return NextResponse.json({ clients: [] })
 
   const userIds = subs.map((s) => s.user_id)
-
   // Get profiles + QBO connections in parallel
   const [{ data: profiles }, { data: qboConns }, { data: clientProfiles }, firmConn, gustoFirmConn] = await Promise.all([
-    admin.from("business_profiles").select("user_id, business_name, business_type, entity_type, selected_plan").in("user_id", userIds),
-    admin.from("qbo_connections").select("user_id, realm_id, company_name, setup_status, connected_at, firm_managed").in("user_id", userIds),
-    admin.from("client_profiles").select("user_id, full_name").in("user_id", userIds),
+    admin.from("business_profiles").select("user_id, organization_id, business_name, business_type, entity_type, selected_plan").in("user_id", userIds),
+    admin.from("qbo_connections").select("user_id, organization_id, realm_id, company_name, setup_status, connected_at, firm_managed").in("user_id", userIds),
+    admin.from("client_profiles").select("user_id, organization_id, full_name").in("user_id", userIds),
     admin.from("qbo_firm_connection").select("token_expires_at, connected_at").eq("id", "00000000-0000-0000-0000-000000000001").single(),
     admin.from("gusto_firm_connection").select("token_expires_at").eq("id", "00000000-0000-0000-0000-000000000001").single(),
   ])
 
-  const profileMap = Object.fromEntries((profiles ?? []).map((p) => [p.user_id, p]))
-  const qboMap = Object.fromEntries((qboConns ?? []).map((q) => [q.user_id, q]))
-  const cpMap = Object.fromEntries((clientProfiles ?? []).map((c) => [c.user_id, c]))
+  const profileMap = Object.fromEntries((profiles ?? []).map((p) => [`${p.user_id}:${p.organization_id}`, p]))
+  const qboMap = Object.fromEntries((qboConns ?? []).map((q) => [`${q.user_id}:${q.organization_id}`, q]))
+  const cpMap = Object.fromEntries((clientProfiles ?? []).map((c) => [`${c.user_id}:${c.organization_id}`, c]))
 
   const clients = subs.map((sub) => ({
     user_id: sub.user_id,
+    organization_id: sub.organization_id,
     plan: sub.plan,
     status: sub.status,
     subscribed_at: sub.created_at,
-    business_name: profileMap[sub.user_id]?.business_name ?? null,
-    business_type: profileMap[sub.user_id]?.business_type ?? null,
-    entity_type: profileMap[sub.user_id]?.entity_type ?? null,
-    full_name: cpMap[sub.user_id]?.full_name ?? null,
-    qbo: qboMap[sub.user_id] ?? null,
-    needs_qbo_setup: !qboMap[sub.user_id],
+    business_name: profileMap[`${sub.user_id}:${sub.organization_id}`]?.business_name ?? null,
+    business_type: profileMap[`${sub.user_id}:${sub.organization_id}`]?.business_type ?? null,
+    entity_type: profileMap[`${sub.user_id}:${sub.organization_id}`]?.entity_type ?? null,
+    full_name: cpMap[`${sub.user_id}:${sub.organization_id}`]?.full_name ?? null,
+    qbo: qboMap[`${sub.user_id}:${sub.organization_id}`] ?? null,
+    needs_qbo_setup: !qboMap[`${sub.user_id}:${sub.organization_id}`],
   }))
 
   return NextResponse.json({
@@ -73,9 +84,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 
-  const { user_id, realm_id, company_name } = await request.json()
+  const { user_id, organization_id, realm_id, company_name } = await request.json()
   if (!user_id || !realm_id) {
     return NextResponse.json({ error: "user_id and realm_id required" }, { status: 400 })
+  }
+  const orgId = await resolveOrganizationId(user_id, organization_id)
+  if (!orgId) {
+    return NextResponse.json({ error: "organization_id required" }, { status: 400 })
   }
 
   // Get firm token to use for this connection
@@ -92,6 +107,7 @@ export async function POST(request: Request) {
   // Link the QBO company to this client using firm tokens
   await admin.from("qbo_connections").upsert({
     user_id,
+    organization_id: orgId,
     realm_id,
     company_name: company_name ?? null,
     access_token: firmConn.access_token,
@@ -101,14 +117,15 @@ export async function POST(request: Request) {
     setup_status: "active",
     connected_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
-  }, { onConflict: "user_id" })
+  }, { onConflict: "organization_id" })
 
   // Auto-setup chart of accounts based on business type
   const { data: profile } = await admin
     .from("business_profiles")
     .select("business_type, entity_type")
     .eq("user_id", user_id)
-    .single()
+    .eq("organization_id", orgId)
+    .maybeSingle()
 
   if (profile) {
     // Fire and forget — non-blocking chart of accounts setup
@@ -119,7 +136,7 @@ export async function POST(request: Request) {
   try {
     const { data: { user: clientUser } } = await admin.auth.admin.getUserById(user_id)
     if (clientUser?.email) {
-      const { data: cp } = await admin.from("client_profiles").select("full_name").eq("user_id", user_id).single()
+      const { data: cp } = await admin.from("client_profiles").select("full_name").eq("user_id", user_id).eq("organization_id", orgId).maybeSingle()
       const firstName = cp?.full_name?.split(" ")[0] ?? ""
       await resend.emails.send({
         from: `BookKeeping.business <noreply@${process.env.RESEND_VERIFIED_DOMAIN}>`,

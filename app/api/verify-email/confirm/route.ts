@@ -4,6 +4,7 @@ import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 import { createClient as createServiceClient } from "@supabase/supabase-js"
+import { resolveActiveOrganizationId } from "@/lib/organizations"
 
 export async function POST(request: Request) {
   const { email, code } = await request.json()
@@ -32,12 +33,19 @@ export async function POST(request: Request) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
+  const orgId = await resolveActiveOrganizationId({
+    admin,
+    userId: user.id,
+    cookieStore,
+    suggestedName: "Primary Organization",
+  })
 
   const { data: profile, error: fetchError } = await admin
     .from("client_profiles")
     .select("secondary_email, secondary_email_code, secondary_email_code_expires_at")
     .eq("user_id", user.id)
-    .single()
+    .eq("organization_id", orgId)
+    .maybeSingle()
 
   if (fetchError || !profile) {
     return NextResponse.json({ error: "Profile not found" }, { status: 404 })
@@ -68,6 +76,7 @@ export async function POST(request: Request) {
       updated_at: new Date().toISOString(),
     })
     .eq("user_id", user.id)
+    .eq("organization_id", orgId)
 
   if (updateError) {
     return NextResponse.json({ error: "Failed to verify email" }, { status: 500 })

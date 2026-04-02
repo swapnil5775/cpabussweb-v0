@@ -53,6 +53,7 @@ export default function DocumentsPage() {
   const [openCategory, setOpenCategory] = useState<string | null>(null)
   const [uploading, setUploading] = useState<string | null>(null) // category id being uploaded
   const [error, setError] = useState<string | null>(null)
+  const [organizationId, setOrganizationId] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const uploadingCategory = useRef<string | null>(null)
   const supabase = createClient()
@@ -60,10 +61,20 @@ export default function DocumentsPage() {
   const fetchDocs = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
+    const orgRes = await fetch("/api/organizations")
+    const orgData = await orgRes.json()
+    const activeOrgId = orgData?.activeOrganizationId as string | undefined
+    if (!activeOrgId) {
+      setDocs([])
+      setLoading(false)
+      return
+    }
+    setOrganizationId(activeOrgId)
     const { data } = await supabase
       .from("documents")
       .select("*")
       .eq("user_id", user.id)
+      .eq("organization_id", activeOrgId)
       .order("created_at", { ascending: false })
     setDocs(data ?? [])
     setLoading(false)
@@ -92,6 +103,10 @@ export default function DocumentsPage() {
     const file = e.target.files?.[0]
     const catId = uploadingCategory.current
     if (!file || !catId) return
+    if (!organizationId) {
+      setError("No active organization selected.")
+      return
+    }
 
     setUploading(catId)
     setError(null)
@@ -110,6 +125,7 @@ export default function DocumentsPage() {
 
     await supabase.from("documents").insert({
       user_id: user.id,
+      organization_id: organizationId,
       file_name: file.name,
       storage_path: path,
       file_size_bytes: file.size,

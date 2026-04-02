@@ -1,6 +1,7 @@
 import { createClient as createServiceClient } from "@supabase/supabase-js"
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
+import { cookies } from "next/headers"
 import Link from "next/link"
 import { CheckCircle2, Edit2, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -8,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { PLANS, calcEmployeeCost, formatEmployeeCost, type PlanKey } from "@/lib/stripe-plans"
 import { UpgradePlanPicker } from "@/components/dashboard/upgrade-plan-picker"
+import { resolveActiveOrganizationId } from "@/lib/organizations"
 
 // Label maps (mirrors onboarding page constants)
 const BIZ_TYPE: Record<string, string> = {
@@ -79,10 +81,17 @@ export default async function UpgradePage() {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
+  const cookieStore = await cookies()
+  const organizationId = await resolveActiveOrganizationId({
+    admin,
+    userId: user.id,
+    cookieStore,
+    suggestedName: "Primary Organization",
+  })
 
   const [{ data: bp }, { data: cp }] = await Promise.all([
-    admin.from("business_profiles").select("*").eq("user_id", user.id).single(),
-    admin.from("client_profiles").select("*").eq("user_id", user.id).single(),
+    admin.from("business_profiles").select("*").eq("user_id", user.id).eq("organization_id", organizationId).maybeSingle(),
+    admin.from("client_profiles").select("*").eq("user_id", user.id).eq("organization_id", organizationId).maybeSingle(),
   ])
 
   const hasProfile = !!(bp?.business_name || bp?.entity_type || cp?.full_name)

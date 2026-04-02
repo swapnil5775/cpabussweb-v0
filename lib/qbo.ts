@@ -95,7 +95,9 @@ export async function getValidQBOToken(userId: string): Promise<{
     .from("qbo_connections")
     .select("*")
     .eq("user_id", userId)
-    .single()
+    .order("connected_at", { ascending: false })
+    .limit(1)
+    .maybeSingle()
 
   if (!conn) return null
 
@@ -125,10 +127,11 @@ export async function getValidQBOToken(userId: string): Promise<{
 // Make an authenticated QBO API call
 export async function qboFetch(
   userId: string,
+  organizationId: string | null,
   path: string,
   options: RequestInit = {}
 ): Promise<Response | null> {
-  const token = await getValidQBOToken(userId)
+  const token = await getValidQBOTokenForOrganization(userId, organizationId)
   if (!token) return null
 
   const url = `${QBO_BASE_URL}/${token.realm_id}${path}`
@@ -140,4 +143,49 @@ export async function qboFetch(
       ...(options.headers ?? {}),
     },
   })
+}
+
+export async function getValidQBOTokenForOrganization(userId: string, organizationId: string | null): Promise<{
+  access_token: string
+  realm_id: string
+} | null> {
+  const admin = createAdmin(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
+  let query = admin
+    .from("qbo_connections")
+    .select("*")
+    .eq("user_id", userId)
+    .order("connected_at", { ascending: false })
+    .limit(1)
+
+  if (organizationId) {
+    query = query.eq("organization_id", organizationId)
+  }
+
+  const { data: conn } = await query.maybeSingle()
+  if (!conn) return null
+
+  const now = new Date()
+  const expiresAt = new Date(conn.token_expires_at)
+
+  if (expiresAt.getTime() - now.getTime() < 5 * 60 * 1000) {
+    try {
+      const refreshed = await refreshQBOToken(conn.refresh_token)
+      const newExpiry = new Date(Date.now() + refreshed.expires_in * 1000).toISOString()
+      await admin.from("qbo_connections").update({
+        access_token: refreshed.access_token,
+        refresh_token: refreshed.refresh_token,
+        token_expires_at: newExpiry,
+        updated_at: new Date().toISOString(),
+      }).eq("id", conn.id)
+      return { access_token: refreshed.access_token, realm_id: conn.realm_id }
+    } catch {
+      return null
+    }
+  }
+
+  return { access_token: conn.access_token, realm_id: conn.realm_id }
 }

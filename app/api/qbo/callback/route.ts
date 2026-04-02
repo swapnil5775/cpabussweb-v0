@@ -21,13 +21,22 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${SITE_URL}/dashboard?qbo=error`)
   }
 
-  // Decode user ID from state
+  // Decode user ID and organization ID from state
   let userId: string
+  let organizationId: string | null = null
   try {
-    userId = Buffer.from(state, "base64url").toString("utf8")
+    const decoded = Buffer.from(state, "base64url").toString("utf8")
+    if (decoded.startsWith("{")) {
+      const payload = JSON.parse(decoded) as { user_id?: string; organization_id?: string }
+      userId = payload.user_id ?? ""
+      organizationId = payload.organization_id ?? null
+    } else {
+      userId = decoded
+    }
   } catch {
     return NextResponse.redirect(`${SITE_URL}/dashboard?qbo=error`)
   }
+  if (!userId) return NextResponse.redirect(`${SITE_URL}/dashboard?qbo=error`)
 
   // Exchange code for tokens
   let tokens
@@ -39,9 +48,24 @@ export async function GET(request: Request) {
 
   const expiresAt = new Date(Date.now() + tokens.expires_in * 1000).toISOString()
 
+  if (!organizationId) {
+    const { data: defaultOrg } = await admin
+      .from("organizations")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("is_default", true)
+      .maybeSingle()
+    organizationId = defaultOrg?.id ?? null
+  }
+
+  if (!organizationId) {
+    return NextResponse.redirect(`${SITE_URL}/dashboard?qbo=error`)
+  }
+
   // Store connection — temporarily with placeholder company name
   await admin.from("qbo_connections").upsert({
     user_id: userId,
+    organization_id: organizationId,
     realm_id: realmId,
     access_token: tokens.access_token,
     refresh_token: tokens.refresh_token,
@@ -49,11 +73,11 @@ export async function GET(request: Request) {
     company_name: null,
     connected_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
-  }, { onConflict: "user_id" })
+  }, { onConflict: "organization_id" })
 
   // Fetch company name from QBO (non-blocking)
   try {
-    const infoRes = await qboFetch(userId, "/companyinfo/" + realmId)
+    const infoRes = await qboFetch(userId, organizationId, "/companyinfo/" + realmId)
     if (infoRes?.ok) {
       const infoData = await infoRes.json()
       const companyName = infoData?.CompanyInfo?.CompanyName
@@ -61,7 +85,7 @@ export async function GET(request: Request) {
         await admin.from("qbo_connections").update({
           company_name: companyName,
           updated_at: new Date().toISOString(),
-        }).eq("user_id", userId)
+        }).eq("user_id", userId).eq("organization_id", organizationId)
       }
     }
   } catch {/* non-blocking */}

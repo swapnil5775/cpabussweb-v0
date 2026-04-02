@@ -2,10 +2,12 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { createClient as createServiceClient } from "@supabase/supabase-js"
+import { cookies } from "next/headers"
 import { Lock, Sparkles } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { FinancialsDashboard } from "@/components/dashboard/financials-dashboard"
+import { resolveActiveOrganizationId } from "@/lib/organizations"
 
 export default async function FinancialsPage() {
   const supabase = await createClient()
@@ -16,13 +18,20 @@ export default async function FinancialsPage() {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
+  const cookieStore = await cookies()
+  const organizationId = await resolveActiveOrganizationId({
+    admin,
+    userId: user.id,
+    cookieStore,
+    suggestedName: "Primary Organization",
+  })
 
   const [
     { data: profile },
     { data: subscription },
   ] = await Promise.all([
-    admin.from("business_profiles").select("selected_plan").eq("user_id", user.id).single(),
-    admin.from("subscriptions").select("status, plan").eq("user_id", user.id).single(),
+    admin.from("business_profiles").select("selected_plan").eq("user_id", user.id).eq("organization_id", organizationId).maybeSingle(),
+    admin.from("subscriptions").select("status, plan").eq("user_id", user.id).eq("organization_id", organizationId).maybeSingle(),
   ])
 
   const isFree = !subscription || subscription.status === "canceled" || profile?.selected_plan === "free"
