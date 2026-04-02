@@ -30,7 +30,7 @@ import { SiteFooter } from "@/components/site-footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Check, BookOpen } from "lucide-react"
+import { ArrowRight, Check, BookOpen, Globe2, Landmark, WalletCards } from "lucide-react"
 import Link from "next/link"
 
 export default function BookkeepingPage() {
@@ -98,6 +98,87 @@ export default function BookkeepingPage() {
               Dedicated bookkeeping for every type of small business — restaurants, hotels, childcare centers, realtors,
               tutoring centers, and home-based businesses. AI-assisted for efficiency, human-reviewed for accuracy.
             </p>
+            <p className="text-sm text-muted-foreground">
+              US and Canada clients are supported on QuickBooks Online or Xero. International clients in Australia, India, and the UK (including London) are onboarded on Xero.
+            </p>
+          </div>
+        </section>
+
+        {/* Core service scope */}
+        <section className="container pb-16">
+          <Card className="border-primary/20 bg-primary/5">
+            <CardHeader>
+              <CardTitle className="text-xl">Core Bookkeeping Scope</CardTitle>
+              <CardDescription>
+                What your monthly service can cover with our managed software stack and team-led workflows.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {[
+                "Bi-weekly or monthly bookkeeping cycles",
+                "Transaction categorization and reconciliation",
+                "P&L and Balance Sheet creation",
+                "Cash flow projections and insights",
+                "Expense tracking and spend analysis",
+                "Quarterly sales tax filing support by state",
+                "Payroll support through Gusto",
+                "Invoice and payment workflows in QuickBooks or Xero",
+                "Books kept tax-ready year-round",
+              ].map((item) => (
+                <div key={item} className="flex items-start gap-2 rounded-xl border bg-background px-3 py-3 text-sm">
+                  <Check aria-hidden="true" className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Region + platform */}
+        <section className="container pb-24">
+          <div className="grid gap-6 md:grid-cols-3 max-w-6xl mx-auto">
+            <Card>
+              <CardHeader>
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <Landmark className="h-5 w-5" aria-hidden="true" />
+                </div>
+                <CardTitle className="mt-3 text-lg">US</CardTitle>
+                <CardDescription>QuickBooks Online or Xero support</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Full monthly bookkeeping, payroll via Gusto, quarterly sales tax filing support, and invoice/payment workflows.
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <Globe2 className="h-5 w-5" aria-hidden="true" />
+                </div>
+                <CardTitle className="mt-3 text-lg">Canada</CardTitle>
+                <CardDescription>QuickBooks Online or Xero support</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Ongoing bookkeeping, reporting, categorization, and owner-facing financial insights with managed platform onboarding.
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <WalletCards className="h-5 w-5" aria-hidden="true" />
+                </div>
+                <CardTitle className="mt-3 text-lg">International</CardTitle>
+                <CardDescription>Australia, India, UK/London via Xero</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Xero automation onboarding with monthly bookkeeping, reporting, expense tracking, and cash flow visibility.
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
@@ -226,6 +307,12 @@ export default function BookkeepingPage() {
                   </CardContent>
                 </Card>
               ))}
+            </div>
+
+            <div className="mt-10 rounded-2xl border border-primary/20 bg-primary/5 px-6 py-5 max-w-4xl mx-auto">
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                <strong className="text-foreground">Software is included in our service.</strong> We pay for the accounting and workflow tools our team uses (QuickBooks, Xero, payroll stack, and related ops tools). Clients are billed only for service charges, not extra software subscriptions.
+              </p>
             </div>
           </div>
         </section>

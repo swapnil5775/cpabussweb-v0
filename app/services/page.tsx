@@ -43,6 +43,8 @@ import {
   FileCheck,
   Briefcase,
   HelpCircle,
+  Globe2,
+  WalletCards,
 } from "lucide-react"
 import Link from "next/link"
 
@@ -125,6 +127,79 @@ export default function ServicesPage() {
               Serving restaurants, hotels, childcare centers, realtors, tutoring centers, home-based businesses, and more.
               One platform — bookkeeping, payroll, tax prep, and filing — no separate software subscriptions.
             </p>
+            <p className="text-sm text-muted-foreground">
+              US and Canada: QuickBooks or Xero support. International (Australia, India, UK/London): Xero automation onboarding.
+            </p>
+          </div>
+        </section>
+
+        {/* Core service matrix */}
+        <section className="container pb-16">
+          <Card className="max-w-6xl mx-auto border-primary/20 bg-primary/5">
+            <CardHeader>
+              <CardTitle>Core Service Coverage</CardTitle>
+              <CardDescription>
+                Built as recurring monthly service so clients get execution plus visibility, not software overhead.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {[
+                "Bi-weekly or monthly bookkeeping",
+                "P&L and Balance Sheet creation",
+                "Projection cash flow modeling",
+                "Expense tracking and insights",
+                "Transaction categorization",
+                "Quarterly sales tax filing support",
+                "Payroll support via Gusto",
+                "Invoice and payment workflow in QBO/Xero",
+                "Managed software stack included",
+              ].map((item) => (
+                <div key={item} className="rounded-xl border bg-background px-3 py-3 text-sm text-muted-foreground">
+                  {item}
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </section>
+
+        <section className="container pb-24">
+          <div className="grid gap-6 md:grid-cols-3 max-w-6xl mx-auto">
+            <Card>
+              <CardHeader>
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <WalletCards className="h-5 w-5" aria-hidden="true" />
+                </div>
+                <CardTitle className="mt-3 text-lg">US & Canada</CardTitle>
+                <CardDescription>QuickBooks Online + Xero options</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">Platform support on either QuickBooks or Xero with payroll, reporting, and filing workflows.</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <Globe2 className="h-5 w-5" aria-hidden="true" />
+                </div>
+                <CardTitle className="mt-3 text-lg">International</CardTitle>
+                <CardDescription>Australia, India, UK/London</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">Xero-first onboarding with automation workflows and recurring monthly close support.</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <Shield className="h-5 w-5" aria-hidden="true" />
+                </div>
+                <CardTitle className="mt-3 text-lg">Software Cost Policy</CardTitle>
+                <CardDescription>No extra software billing</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">We pay all required tool subscriptions. Clients only pay monthly service charges to us.</p>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
