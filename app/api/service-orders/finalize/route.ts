@@ -93,20 +93,37 @@ export async function POST(request: Request) {
   if (createError) {
     // 23505 = unique_violation — the order already exists (race condition or duplicate call)
     if (createError.code !== "23505") {
+      console.error("[finalize] insert error", createError.code, createError.message)
       return NextResponse.json({ error: createError.message }, { status: 500 })
     }
   }
   if (created?.id) return NextResponse.json({ ok: true, order_id: created.id })
 
-  // Fetch the existing row (handles unique conflict + the success-but-no-return case)
+  // Fetch the existing row — search by session_id only (no user_id filter) so we
+  // also catch rows created by the webhook under session.metadata.user_id
   const { data: fetched, error: fetchError } = await admin
     .from("service_orders")
-    .select("id")
-    .eq("user_id", user.id)
+    .select("id, user_id")
     .eq("stripe_checkout_session_id", sessionId)
     .maybeSingle()
 
   if (fetchError) return NextResponse.json({ error: fetchError.message }, { status: 500 })
-  if (fetched?.id) return NextResponse.json({ ok: true, order_id: fetched.id })
-  return NextResponse.json({ ok: false, order_id: null }, { status: 202 })
+  if (fetched?.id) {
+    // Security: only return the order_id if it belongs to the authenticated user
+    if (fetched.user_id !== user.id) {
+      console.error("[finalize] user_id mismatch: db row has", fetched.user_id, "auth user is", user.id)
+      return NextResponse.json({ error: "Order belongs to a different account. Please contact support." }, { status: 403 })
+    }
+    return NextResponse.json({ ok: true, order_id: fetched.id })
+  }
+
+  // Nothing found — insert returned no row and no duplicate exists
+  // This can happen if createError was non-null with code 23505 but the row was deleted,
+  // or if the insert silently failed for a DB constraint we haven't caught yet.
+  console.error("[finalize] 202: createError=", createError?.code, createError?.message, "sessionId=", sessionId, "userId=", user.id)
+  return NextResponse.json({
+    ok: false,
+    order_id: null,
+    debug: `insert_code=${createError?.code ?? "none"} msg=${createError?.message ?? "no_row_returned"}`,
+  }, { status: 202 })
 }

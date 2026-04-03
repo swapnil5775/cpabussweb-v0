@@ -273,7 +273,8 @@ export default function ServicesPage() {
       }
       if (!cancelled) {
         setResumeLookupLoading(false)
-        setError("Could not auto-open your intake form. Use Continue Intake in My Service Orders below.")
+        const debugNote = finalizeData?.debug ? ` [debug: ${finalizeData.debug}]` : ""
+        setError(`Could not auto-open your intake form. Use Continue Intake in My Service Orders below.${debugNote}`)
         // Refresh orders — if finalize did create the order, it now shows in the list
         await fetchOrders()
       }
