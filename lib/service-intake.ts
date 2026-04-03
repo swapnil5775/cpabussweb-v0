@@ -10,6 +10,9 @@ export type IntakeQuestion = {
   placeholder?: string
   helpText?: string
   options?: string[]
+  /** Only show this field when answers[showIfId] === showIfValue */
+  showIfId?: string
+  showIfValue?: string
 }
 
 export type ServiceIntakeConfig = {
@@ -74,15 +77,121 @@ export const SERVICE_INTAKE_CONFIG: Record<ServiceKey, ServiceIntakeConfig> = {
   },
   w2_1099_filing: {
     timeline: "3-6 business days for preparation and filing",
-    intro: "We will use this to prepare your year-end forms and filing checklist.",
+    intro: "Complete all sections below so we can prepare forms without a follow-up call. Include one row per employee or contractor in the roster fields — the more detail you provide here, the faster we can issue.",
     questions: [
-      { id: "tax_year", label: "Tax year for forms", type: "number", required: true, placeholder: "2025" },
-      { id: "w2_count", label: "Number of W-2 recipients", type: "number", required: true, placeholder: "2" },
-      { id: "1099_count", label: "Number of 1099 recipients", type: "number", required: true, placeholder: "4" },
-      { id: "filing_states", label: "States requiring filing", type: "text", required: true, placeholder: "TX, FL" },
-      { id: "prior_year_corrections", label: "Any prior year corrections needed?", type: "yes_no", required: true },
-      { id: "delivery_preference", label: "Recipient delivery preference", type: "select", required: true, options: ["Email + portal", "Mail + portal", "Portal only"] },
-      { id: "notes", label: "Additional notes", type: "textarea" },
+      {
+        id: "tax_year",
+        label: "Tax year for forms",
+        type: "select",
+        required: true,
+        options: ["2026", "2025", "2024", "2023"],
+      },
+      {
+        id: "filing_states",
+        label: "State(s) requiring W-2 / 1099 filing",
+        type: "text",
+        required: true,
+        placeholder: "TX, FL, CA",
+      },
+      {
+        id: "delivery_preference",
+        label: "How should recipients receive their copies?",
+        type: "select",
+        required: true,
+        options: ["Email + secure portal link", "Mail + secure portal link", "Portal only (we notify them)"],
+      },
+
+      // ── W-2 section ──────────────────────────────────────────────
+      {
+        id: "w2_count",
+        label: "Number of W-2 employees",
+        type: "number",
+        required: true,
+        placeholder: "0",
+      },
+      {
+        id: "w2_roster",
+        label: "W-2 Employee Roster — one employee per line",
+        type: "textarea",
+        placeholder: `Full Name | SSN (XXX-XX-XXXX) | Street Address, City, State ZIP | Total Wages | Federal Tax Withheld | State Tax Withheld
+Example:
+Jane Smith | 123-45-6789 | 100 Main St, Austin TX 78701 | 62000 | 7800 | 2100
+John Doe   | 987-65-4321 | 200 Oak Ave, Miami FL 33101  | 45000 | 5200 | 0`,
+      },
+      {
+        id: "w2_benefits",
+        label: "Were any pre-tax benefits reported on W-2s? (health insurance, 401k, HSA, etc.)",
+        type: "yes_no",
+        required: true,
+      },
+      {
+        id: "w2_benefits_detail",
+        label: "Describe the benefit types and amounts (Box 12 codes if known)",
+        type: "textarea",
+        placeholder: "e.g., Code D – 401k: $4,500 per employee; Code DD – health: $2,400",
+        showIfId: "w2_benefits",
+        showIfValue: "Yes",
+      },
+
+      // ── 1099 section ─────────────────────────────────────────────
+      {
+        id: "1099_count",
+        label: "Number of 1099-NEC contractors (paid $600 or more)",
+        type: "number",
+        required: true,
+        placeholder: "0",
+      },
+      {
+        id: "1099_roster",
+        label: "1099-NEC Contractor Roster — one contractor per line",
+        type: "textarea",
+        placeholder: `Full Name or Business Name | SSN or EIN | Street Address, City, State ZIP | Total Paid | W-9 on file? (Y/N)
+Example:
+Acme Design LLC    | 12-3456789 | 500 Pine Rd, Denver CO 80201 | 8500 | Y
+Sara Johnson       | 555-44-3333 | 90 Elm St, Portland OR 97201 | 3200 | N`,
+      },
+      {
+        id: "missing_w9",
+        label: "Do you have a W-9 on file for all contractors listed above?",
+        type: "yes_no",
+        required: true,
+      },
+      {
+        id: "1099_other_types",
+        label: "Any 1099-MISC, 1099-INT, or 1099-DIV forms also needed?",
+        type: "yes_no",
+        required: true,
+      },
+      {
+        id: "1099_other_detail",
+        label: "Describe the other form types, recipients, and amounts",
+        type: "textarea",
+        placeholder: "e.g., 1099-MISC: rent paid to Bob LLC – $18,000",
+        showIfId: "1099_other_types",
+        showIfValue: "Yes",
+      },
+
+      // ── Corrections & notes ───────────────────────────────────────
+      {
+        id: "prior_year_corrections",
+        label: "Any prior year W-2 or 1099 corrections (amended forms) needed?",
+        type: "yes_no",
+        required: true,
+      },
+      {
+        id: "prior_year_detail",
+        label: "Describe which year and what changed",
+        type: "textarea",
+        placeholder: "e.g., 2023 W-2 for Jane Smith — SSN was wrong",
+        showIfId: "prior_year_corrections",
+        showIfValue: "Yes",
+      },
+      {
+        id: "notes",
+        label: "Anything else we should know before we start?",
+        type: "textarea",
+        placeholder: "Payroll platform used, accountant contact, special deadlines, etc.",
+      },
     ],
   },
   state_filings_support: {

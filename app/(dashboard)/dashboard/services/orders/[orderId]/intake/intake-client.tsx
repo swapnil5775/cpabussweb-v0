@@ -18,6 +18,9 @@ type IntakeQuestion = {
   required?: boolean
   placeholder?: string
   options?: string[]
+  /** Only render this field when answers[showIfId] === showIfValue */
+  showIfId?: string
+  showIfValue?: string
 }
 
 type IntakeOrder = {
@@ -160,7 +163,9 @@ export function IntakeClient({ orderId }: { orderId: string }) {
           <CardTitle className="text-base">Required Information</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {order.intake_questions.map((question) => (
+          {order.intake_questions.map((question) => {
+            if (question.showIfId && answers[question.showIfId] !== question.showIfValue) return null
+            return (
             <div key={question.id} className="space-y-1.5">
               <Label htmlFor={question.id}>
                 {question.label}
@@ -173,6 +178,7 @@ export function IntakeClient({ orderId }: { orderId: string }) {
                   value={answers[question.id] ?? ""}
                   onChange={(event) => setAnswers((prev) => ({ ...prev, [question.id]: event.target.value }))}
                   placeholder={question.placeholder}
+                  rows={question.placeholder && question.placeholder.includes("\n") ? 8 : 3}
                 />
               ) : question.type === "select" ? (
                 <select
@@ -207,7 +213,8 @@ export function IntakeClient({ orderId }: { orderId: string }) {
                 />
               )}
             </div>
-          ))}
+            )
+          })}
 
           {error ? <p className="text-sm text-destructive">{error}</p> : null}
           {message ? <p className="text-sm text-green-700">{message}</p> : null}
