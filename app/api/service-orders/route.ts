@@ -4,7 +4,62 @@ import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 import { getAdminClient, resolveActiveOrganizationId } from "@/lib/organizations"
-import { getServiceIntakeConfig, getServiceName, getTrackerSteps } from "@/lib/service-intake"
+import { getServiceIntakeConfig, getServiceName, getTrackerSteps, buildOrderNumber } from "@/lib/service-intake"
+
+// POST — create a service order directly (no Stripe, for services without configured price)
+export async function POST(request: Request) {
+  const cookieStore = await cookies()
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return cookieStore.getAll() },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
+        },
+      },
+    }
+  )
+  const { data: { user }, error } = await supabase.auth.getUser()
+  if (error || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+
+  const body = await request.json().catch(() => ({}))
+  const serviceType = typeof body?.service_type === "string" ? body.service_type : null
+  if (!serviceType) return NextResponse.json({ error: "service_type required" }, { status: 400 })
+
+  const config = getServiceIntakeConfig(serviceType)
+  if (!config) return NextResponse.json({ error: "Unknown service type" }, { status: 400 })
+
+  const admin = getAdminClient()
+  const organizationId = await resolveActiveOrganizationId({
+    admin, userId: user.id, cookieStore, suggestedName: "Primary Organization",
+  })
+
+  const now = new Date().toISOString()
+  const { data: created, error: insertError } = await admin
+    .from("service_orders")
+    .insert({
+      user_id: user.id,
+      organization_id: organizationId,
+      service_type: serviceType,
+      status: "requested",
+      intake_status: "pending",
+      intake_answers: {},
+      updated_at: now,
+    })
+    .select("id, created_at")
+    .single()
+
+  if (insertError || !created) {
+    return NextResponse.json({ error: insertError?.message ?? "Failed to create order" }, { status: 500 })
+  }
+
+  const orderNumber = buildOrderNumber(created.id, created.created_at)
+  await admin.from("service_orders").update({ order_number: orderNumber }).eq("id", created.id)
+
+  return NextResponse.json({ ok: true, order_id: created.id })
+}
 
 export async function GET(request: Request) {
   const cookieStore = await cookies()

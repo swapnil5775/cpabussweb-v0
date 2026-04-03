@@ -105,8 +105,9 @@ export function IntakeClient({ orderId }: { orderId: string }) {
     )
   }
 
+  const isPaid = !["requested", "pending"].includes(order.status) || order.status === "intake_submitted"
   const steps = [
-    { label: "Payment Received", done: true },
+    { label: isPaid ? "Payment Received" : "Request Submitted", done: true },
     { label: "Intake Submitted", done: order.intake_status === "submitted" },
     { label: "Team Review", done: ["in_progress", "completed"].includes(order.status) },
     { label: "Work In Progress", done: ["in_progress", "completed"].includes(order.status) },

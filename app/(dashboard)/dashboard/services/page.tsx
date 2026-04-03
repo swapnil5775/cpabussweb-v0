@@ -276,20 +276,56 @@ export default function ServicesPage() {
     setLoading(serviceKey)
     setError("")
 
-    const response = await fetch("/api/stripe/create-checkout", {
+    // Try Stripe checkout first
+    const checkoutRes = await fetch("/api/stripe/create-checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ serviceType: serviceKey }),
     })
-    const data = await response.json()
+    const checkoutData = await checkoutRes.json()
 
-    if (!response.ok || !data.url) {
-      setError("Failed to start checkout. Please try again.")
+    // If Stripe is configured and returned a URL, go to Stripe
+    if (checkoutRes.ok && checkoutData.url) {
+      window.location.href = checkoutData.url
+      return
+    }
+
+    // If Stripe fallback (no key configured) — skip checkout, create order directly
+    if (checkoutData.fallback) {
+      const orderRes = await fetch("/api/service-orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ service_type: serviceKey }),
+      })
+      const orderData = await orderRes.json()
+      if (orderRes.ok && orderData.order_id) {
+        window.location.href = `/dashboard/services/orders/${orderData.order_id}/intake`
+        return
+      }
+      setError(orderData.error ?? "Failed to create service request.")
       setLoading(null)
       return
     }
 
-    window.location.href = data.url
+    // Service price not configured in Stripe — create intake-only order
+    if (!checkoutRes.ok && checkoutData.error === "Invalid service") {
+      const orderRes = await fetch("/api/service-orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ service_type: serviceKey }),
+      })
+      const orderData = await orderRes.json()
+      if (orderRes.ok && orderData.order_id) {
+        window.location.href = `/dashboard/services/orders/${orderData.order_id}/intake`
+        return
+      }
+      setError(orderData.error ?? "Failed to create service request.")
+      setLoading(null)
+      return
+    }
+
+    setError("Failed to start checkout. Please try again.")
+    setLoading(null)
   }
 
   return (
