@@ -246,6 +246,12 @@ export default function ServicesPage() {
         window.location.href = `/dashboard/services/orders/${finalizeData.order_id}/intake`
         return
       }
+      // Surface finalize errors so user sees what went wrong
+      if (!cancelled && finalizeData?.error && !finalizeData?.order_id) {
+        setResumeLookupLoading(false)
+        setError(`Could not create your service order: ${finalizeData.error}. Please contact support if this persists.`)
+        return
+      }
 
       for (let attempt = 0; attempt < 7; attempt += 1) {
         const response = await fetch(`/api/service-orders?session_id=${encodeURIComponent(sessionId)}`)

@@ -4,18 +4,8 @@ import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 import { stripe } from "@/lib/stripe"
-import { getAdminClient } from "@/lib/organizations"
+import { getAdminClient, resolveActiveOrganizationId } from "@/lib/organizations"
 import { buildOrderNumber } from "@/lib/service-intake"
-
-async function resolveDefaultOrganizationId(admin: ReturnType<typeof getAdminClient>, userId: string) {
-  const { data: defaultOrg } = await admin
-    .from("organizations")
-    .select("id")
-    .eq("user_id", userId)
-    .eq("is_default", true)
-    .maybeSingle()
-  return defaultOrg?.id ?? null
-}
 
 export async function POST(request: Request) {
   const cookieStore = await cookies()
@@ -59,21 +49,27 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Payment not completed yet" }, { status: 409 })
   }
 
-  const userId = session.metadata?.user_id
-  if (!userId || userId !== user.id) {
+  // Verify session belongs to this user (metadata check is best-effort for older sessions)
+  const metaUserId = session.metadata?.user_id
+  if (metaUserId && metaUserId !== user.id) {
     return NextResponse.json({ error: "Session does not belong to current user" }, { status: 403 })
   }
 
-  let organizationId = session.metadata?.organization_id ?? null
+  let organizationId: string = session.metadata?.organization_id ?? ""
   if (!organizationId) {
-    organizationId = await resolveDefaultOrganizationId(admin, user.id)
+    organizationId = await resolveActiveOrganizationId({
+      admin,
+      userId: user.id,
+      suggestedName: "Primary Organization",
+    })
   }
-  if (!organizationId) return NextResponse.json({ error: "No organization found" }, { status: 400 })
 
   const orderNumber = buildOrderNumber(session.id, session.created ? new Date(session.created * 1000).toISOString() : new Date().toISOString())
+
+  // Use insert (not upsert) — partial unique indexes can silently fail with PostgREST upsert
   const { data: created, error: createError } = await admin
     .from("service_orders")
-    .upsert({
+    .insert({
       user_id: user.id,
       organization_id: organizationId,
       order_number: orderNumber,
@@ -84,20 +80,27 @@ export async function POST(request: Request) {
       intake_status: "pending",
       intake_answers: {},
       updated_at: new Date().toISOString(),
-    }, { onConflict: "stripe_checkout_session_id" })
+    })
     .select("id")
     .maybeSingle()
 
-  if (createError) return NextResponse.json({ error: createError.message }, { status: 500 })
+  if (createError) {
+    // 23505 = unique_violation — the order already exists (race condition or duplicate call)
+    if (createError.code !== "23505") {
+      return NextResponse.json({ error: createError.message }, { status: 500 })
+    }
+  }
   if (created?.id) return NextResponse.json({ ok: true, order_id: created.id })
 
-  const { data: fetched } = await admin
+  // Fetch the existing row (handles unique conflict + the success-but-no-return case)
+  const { data: fetched, error: fetchError } = await admin
     .from("service_orders")
     .select("id")
     .eq("user_id", user.id)
     .eq("stripe_checkout_session_id", sessionId)
     .maybeSingle()
 
+  if (fetchError) return NextResponse.json({ error: fetchError.message }, { status: 500 })
   if (fetched?.id) return NextResponse.json({ ok: true, order_id: fetched.id })
   return NextResponse.json({ ok: false, order_id: null }, { status: 202 })
 }
