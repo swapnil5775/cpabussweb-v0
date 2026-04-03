@@ -156,7 +156,9 @@ export async function POST(request: Request) {
           }
           if (!effectiveOrgId) break
 
-          const orderNumber = buildOrderNumber(session.id, session.created ? new Date(session.created * 1000).toISOString() : new Date().toISOString())
+          // Strip the cs_test_/cs_live_ prefix so buildOrderNumber gets the unique part of the session id
+          const sessionSuffix = session.id.replace(/^cs_(test|live)_/, "")
+          const orderNumber = buildOrderNumber(sessionSuffix, session.created ? new Date(session.created * 1000).toISOString() : new Date().toISOString())
           // Record one-time service order as paid
           const orderPayload = {
             user_id: userId,
