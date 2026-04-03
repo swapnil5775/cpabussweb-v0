@@ -43,7 +43,18 @@ async function upsertSubscription(
   }
   if (plan) data.plan = plan
 
-  await admin.from("subscriptions").upsert(data, { onConflict: "organization_id" })
+  // Use INSERT then UPDATE on 23505 — upsert with onConflict silently fails on partial unique indexes
+  const { error: insertErr } = await admin.from("subscriptions").insert(data)
+  if (insertErr) {
+    if (insertErr.code === "23505") {
+      await admin.from("subscriptions")
+        .update(data)
+        .eq("organization_id", effectiveOrgId!)
+        .eq("user_id", userId)
+    } else {
+      console.error("[webhook] upsertSubscription insert error", insertErr.code, insertErr.message)
+    }
+  }
 }
 
 async function resolveDefaultOrganizationId(userId: string): Promise<string | null> {
@@ -172,20 +183,17 @@ export async function POST(request: Request) {
             intake_answers: {},
             updated_at: new Date().toISOString(),
           }
-          const { data: insertedOrder } = await admin
+          // Use INSERT then fetch on 23505 — upsert silently fails on partial unique indexes
+          const { data: insertedOrder, error: orderInsertErr } = await admin
             .from("service_orders")
-            .upsert(orderPayload, { onConflict: "stripe_checkout_session_id", ignoreDuplicates: true })
+            .insert(orderPayload)
             .select("id, order_number")
             .maybeSingle()
 
           const savedOrder = insertedOrder
-            ? insertedOrder
-            : (await admin
-              .from("service_orders")
-              .select("id, order_number")
-              .eq("stripe_checkout_session_id", session.id)
-              .maybeSingle()
-            ).data
+            ?? (orderInsertErr?.code === "23505"
+              ? (await admin.from("service_orders").select("id, order_number").eq("stripe_checkout_session_id", session.id).maybeSingle()).data
+              : null)
 
           if (savedOrder?.id) {
             await sendServiceOrderEmail({
