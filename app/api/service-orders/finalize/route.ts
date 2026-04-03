@@ -41,7 +41,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, order_id: existing.id })
   }
 
-  const session = await stripe.checkout.sessions.retrieve(sessionId)
+  let session: Awaited<ReturnType<typeof stripe.checkout.sessions.retrieve>>
+  try {
+    session = await stripe.checkout.sessions.retrieve(sessionId)
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Unknown Stripe error"
+    return NextResponse.json({ error: `Failed to retrieve payment session: ${msg}` }, { status: 502 })
+  }
   if (session.mode !== "payment") {
     return NextResponse.json({ error: "Session is not a one-time service payment" }, { status: 400 })
   }

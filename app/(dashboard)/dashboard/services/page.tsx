@@ -216,14 +216,17 @@ export default function ServicesPage() {
   const [resumeOrderId, setResumeOrderId] = useState<string | null>(null)
   const [error, setError] = useState("")
 
+  async function fetchOrders(showLoading = false) {
+    if (showLoading) setOrdersLoading(true)
+    const response = await fetch("/api/service-orders")
+    const data = await response.json().catch(() => ({}))
+    if (response.ok) setOrders(data.orders ?? [])
+    setOrdersLoading(false)
+  }
+
   useEffect(() => {
-    async function loadOrders() {
-      const response = await fetch("/api/service-orders")
-      const data = await response.json().catch(() => ({}))
-      if (response.ok) setOrders(data.orders ?? [])
-      setOrdersLoading(false)
-    }
-    loadOrders()
+    fetchOrders(true)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -243,6 +246,8 @@ export default function ServicesPage() {
       const finalizeData = await finalizeResponse?.json().catch(() => ({}))
       if (!cancelled && finalizeData?.order_id) {
         setResumeOrderId(finalizeData.order_id)
+        // Refresh the list before navigating so it's current on return
+        await fetchOrders()
         window.location.href = `/dashboard/services/orders/${finalizeData.order_id}/intake`
         return
       }
@@ -250,6 +255,7 @@ export default function ServicesPage() {
       if (!cancelled && finalizeData?.error && !finalizeData?.order_id) {
         setResumeLookupLoading(false)
         setError(`Could not create your service order: ${finalizeData.error}. Please contact support if this persists.`)
+        await fetchOrders()
         return
       }
 
@@ -259,6 +265,7 @@ export default function ServicesPage() {
         const order = data?.orders?.[0]
         if (!cancelled && order?.id) {
           setResumeOrderId(order.id)
+          await fetchOrders()
           window.location.href = `/dashboard/services/orders/${order.id}/intake`
           return
         }
@@ -267,6 +274,8 @@ export default function ServicesPage() {
       if (!cancelled) {
         setResumeLookupLoading(false)
         setError("Could not auto-open your intake form. Use Continue Intake in My Service Orders below.")
+        // Refresh orders — if finalize did create the order, it now shows in the list
+        await fetchOrders()
       }
     }
     pollForOrderBySession()
