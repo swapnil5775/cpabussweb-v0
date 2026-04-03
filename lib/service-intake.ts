@@ -1,6 +1,6 @@
 import { ONE_TIME_SERVICES, type ServiceKey } from "@/lib/stripe-plans"
 
-export type IntakeQuestionType = "text" | "textarea" | "select" | "date" | "number" | "yes_no"
+export type IntakeQuestionType = "text" | "textarea" | "select" | "date" | "number" | "yes_no" | "info"
 
 export type IntakeQuestion = {
   id: string
@@ -38,41 +38,186 @@ export const SERVICE_INTAKE_CONFIG: Record<ServiceKey, ServiceIntakeConfig> = {
   },
   tax_individual: {
     timeline: "5-10 business days after complete document set",
-    intro: "We will prepare your 1040 package based on your responses and uploaded documents.",
+    intro: "Fill out the details below, then upload your documents. We will not ask for SSN, DOB, or bank info here — those come through the secure document upload.",
     questions: [
-      { id: "tax_year", label: "Tax year to file", type: "number", required: true, placeholder: "2025" },
-      { id: "filing_status", label: "Filing status", type: "select", required: true, options: ["Single", "Married Filing Jointly", "Married Filing Separately", "Head of Household"] },
-      { id: "state_returns", label: "State return(s) needed", type: "text", required: true, placeholder: "CA, NY" },
-      { id: "w2_count", label: "How many W-2 forms?", type: "number", required: true, placeholder: "1" },
-      { id: "has_1099_income", label: "Any 1099/self-employment income?", type: "yes_no", required: true },
-      { id: "estimated_payments", label: "Estimated tax payments made?", type: "yes_no", required: true },
-      { id: "special_notes", label: "Anything else we should know?", type: "textarea" },
+      // ── Filing basics ────────────────────────────────────────────
+      { id: "tax_year", label: "Tax year to file", type: "select", required: true, options: ["2025", "2024", "2023", "2022"] },
+      { id: "filing_status", label: "Filing status", type: "select", required: true, options: ["Single", "Married Filing Jointly", "Married Filing Separately", "Head of Household", "Qualifying Surviving Spouse"] },
+      { id: "state_returns", label: "State return(s) needed", type: "text", required: true, placeholder: "CA, NY (or 'Federal only')" },
+      { id: "prior_preparer", label: "Who prepared your return last year?", type: "select", required: true, options: ["This firm", "Another CPA / preparer", "Self-prepared (TurboTax, etc.)", "First year filing"] },
+
+      // ── Income sources ───────────────────────────────────────────
+      { id: "w2_count", label: "Number of W-2 forms (jobs / employers)", type: "number", required: true, placeholder: "1" },
+      { id: "has_1099_income", label: "Any 1099-NEC or self-employment income?", type: "yes_no", required: true },
+      { id: "self_employment_detail", label: "Business name, activity, and approximate net income", type: "textarea", placeholder: "e.g., Freelance web design – approx $28,000 net", showIfId: "has_1099_income", showIfValue: "Yes" },
+      { id: "investment_income", label: "Any investment income? (stocks, crypto, mutual funds)", type: "yes_no", required: true },
+      { id: "investment_detail", label: "Describe (sold stocks, crypto trades, dividends, etc.)", type: "textarea", placeholder: "e.g., Sold AAPL shares for ~$12,000 gain; held crypto on Coinbase", showIfId: "investment_income", showIfValue: "Yes" },
+      { id: "rental_income", label: "Any rental property income?", type: "yes_no", required: true },
+      { id: "rental_detail", label: "Address of rental property, gross rent collected, main expenses", type: "textarea", placeholder: "e.g., 123 Oak St Austin TX – $18,000 rent, $6,000 expenses (mortgage, repairs)", showIfId: "rental_income", showIfValue: "Yes" },
+      { id: "other_income", label: "Any other income? (alimony received, gambling, foreign, retirement distributions)", type: "textarea", placeholder: "Describe type and approximate amount" },
+
+      // ── Deductions ───────────────────────────────────────────────
+      { id: "homeowner", label: "Do you own your home? (mortgage interest + property tax)", type: "yes_no", required: true },
+      { id: "student_loan_interest", label: "Did you pay student loan interest this year?", type: "yes_no", required: true },
+      { id: "charitable_contributions", label: "Charitable contributions made (cash or non-cash)?", type: "yes_no", required: true },
+      { id: "charitable_amount", label: "Approximate total charitable contributions", type: "text", placeholder: "e.g., $1,200 cash + 2 bags of clothing to Goodwill", showIfId: "charitable_contributions", showIfValue: "Yes" },
+      { id: "health_insurance_type", label: "Health insurance coverage type", type: "select", required: true, options: ["Employer-sponsored (W-2 Box 12)", "Marketplace / ACA (1095-A)", "Self-employed (deducting premiums)", "Medicare / Medicaid", "None / uninsured"] },
+
+      // ── Dependents ───────────────────────────────────────────────
+      { id: "has_dependents", label: "Any dependents to claim?", type: "yes_no", required: true },
+      { id: "dependents_detail", label: "Dependent names, relationship, and year of birth (no SSNs here)", type: "textarea", placeholder: "e.g., Emma Smith – daughter – born 2015\nLiam Smith – son – born 2018", showIfId: "has_dependents", showIfValue: "Yes" },
+      { id: "childcare_expenses", label: "Any childcare / dependent care expenses paid?", type: "yes_no", showIfId: "has_dependents", showIfValue: "Yes" },
+
+      // ── Payments & prior year ────────────────────────────────────
+      { id: "estimated_payments", label: "Did you make estimated tax payments (1040-ES)?", type: "yes_no", required: true },
+      { id: "estimated_payment_amount", label: "Total estimated payments made (all quarters)", type: "text", placeholder: "e.g., $4,000 ($1,000 each quarter)", showIfId: "estimated_payments", showIfValue: "Yes" },
+      { id: "irs_notices", label: "Any IRS or state notices / letters received this year?", type: "yes_no", required: true },
+      { id: "irs_notice_detail", label: "Describe the notice (or upload it in Documents)", type: "textarea", showIfId: "irs_notices", showIfValue: "Yes" },
+      { id: "refund_preference", label: "Refund preference", type: "select", required: true, options: ["Direct deposit (provide routing/account in secure upload)", "Paper check", "Apply to next year estimated tax"] },
+
+      // ── Secure document checklist ────────────────────────────────
+      {
+        id: "_docs_notice",
+        label: "Documents to upload securely after submitting this form",
+        type: "info",
+        placeholder: `Upload these in the Documents section — do NOT include SSN, DOB, or bank numbers in form fields above.
+
+Required for all filers:
+• All W-2 forms
+• All 1099 forms (NEC, INT, DIV, R, SSA, etc.)
+• Prior year federal + state tax return (for new clients)
+• Government-issued ID (driver's license or passport)
+
+If applicable:
+• Schedule K-1 (partnerships, S-corps, trusts)
+• 1095-A (marketplace health insurance)
+• 1098 (mortgage interest statement)
+• Brokerage statements (1099-B) or crypto transaction CSV
+• Rental income/expense summary
+• Childcare provider name, address, and EIN/SSN (Form 2441)
+• Estimated tax payment confirmation (IRS letter or bank statement)
+• Bank account info for direct deposit (routing + account on a voided check scan)`,
+      },
+      { id: "special_notes", label: "Anything else we should know before we start?", type: "textarea" },
     ],
   },
   tax_business: {
     timeline: "7-12 business days after complete intake and books review",
-    intro: "These responses help us route your return to the correct filing workflow.",
+    intro: "Fill out the business details below. We will not ask for owner SSNs here — those come through secure document upload with the prior year return.",
     questions: [
-      { id: "tax_year", label: "Tax year to file", type: "number", required: true, placeholder: "2025" },
-      { id: "entity_type", label: "Entity type", type: "select", required: true, options: ["S-Corp (1120-S)", "C-Corp (1120)", "Partnership (1065)", "Single-Member LLC"] },
-      { id: "state_returns", label: "State filing requirement(s)", type: "text", required: true },
-      { id: "books_ready", label: "Are books finalized for the year?", type: "yes_no", required: true },
-      { id: "owner_count", label: "Number of owners/shareholders", type: "number", required: true, placeholder: "1" },
-      { id: "payroll_processed", label: "Was payroll processed for this tax year?", type: "yes_no", required: true },
-      { id: "special_notes", label: "Special filing notes", type: "textarea" },
+      // ── Entity & filing basics ────────────────────────────────────
+      { id: "tax_year", label: "Tax year to file", type: "select", required: true, options: ["2025", "2024", "2023", "2022"] },
+      { id: "entity_type", label: "Entity type", type: "select", required: true, options: ["S-Corp (1120-S)", "C-Corp (1120)", "Partnership (1065)", "Single-Member LLC (Schedule C)", "Multi-Member LLC (1065)"] },
+      { id: "company_legal_name", label: "Company legal name (as filed)", type: "text", required: true },
+      { id: "ein", label: "Business EIN (XX-XXXXXXX)", type: "text", required: true, placeholder: "12-3456789" },
+      { id: "business_address", label: "Business mailing address", type: "textarea", required: true, placeholder: "123 Main St, Suite 100\nAustin, TX 78701" },
+      { id: "state_returns", label: "State filing requirement(s)", type: "text", required: true, placeholder: "TX, CA (or 'Federal only')" },
+      { id: "formation_date", label: "Date of incorporation / formation", type: "date", required: true },
+      { id: "accounting_method", label: "Accounting method", type: "select", required: true, options: ["Cash basis", "Accrual basis", "Not sure"] },
+
+      // ── Books & prior return ──────────────────────────────────────
+      { id: "books_ready", label: "Are books finalized / reconciled for this tax year?", type: "yes_no", required: true },
+      { id: "books_platform", label: "Accounting platform used", type: "select", required: true, options: ["QuickBooks Online", "QuickBooks Desktop", "Xero", "Wave", "Spreadsheet only", "Other / none"] },
+      { id: "prior_return_filed", label: "Was a return filed for the prior year?", type: "yes_no", required: true },
+      { id: "extension_filed", label: "Was an extension filed for this tax year?", type: "yes_no", required: true },
+      { id: "prior_preparer", label: "Who prepared the return last year?", type: "select", options: ["This firm", "Another CPA / preparer", "Self-prepared", "First year filing"], showIfId: "prior_return_filed", showIfValue: "Yes" },
+
+      // ── Income & compensation ─────────────────────────────────────
+      { id: "owner_count", label: "Number of owners / shareholders", type: "number", required: true, placeholder: "1" },
+      { id: "officer_compensation", label: "Total officer / owner W-2 wages paid this year", type: "text", required: true, placeholder: "e.g., $85,000 (or $0 if none)" },
+      { id: "distributions", label: "Total owner distributions taken this year", type: "text", placeholder: "e.g., $30,000 (or $0)" },
+      { id: "payroll_processed", label: "Was payroll processed for employees (beyond owner)?", type: "yes_no", required: true },
+      { id: "payroll_platform", label: "Payroll platform used", type: "text", placeholder: "e.g., Gusto, ADP, QuickBooks Payroll", showIfId: "payroll_processed", showIfValue: "Yes" },
+
+      // ── Balance sheet & assets ────────────────────────────────────
+      { id: "fixed_assets", label: "Any fixed asset purchases or disposals this year?", type: "yes_no", required: true },
+      { id: "fixed_assets_detail", label: "Describe assets purchased or sold (item, cost, date)", type: "textarea", placeholder: "e.g., MacBook Pro – $2,400 – March 2025; sold old server – $800", showIfId: "fixed_assets", showIfValue: "Yes" },
+      { id: "shareholder_loans", label: "Any loans to or from shareholders / members?", type: "yes_no", required: true },
+      { id: "shareholder_loans_detail", label: "Describe loan direction, amount, and whether interest was charged", type: "textarea", showIfId: "shareholder_loans", showIfValue: "Yes" },
+      { id: "nol_carryforward", label: "Any net operating loss (NOL) carried forward from a prior year?", type: "yes_no", required: true },
+
+      // ── Secure document checklist ─────────────────────────────────
+      {
+        id: "_docs_notice",
+        label: "Documents to upload securely after submitting this form",
+        type: "info",
+        placeholder: `Upload these in the Documents section — owner SSNs and personal IDs should only come through secure document upload.
+
+Required:
+• Prior year business tax return (1120-S, 1120, or 1065)
+• QuickBooks / accounting export or trial balance for the tax year
+• Payroll summary report (if payroll was run)
+• Year-end bank statements for all business accounts
+
+If applicable:
+• Fixed asset purchase receipts or depreciation schedule
+• Loan agreements (shareholder loans or business loans)
+• K-1s received from other partnerships or S-corps
+• 1099s received for business income
+• State nexus information (if operating in multiple states)`,
+      },
+      { id: "special_notes", label: "Special filing notes or questions for the team", type: "textarea" },
     ],
   },
   payroll_setup: {
     timeline: "2-4 business days for complete setup",
-    intro: "We will configure payroll and provide first-run readiness once details are complete.",
+    intro: "Fill out all sections so we can configure payroll without a back-and-forth call. Employee SSNs and bank info come through secure document upload — do not include them in the fields below.",
     questions: [
-      { id: "pay_schedule", label: "Preferred pay schedule", type: "select", required: true, options: ["Weekly", "Bi-weekly", "Semi-monthly", "Monthly"] },
-      { id: "first_pay_date", label: "Target first pay date", type: "date", required: true },
-      { id: "employee_count", label: "Current employee count", type: "number", required: true, placeholder: "5" },
-      { id: "states_with_employees", label: "States where employees work", type: "text", required: true, placeholder: "TX, CA" },
-      { id: "contractors_count", label: "1099 contractor count (if any)", type: "number", placeholder: "0" },
-      { id: "benefits_needed", label: "Any benefits setup needed?", type: "yes_no", required: true },
-      { id: "notes", label: "Payroll setup notes", type: "textarea" },
+      // ── Company info ─────────────────────────────────────────────
+      { id: "company_legal_name", label: "Company legal name (as registered with IRS)", type: "text", required: true },
+      { id: "ein", label: "Federal EIN (XX-XXXXXXX)", type: "text", required: true, placeholder: "12-3456789" },
+      { id: "business_address", label: "Business address (used for payroll tax registrations)", type: "textarea", required: true, placeholder: "123 Main St\nAustin, TX 78701" },
+
+      // ── Payroll platform ─────────────────────────────────────────
+      { id: "platform_preference", label: "Preferred payroll platform", type: "select", required: true, options: ["Gusto (recommended)", "QuickBooks Payroll", "ADP Run", "Paychex Flex", "Already have a platform — need configuration help", "No preference — you choose"] },
+      { id: "existing_platform_name", label: "Which platform are you currently using?", type: "text", placeholder: "e.g., Gusto, ADP", showIfId: "platform_preference", showIfValue: "Already have a platform — need configuration help" },
+
+      // ── Pay schedule ─────────────────────────────────────────────
+      { id: "pay_schedule", label: "Pay frequency", type: "select", required: true, options: ["Weekly", "Bi-weekly (every 2 weeks)", "Semi-monthly (1st and 15th)", "Monthly"] },
+      { id: "first_pay_date", label: "Target date for first payroll run", type: "date", required: true },
+
+      // ── Workforce ────────────────────────────────────────────────
+      { id: "employee_count", label: "Number of W-2 employees", type: "number", required: true, placeholder: "3" },
+      { id: "states_with_employees", label: "State(s) where employees physically work", type: "text", required: true, placeholder: "TX, CA, NY" },
+      { id: "contractors_count", label: "Number of 1099 contractors (if also tracking in payroll platform)", type: "number", placeholder: "0" },
+      { id: "owner_on_payroll", label: "Is the owner / officer receiving a W-2 salary? (important for S-corps)", type: "yes_no", required: true },
+      { id: "owner_salary", label: "Intended owner / officer annual W-2 salary", type: "text", placeholder: "e.g., $72,000/year", showIfId: "owner_on_payroll", showIfValue: "Yes" },
+
+      // ── Employee roster (no SSNs) ─────────────────────────────────
+      { id: "employee_roster", label: "Employee Roster — one per line (no SSNs here)", type: "textarea", placeholder: `Full Name | Job Title | Start Date | Pay Type | Pay Rate
+Example:
+Jane Smith    | Operations Manager | 2024-03-01 | Salary    | $58,000/yr
+John Doe      | Technician         | 2025-01-15 | Hourly    | $22/hr
+Sara Lee      | Part-time Admin    | 2025-02-01 | Hourly    | $18/hr` },
+
+      // ── State tax accounts ────────────────────────────────────────
+      { id: "state_ui_account", label: "State unemployment (UI) account number(s)", type: "text", placeholder: "e.g., TX: 1234567-8  |  CA: 999-1234-5 (leave blank if not yet registered)" },
+      { id: "state_withholding_account", label: "State income tax withholding account number(s)", type: "text", placeholder: "e.g., CA: 999-1234-5 (leave blank if not yet registered)" },
+      { id: "new_hire_reporting", label: "Have new hires been reported to the state?", type: "yes_no", required: true },
+
+      // ── Benefits ─────────────────────────────────────────────────
+      { id: "benefits_needed", label: "Any benefits to set up in payroll? (health, 401k, HSA, etc.)", type: "yes_no", required: true },
+      { id: "benefits_detail", label: "Describe each benefit type and employer / employee contribution amounts", type: "textarea", placeholder: "e.g., Health insurance: employer pays $400/mo, employee pays $150/mo via pre-tax deduction\n401k: 3% employer match, Roth option available", showIfId: "benefits_needed", showIfValue: "Yes" },
+
+      // ── Secure document checklist ─────────────────────────────────
+      {
+        id: "_docs_notice",
+        label: "Documents to upload securely after submitting this form",
+        type: "info",
+        placeholder: `Upload these in the Documents section — employee SSNs and bank account info must come through secure upload only.
+
+Required:
+• Completed W-4 for each employee (or we can provide blank forms)
+• Completed I-9 for each employee (employment eligibility)
+• Voided check or bank letter for company payroll bank account (for ACH direct deposit)
+• IRS EIN confirmation letter (CP-575 or 147C)
+
+If applicable:
+• Prior payroll records / year-to-date payroll summary (if mid-year setup)
+• State registration confirmations (UI and withholding account letters)
+• 401k / benefits plan documents`,
+      },
+      { id: "notes", label: "Anything else we should know before we start?", type: "textarea" },
     ],
   },
   w2_1099_filing: {
@@ -111,12 +256,12 @@ export const SERVICE_INTAKE_CONFIG: Record<ServiceKey, ServiceIntakeConfig> = {
       },
       {
         id: "w2_roster",
-        label: "W-2 Employee Roster — one employee per line",
+        label: "W-2 Employee Roster — one employee per line (no SSNs here — upload W-9s / payroll report in Documents)",
         type: "textarea",
-        placeholder: `Full Name | SSN (XXX-XX-XXXX) | Street Address, City, State ZIP | Total Wages | Federal Tax Withheld | State Tax Withheld
+        placeholder: `Full Name | Street Address, City, State ZIP | Total Wages | Federal Tax Withheld | State Tax Withheld
 Example:
-Jane Smith | 123-45-6789 | 100 Main St, Austin TX 78701 | 62000 | 7800 | 2100
-John Doe   | 987-65-4321 | 200 Oak Ave, Miami FL 33101  | 45000 | 5200 | 0`,
+Jane Smith | 100 Main St, Austin TX 78701 | 62000 | 7800 | 2100
+John Doe   | 200 Oak Ave, Miami FL 33101  | 45000 | 5200 | 0`,
       },
       {
         id: "w2_benefits",
@@ -143,12 +288,12 @@ John Doe   | 987-65-4321 | 200 Oak Ave, Miami FL 33101  | 45000 | 5200 | 0`,
       },
       {
         id: "1099_roster",
-        label: "1099-NEC Contractor Roster — one contractor per line",
+        label: "1099-NEC Contractor Roster — one contractor per line (SSN/EIN comes from W-9 upload in Documents)",
         type: "textarea",
-        placeholder: `Full Name or Business Name | SSN or EIN | Street Address, City, State ZIP | Total Paid | W-9 on file? (Y/N)
+        placeholder: `Full Name or Business Name | Street Address, City, State ZIP | Total Paid | W-9 on file? (Y/N)
 Example:
-Acme Design LLC    | 12-3456789 | 500 Pine Rd, Denver CO 80201 | 8500 | Y
-Sara Johnson       | 555-44-3333 | 90 Elm St, Portland OR 97201 | 3200 | N`,
+Acme Design LLC | 500 Pine Rd, Denver CO 80201   | 8500 | Y
+Sara Johnson    | 90 Elm St, Portland OR 97201    | 3200 | N`,
       },
       {
         id: "missing_w9",
@@ -169,6 +314,23 @@ Sara Johnson       | 555-44-3333 | 90 Elm St, Portland OR 97201 | 3200 | N`,
         placeholder: "e.g., 1099-MISC: rent paid to Bob LLC – $18,000",
         showIfId: "1099_other_types",
         showIfValue: "Yes",
+      },
+
+      // ── Secure document checklist ─────────────────────────────────
+      {
+        id: "_docs_notice",
+        label: "Documents to upload securely after submitting this form",
+        type: "info",
+        placeholder: `Upload these in the Documents section — SSNs and EINs must only come through secure document upload, not typed into form fields above.
+
+Required:
+• W-9 for every contractor listed above (contains their SSN or EIN)
+• Payroll summary report for the tax year (contains employee wage totals and withholding)
+• Prior year W-2 and 1099 copies (if corrections are needed)
+
+If applicable:
+• State withholding account confirmation letters
+• Any IRS or state notices related to prior year filings`,
       },
 
       // ── Corrections & notes ───────────────────────────────────────

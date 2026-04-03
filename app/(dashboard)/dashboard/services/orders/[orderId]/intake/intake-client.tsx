@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, useTransition } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ArrowLeft, CheckCircle2, Loader2, Save } from "lucide-react"
+import { ArrowLeft, CheckCircle2, FileUp, Loader2, Save } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge"
 type IntakeQuestion = {
   id: string
   label: string
-  type: "text" | "textarea" | "select" | "date" | "number" | "yes_no"
+  type: "text" | "textarea" | "select" | "date" | "number" | "yes_no" | "info"
   required?: boolean
   placeholder?: string
   options?: string[]
@@ -63,7 +63,7 @@ export function IntakeClient({ orderId }: { orderId: string }) {
   }, [orderId])
 
   const requiredIds = useMemo(
-    () => (order?.intake_questions ?? []).filter((q) => q.required).map((q) => q.id),
+    () => (order?.intake_questions ?? []).filter((q) => q.required && q.type !== "info").map((q) => q.id),
     [order]
   )
   const missingRequired = requiredIds.filter((id) => !answers[id]?.trim())
@@ -165,6 +165,25 @@ export function IntakeClient({ orderId }: { orderId: string }) {
         <CardContent className="space-y-4">
           {order.intake_questions.map((question) => {
             if (question.showIfId && answers[question.showIfId] !== question.showIfValue) return null
+
+            if (question.type === "info") {
+              return (
+                <div key={question.id} className="rounded-lg border border-blue-200 bg-blue-50 p-4 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <FileUp className="h-4 w-4 shrink-0 text-blue-700" />
+                    <p className="text-sm font-semibold text-blue-900">{question.label}</p>
+                  </div>
+                  <p className="text-xs text-blue-800 whitespace-pre-line leading-relaxed">{question.placeholder}</p>
+                  <Link href="/dashboard/documents" className="inline-block mt-1">
+                    <Button size="sm" variant="outline" className="gap-1.5 border-blue-300 bg-white text-blue-800 hover:bg-blue-100">
+                      <FileUp className="h-3.5 w-3.5" />
+                      Go to Documents
+                    </Button>
+                  </Link>
+                </div>
+              )
+            }
+
             return (
             <div key={question.id} className="space-y-1.5">
               <Label htmlFor={question.id}>
