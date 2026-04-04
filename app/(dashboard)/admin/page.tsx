@@ -2,14 +2,42 @@
 
 import { useEffect, useState, useTransition } from "react"
 import { createClient } from "@/lib/supabase/client"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import {
   CheckCircle2, AlertCircle, Link2, RefreshCw, Building2,
-  Users, Zap, Clock, BookOpen, UserPlus, Briefcase, Webhook
+  Users, Zap, Clock, BookOpen, UserPlus, Briefcase, Webhook,
+  Mail, Calendar, ShieldCheck, CreditCard, Package, ChevronDown, ChevronUp,
 } from "lucide-react"
+
+type UserSub = {
+  plan: string
+  status: string
+  org_name: string
+  created_at: string
+}
+
+type UserOrder = {
+  order_number: string | null
+  service_type: string | null
+  service_name: string
+  status: string
+  intake_status: string
+  created_at: string
+}
+
+type UserRow = {
+  user_id: string
+  email: string
+  full_name: string | null
+  created_at: string
+  last_sign_in: string | null
+  orgs: { id: string; name: string; is_default: boolean }[]
+  subscriptions: UserSub[]
+  service_orders: UserOrder[]
+}
 
 type QBOConn = {
   realm_id: string
@@ -66,6 +94,11 @@ export default function AdminPage() {
   const [linkExistingInputs, setLinkExistingInputs] = useState<Record<string, { company_uuid: string; company_name: string; access_token: string; refresh_token: string }>>({})
   const [linkingExisting, setLinkingExisting] = useState<Record<string, boolean>>({})
 
+  // Users overview state
+  const [usersData, setUsersData] = useState<UserRow[]>([])
+  const [usersLoading, setUsersLoading] = useState(true)
+  const [expandedUser, setExpandedUser] = useState<string | null>(null)
+
   // Webhook verification state
   const [webhookStatus, setWebhookStatus] = useState<{ token_received: boolean; verified: boolean; verified_at: string | null; subscription_uuid: string | null } | null>(null)
   const [webhookSubUuid, setWebhookSubUuid] = useState("a38c1e51-b743-41b6-942a-d513c4fda8e3")
@@ -87,6 +120,10 @@ export default function AdminPage() {
       fetch("/api/admin/gusto/verify-webhook")
         .then((r) => r.ok ? r.json() : null)
         .then((d) => { if (d) setWebhookStatus(d) })
+      fetch("/api/admin/users")
+        .then((r) => r.ok ? r.json() : null)
+        .then((d) => { if (d?.users) setUsersData(d.users) })
+        .finally(() => setUsersLoading(false))
     })
   }, [])
 
@@ -258,6 +295,185 @@ export default function AdminPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* ── Users Overview ─────────────────────────────────────── */}
+      {(() => {
+        const paidUsers = usersData.filter((u) => u.subscriptions.some((s) => s.status === "active" || s.status === "trialing"))
+        const freeUsers = usersData.filter((u) => !u.subscriptions.some((s) => s.status === "active" || s.status === "trialing"))
+        const totalOrgs = usersData.reduce((sum, u) => sum + u.orgs.length, 0)
+
+        return (
+          <div className="space-y-3">
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="font-semibold text-base flex items-center gap-2">
+                <ShieldCheck className="h-4 w-4 text-primary" />
+                All Users
+              </h2>
+              {!usersLoading && (
+                <span className="text-xs text-muted-foreground">{usersData.length} total</span>
+              )}
+            </div>
+
+            {/* Summary stat row */}
+            <div className="grid gap-3 sm:grid-cols-4">
+              {[
+                { label: "Total signups", value: usersData.length, icon: Users, color: "text-primary" },
+                { label: "Paid subscribers", value: paidUsers.length, icon: CreditCard, color: "text-green-600" },
+                { label: "Free users", value: freeUsers.length, icon: Mail, color: "text-muted-foreground" },
+                { label: "Total orgs", value: totalOrgs, icon: Building2, color: "text-primary" },
+              ].map(({ label, value, icon: Icon, color }) => (
+                <Card key={label}>
+                  <CardContent className="pt-4 flex items-center gap-3">
+                    <Icon className={`h-5 w-5 shrink-0 ${color}`} />
+                    <div>
+                      <p className="text-xl font-bold">{usersLoading ? "…" : value}</p>
+                      <p className="text-xs text-muted-foreground">{label}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Users table */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">User Roster</CardTitle>
+                <CardDescription className="text-xs">Name · email · signup · last login · orgs · plan · add-ons</CardDescription>
+              </CardHeader>
+              <CardContent className="p-0">
+                {usersLoading ? (
+                  <p className="px-4 py-6 text-sm text-muted-foreground">Loading users…</p>
+                ) : usersData.length === 0 ? (
+                  <p className="px-4 py-6 text-sm text-muted-foreground">No users yet.</p>
+                ) : (
+                  <div className="divide-y divide-border">
+                    {usersData.map((u) => {
+                      const activeSubs = u.subscriptions.filter((s) => s.status === "active" || s.status === "trialing")
+                      const isPaid = activeSubs.length > 0
+                      const isExpanded = expandedUser === u.user_id
+
+                      return (
+                        <div key={u.user_id} className="px-4 py-3">
+                          {/* Main row */}
+                          <div className="flex items-start gap-3 flex-wrap">
+                            {/* Avatar-ish initial */}
+                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary mt-0.5">
+                              {(u.full_name ?? u.email).charAt(0).toUpperCase()}
+                            </div>
+
+                            <div className="flex-1 min-w-0 space-y-0.5">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <p className="text-sm font-medium truncate">{u.full_name ?? <span className="text-muted-foreground italic">No name</span>}</p>
+                                {isPaid ? (
+                                  activeSubs.map((s, i) => (
+                                    <Badge key={i} className="text-[10px] capitalize bg-green-100 text-green-800 border-0">{s.plan}</Badge>
+                                  ))
+                                ) : (
+                                  <Badge variant="outline" className="text-[10px] text-muted-foreground">Free</Badge>
+                                )}
+                                {u.service_orders.length > 0 && (
+                                  <Badge variant="secondary" className="text-[10px]">
+                                    <Package className="h-2.5 w-2.5 mr-0.5" />
+                                    {u.service_orders.length} add-on{u.service_orders.length > 1 ? "s" : ""}
+                                  </Badge>
+                                )}
+                              </div>
+
+                              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                                <Mail className="h-3 w-3 shrink-0" />
+                                {u.email}
+                              </p>
+
+                              <div className="flex items-center gap-3 flex-wrap text-xs text-muted-foreground">
+                                <span className="flex items-center gap-1">
+                                  <Calendar className="h-3 w-3 shrink-0" />
+                                  Joined {new Date(u.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Clock className="h-3 w-3 shrink-0" />
+                                  {u.last_sign_in
+                                    ? `Last login ${new Date(u.last_sign_in).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} ${new Date(u.last_sign_in).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}`
+                                    : "Never logged in"}
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Building2 className="h-3 w-3 shrink-0" />
+                                  {u.orgs.length} org{u.orgs.length !== 1 ? "s" : ""}
+                                  {u.orgs.length > 0 && (
+                                    <span className="text-foreground/60">
+                                      ({u.orgs.map((o) => o.name).join(", ")})
+                                    </span>
+                                  )}
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Expand button */}
+                            {(u.subscriptions.length > 0 || u.service_orders.length > 0) && (
+                              <button
+                                onClick={() => setExpandedUser(isExpanded ? null : u.user_id)}
+                                className="shrink-0 text-xs text-muted-foreground hover:text-foreground flex items-center gap-0.5 mt-1"
+                              >
+                                {isExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                                {isExpanded ? "Less" : "Details"}
+                              </button>
+                            )}
+                          </div>
+
+                          {/* Expanded detail */}
+                          {isExpanded && (
+                            <div className="mt-3 ml-11 space-y-3">
+                              {/* Subscriptions */}
+                              {u.subscriptions.length > 0 && (
+                                <div className="rounded-lg border border-border bg-muted/30 p-3 space-y-1.5">
+                                  <p className="text-xs font-semibold flex items-center gap-1.5">
+                                    <CreditCard className="h-3.5 w-3.5 text-green-600" />
+                                    Subscriptions
+                                  </p>
+                                  {u.subscriptions.map((s, i) => (
+                                    <div key={i} className="flex items-center gap-2 text-xs flex-wrap">
+                                      <Badge className={`text-[10px] capitalize border-0 ${s.status === "active" ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800"}`}>
+                                        {s.plan}
+                                      </Badge>
+                                      <span className="text-muted-foreground">{s.org_name}</span>
+                                      <span className="text-muted-foreground">·</span>
+                                      <span className={`capitalize font-medium ${s.status === "active" ? "text-green-700" : "text-amber-700"}`}>{s.status}</span>
+                                      <span className="text-muted-foreground">· since {new Date(s.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+
+                              {/* Service orders */}
+                              {u.service_orders.length > 0 && (
+                                <div className="rounded-lg border border-border bg-muted/30 p-3 space-y-1.5">
+                                  <p className="text-xs font-semibold flex items-center gap-1.5">
+                                    <Package className="h-3.5 w-3.5 text-primary" />
+                                    Add-on Orders
+                                  </p>
+                                  {u.service_orders.map((o, i) => (
+                                    <div key={i} className="flex items-center gap-2 text-xs flex-wrap">
+                                      <span className="font-medium">{o.service_name}</span>
+                                      <span className="text-muted-foreground font-mono text-[10px]">{o.order_number ?? "—"}</span>
+                                      <Badge variant="outline" className={`text-[10px] capitalize ${o.intake_status === "submitted" ? "border-green-300 text-green-700" : "border-amber-300 text-amber-700"}`}>
+                                        {o.intake_status === "submitted" ? "Intake done" : "Intake pending"}
+                                      </Badge>
+                                      <span className="text-muted-foreground">{new Date(o.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        )
+      })()}
 
       {/* Firm QBO connection */}
       <Card className={data?.firm_connected ? "border-[#2CA01C]/30 bg-[#2CA01C]/5" : "border-dashed border-amber-300"}>
