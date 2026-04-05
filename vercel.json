@@ -8,6 +8,10 @@
     {
       "path": "/api/cron/service-intake-reminder",
       "schedule": "17 * * * *"
+    },
+    {
+      "path": "/api/cron/receipts-email",
+      "schedule": "*/15 * * * *"
     }
   ]
 }

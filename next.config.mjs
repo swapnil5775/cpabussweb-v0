@@ -3,6 +3,7 @@ const nextConfig = {
   images: {
     remotePatterns: [],
   },
+  serverExternalPackages: ["imapflow", "mailparser"],
 }
 
 export default nextConfig

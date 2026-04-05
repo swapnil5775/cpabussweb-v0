@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { BookOpenCheck, LayoutDashboard, FileUp, ShoppingBag, LogOut, UserCircle, ShieldCheck, LineChart } from "lucide-react"
+import { BookOpenCheck, LayoutDashboard, FileUp, ShoppingBag, LogOut, UserCircle, ShieldCheck, LineChart, Receipt } from "lucide-react"
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { OrganizationSwitcher } from "@/components/dashboard/organization-switcher"
@@ -18,6 +18,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
     { href: "/dashboard/financials", label: "Financials", icon: LineChart },
     { href: "/dashboard/documents", label: "Documents", icon: FileUp },
+    { href: "/dashboard/receipts", label: "Receipts", icon: Receipt },
     { href: "/dashboard/services", label: "Add-on Services", icon: ShoppingBag },
     { href: "/dashboard/profile", label: "Profile", icon: UserCircle },
     ...(isAdmin ? [{ href: "/admin", label: "Admin", icon: ShieldCheck }] : []),
