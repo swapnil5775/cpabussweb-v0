@@ -36,6 +36,7 @@ export async function GET(request: NextRequest) {
     host: process.env.IMAP_HOST ?? "imap.bookkeeping.business",
     port: Number(process.env.IMAP_PORT ?? 993),
     secure: true,
+    tls: { rejectUnauthorized: false }, // cert is *.stackmail.com but domain is custom
     auth: {
       user: process.env.IMAP_USER ?? "fileme@bookkeeping.business",
       pass: process.env.IMAP_PASS!,
