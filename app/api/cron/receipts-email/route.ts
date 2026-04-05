@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { createClient as createServiceClient } from "@supabase/supabase-js"
 import { ImapFlow } from "imapflow"
 import { simpleParser } from "mailparser"
+import { checkReceiptLimit } from "@/lib/receipt-limits"
 
 export const runtime = "nodejs"
 export const maxDuration = 60
@@ -139,6 +140,15 @@ export async function GET(request: NextRequest) {
         // ── Step 3: No match → skip (don't store under anyone's account) ───────
         if (!organizationId) {
           console.log(`Skipping email uid=${uid} from=${fromAddress}: no token, unrecognized sender`)
+          skipped++
+          await client.messageFlagsAdd(String(uid), ["\\Seen"], { uid: true })
+          continue
+        }
+
+        // ── Step 4: Check receipt credit limit ────────────────────────────────
+        const limitError = await checkReceiptLimit(admin, organizationId)
+        if (limitError) {
+          console.log(`Skipping email uid=${uid} org=${organizationId}: ${limitError}`)
           skipped++
           await client.messageFlagsAdd(String(uid), ["\\Seen"], { uid: true })
           continue

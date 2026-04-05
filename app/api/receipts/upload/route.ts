@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { createClient as createServiceClient } from "@supabase/supabase-js"
 import { resolveActiveOrganizationId } from "@/lib/organizations"
+import { checkReceiptLimit } from "@/lib/receipt-limits"
 import { cookies } from "next/headers"
 
 export const runtime = "nodejs"
@@ -52,6 +53,14 @@ export async function POST(request: NextRequest) {
     organizationId = await resolveActiveOrganizationId({ admin, userId: user.id, cookieStore })
   } catch {
     organizationId = null
+  }
+
+  // Check receipt credit limit before uploading
+  if (organizationId) {
+    const limitError = await checkReceiptLimit(admin, organizationId)
+    if (limitError) {
+      return NextResponse.json({ error: limitError }, { status: 429 })
+    }
   }
 
   const monthYear = new Date().toISOString().slice(0, 7)

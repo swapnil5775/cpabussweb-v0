@@ -26,6 +26,7 @@ import {
   Landmark,
   FileBadge,
   Receipt,
+  ScanLine,
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { CALENDLY_URL, CONTACT_EMAIL } from "@/lib/constants"
@@ -224,7 +225,7 @@ export default async function HomePage() {
                     "Payroll all worker types",
                     "W-2 & 1099 issuance",
                     "Invoice management",
-                    "Quarterly filings",
+                    "Receipt capture — upload or email",
                     "Monthly bookkeeping",
                     "We cover all software costs",
                   ].map((f) => (
@@ -247,7 +248,7 @@ export default async function HomePage() {
                   { icon: Users, label: "Team Access", sub: "Invite your whole company" },
                   { icon: Landmark, label: "Bank Feeds", sub: "Auto-fetch & reconcile" },
                   { icon: FileBadge, label: "W-2 & 1099s", sub: "All worker types covered" },
-                  { icon: Receipt, label: "Invoices", sub: "Send, receive & track" },
+                  { icon: ScanLine, label: "Receipt Capture", sub: "Upload, email or snap a photo" },
                   { icon: ClipboardList, label: "Quarterly Filings", sub: "Payroll & unemployment" },
                   { icon: X, label: "No QuickBooks", sub: "We cover the software" },
                 ].map(({ icon: Icon, label, sub }) => (
@@ -393,6 +394,7 @@ export default async function HomePage() {
                     ["Dedicated Rep", true, false, true],
                     ["Flat Monthly Fee", false, true, true],
                     ["AI-Assisted Accuracy", false, false, true],
+                    ["Receipt Capture (no Dext/QBO add-on)", false, false, true],
                     ["Secure Client Portal", false, false, true],
                   ].map(([feature, cpa, diy, us]) => (
                     <tr key={feature as string} className="hover:bg-muted/30 transition-colors">

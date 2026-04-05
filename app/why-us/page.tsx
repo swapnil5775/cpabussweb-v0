@@ -47,6 +47,7 @@ import {
   Receipt,
   Building2,
   Handshake,
+  ScanLine,
 } from "lucide-react"
 import Link from "next/link"
 
@@ -328,6 +329,7 @@ export default function WhyUsPage() {
                 { name: "Gusto / ADP", what: "Payroll processing" },
                 { name: "TurboTax Business", what: "Business tax filing" },
                 { name: "TurboTax / H&R Block", what: "Personal tax filing" },
+                { name: "Dext / Hubdoc", what: "Receipt capture — no extra subscription" },
                 { name: "Wave / FreshBooks", what: "Invoicing & tracking" },
                 { name: "Xero", what: "Accounting software" },
               ].map(({ name, what }) => (
@@ -483,6 +485,18 @@ export default function WhyUsPage() {
                     </td>
                     <td className="text-center py-4 px-4 bg-primary/5">
                       <Check aria-hidden="true" className="h-4 w-4 mx-auto text-primary" />
+                    </td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="py-4 px-4">
+                      <span className="font-medium">Receipt Capture</span>
+                      <span className="block text-xs text-muted-foreground">Upload, email or photo — AI OCR included</span>
+                    </td>
+                    <td className="text-center py-4 px-4 text-muted-foreground text-xs">Extra sub<br/>(Dext ~$30+/mo)</td>
+                    <td className="text-center py-4 px-4 text-muted-foreground text-xs">Extra sub<br/>(QBO add-on)</td>
+                    <td className="text-center py-4 px-4 bg-primary/5 font-semibold text-primary text-xs">
+                      <Check aria-hidden="true" className="h-4 w-4 mx-auto text-primary mb-1" />
+                      Included
                     </td>
                   </tr>
                   <tr>

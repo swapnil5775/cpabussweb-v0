@@ -14,6 +14,7 @@
 
 import { NextRequest, NextResponse } from "next/server"
 import { createClient as createServiceClient } from "@supabase/supabase-js"
+import { checkReceiptLimit } from "@/lib/receipt-limits"
 
 export const runtime = "nodejs"
 
@@ -114,6 +115,12 @@ export async function POST(request: NextRequest) {
 
   if (!organizationId) {
     return NextResponse.json({ status: "skipped", reason: "no matching org" })
+  }
+
+  // Check receipt credit limit
+  const limitError = await checkReceiptLimit(admin, organizationId)
+  if (limitError) {
+    return NextResponse.json({ status: "skipped", reason: limitError })
   }
 
   const attachments = body.Attachments ?? []

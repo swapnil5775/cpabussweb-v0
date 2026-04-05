@@ -313,6 +313,10 @@ export default function BookkeepingPage() {
                   title: "Tax-Ready Books",
                   description: "Books kept tax-ready so filing season is stress-free",
                 },
+                {
+                  title: "Receipt Capture — Included",
+                  description: "Upload receipts, email them in, or snap a photo. AI extracts vendor, date, amount and category automatically. No Dext or QBO add-on needed.",
+                },
               ].map((item) => (
                 <Card key={item.title}>
                   <CardHeader>
@@ -325,9 +329,12 @@ export default function BookkeepingPage() {
               ))}
             </div>
 
-            <div className="mt-10 rounded-2xl border border-primary/20 bg-primary/5 px-6 py-5 max-w-4xl mx-auto">
+            <div className="mt-10 rounded-2xl border border-primary/20 bg-primary/5 px-6 py-5 max-w-4xl mx-auto space-y-3">
               <p className="text-sm leading-relaxed text-muted-foreground">
                 <strong className="text-foreground">Software is included in our service.</strong> We pay for the accounting and workflow tools our team uses (QuickBooks, Xero, payroll stack, and related ops tools). Clients are billed only for service charges, not extra software subscriptions.
+              </p>
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                <strong className="text-foreground">Receipt capture is built right in.</strong> Tools like Dext, Hubdoc, and the QBO receipt add-on cost $25–$50/month extra elsewhere. With us, it&apos;s already included — upload through the portal, email to your dedicated address, or forward from your phone. AI reads the receipt and categorizes it automatically. Same plan, no new subscription, no surprise charges.
               </p>
             </div>
           </div>
