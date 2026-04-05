@@ -5,91 +5,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const currentDate = new Date().toISOString()
 
   return [
-    // Homepage — primary entry point
-    {
-      url: baseUrl,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 1.0,
-    },
-    // Core service pages — highest-traffic keyword targets
-    // Targets: restaurant bookkeeping, hotel accounting, childcare, realtors, home-based business
-    {
-      url: `${baseUrl}/bookkeeping`,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 0.95,
-    },
-    {
-      url: `${baseUrl}/tax-prep`,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 0.95,
-    },
-    {
-      url: `${baseUrl}/services`,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    // Platform page — explains all-in-one value (no QuickBooks, Gusto, Xero needed)
-    {
-      url: `${baseUrl}/client-portal`,
-      lastModified: currentDate,
-      changeFrequency: "monthly",
-      priority: 0.85,
-    },
-    // Conversion & trust pages
-    {
-      url: `${baseUrl}/why-us`,
-      lastModified: currentDate,
-      changeFrequency: "monthly",
-      priority: 0.85,
-    },
-    {
-      url: `${baseUrl}/contact`,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 0.85,
-    },
-    // Supporting service pages
-    {
-      url: `${baseUrl}/business-services`,
-      lastModified: currentDate,
-      changeFrequency: "monthly",
-      priority: 0.75,
-    },
-    {
-      url: `${baseUrl}/how-it-works`,
-      lastModified: currentDate,
-      changeFrequency: "monthly",
-      priority: 0.75,
-    },
-    // Information & trust pages
-    {
-      url: `${baseUrl}/about`,
-      lastModified: currentDate,
-      changeFrequency: "monthly",
-      priority: 0.65,
-    },
-    {
-      url: `${baseUrl}/faqs`,
-      lastModified: currentDate,
-      changeFrequency: "monthly",
-      priority: 0.65,
-    },
-    // Legal pages
-    {
-      url: `${baseUrl}/privacy`,
-      lastModified: currentDate,
-      changeFrequency: "yearly",
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/terms`,
-      lastModified: currentDate,
-      changeFrequency: "yearly",
-      priority: 0.3,
-    },
+    // ── Tier 1: Primary conversion pages ──────────────────────
+    { url: baseUrl, lastModified: currentDate, changeFrequency: "weekly", priority: 1.0 },
+    { url: `${baseUrl}/bookkeeping`, lastModified: currentDate, changeFrequency: "weekly", priority: 0.98 },
+    { url: `${baseUrl}/services`, lastModified: currentDate, changeFrequency: "weekly", priority: 0.95 },
+    { url: `${baseUrl}/tax-prep`, lastModified: currentDate, changeFrequency: "weekly", priority: 0.95 },
+    // ── Tier 2: Trust & comparison pages ──────────────────────
+    // High SEO value — competitor comparison (Pilot, Collective) + social proof
+    { url: `${baseUrl}/why-us`, lastModified: currentDate, changeFrequency: "weekly", priority: 0.92 },
+    { url: `${baseUrl}/client-portal`, lastModified: currentDate, changeFrequency: "monthly", priority: 0.88 },
+    { url: `${baseUrl}/how-it-works`, lastModified: currentDate, changeFrequency: "monthly", priority: 0.85 },
+    // ── Tier 3: Conversion & supporting pages ─────────────────
+    { url: `${baseUrl}/contact`, lastModified: currentDate, changeFrequency: "weekly", priority: 0.85 },
+    { url: `${baseUrl}/business-services`, lastModified: currentDate, changeFrequency: "monthly", priority: 0.80 },
+    { url: `${baseUrl}/faqs`, lastModified: currentDate, changeFrequency: "monthly", priority: 0.75 },
+    { url: `${baseUrl}/about`, lastModified: currentDate, changeFrequency: "monthly", priority: 0.65 },
+    // ── Tier 4: Reference pages ────────────────────────────────
+    { url: `${baseUrl}/ap-ar-fees`, lastModified: currentDate, changeFrequency: "monthly", priority: 0.55 },
+    // ── Tier 5: Legal ─────────────────────────────────────────
+    { url: `${baseUrl}/privacy`, lastModified: currentDate, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${baseUrl}/terms`, lastModified: currentDate, changeFrequency: "yearly", priority: 0.3 },
   ]
 }

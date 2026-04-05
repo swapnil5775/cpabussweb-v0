@@ -3,37 +3,41 @@ export const PLANS = {
     name: "Essentials",
     label: "For solopreneurs & small businesses",
     priceId: process.env.STRIPE_PRICE_ESSENTIALS!,
-    displayPrice: "$199",
-    basePrice: 199,
+    displayPrice: "$249",
+    basePrice: 249,
     period: "/month",
+    includedEmployees: 2, // Owner + 1 employee
     features: [
-      "Bi-weekly or monthly bookkeeping cycle",
+      "Monthly reconciliation",
       "Transaction categorization + reconciliation",
       "P&L + Balance Sheet creation",
       "Expense tracking and insights",
       "Dedicated bookkeeper",
       "Quarterly sales tax filing support",
-      "Payroll support via Gusto",
-      "Owner's personal tax prep & filing included",
-      "First 5 employees included — $10/employee after",
+      "Payroll for Owner + 1 Employee included",
+      "Personal tax prep available as Add-On",
+      "Additional employees: +$10/mo each",
     ],
   },
   growth: {
     name: "Growth",
     label: "For scaling businesses",
     priceId: process.env.STRIPE_PRICE_GROWTH!,
-    displayPrice: "$329",
-    basePrice: 329,
+    displayPrice: "$349",
+    basePrice: 349,
     period: "/month",
     popular: true,
+    includedEmployees: 3,
     features: [
       "Everything in Essentials",
-      "Projection cash flow modeling",
+      "Advanced financial reports",
+      "Cash flow forecasting",
       "Monthly business insights review",
       "Invoice and payment workflows in QBO/Xero",
-      "US/Canada support on QuickBooks or Xero",
-      "Owner's (or married couple) tax prep & filing included",
-      "First 5 employees included — $10/employee after",
+      "Priority email support",
+      "Payroll for up to 3 Employees included",
+      "Personal & couple tax prep available as Add-On",
+      "Additional employees: +$10/mo each",
     ],
   },
   enterprise: {
@@ -43,15 +47,19 @@ export const PLANS = {
     displayPrice: "$499",
     basePrice: 499,
     period: "/month",
+    includedEmployees: 5,
     features: [
       "Everything in Growth",
       "Multi-entity bookkeeping",
-      "International Xero onboarding support",
-      "Custom reporting and KPI packs",
+      "Inventory management",
+      "Custom reporting",
       "Dedicated account manager",
-      "No client-billed software subscriptions",
-      "Owner's (or married couple) tax prep & filing included",
-      "First 5 employees included — $10/employee after",
+      "Phone + email support",
+      "Payroll for up to 5 Employees included",
+      "Accounts Payable & Receivable (AP/AR)",
+      "15 ACH + 15 Mailed Checks/month included",
+      "Additional employees: +$10/mo each",
+      "Personal & couple tax prep available as Add-On",
     ],
   },
 } as const
@@ -59,20 +67,17 @@ export const PLANS = {
 export type PlanKey = keyof typeof PLANS
 
 // Per-employee payroll add-on pricing
-// First 5 employees: free (included)
-// 6–50 employees: $10/employee/mo
-// 51+ employees: $8/employee/mo
-export function calcEmployeeCost(count: number): number {
-  if (count <= 5) return 0
-  if (count <= 50) return (count - 5) * 10
-  return 45 * 10 + (count - 50) * 8
+// Each plan includes a set number of employees (see includedEmployees above)
+// Additional employees beyond the included count: $10/employee/mo
+export function calcEmployeeCost(count: number, includedEmployees: number): number {
+  if (count <= includedEmployees) return 0
+  return (count - includedEmployees) * 10
 }
 
-export function formatEmployeeCost(count: number): string {
-  const cost = calcEmployeeCost(count)
+export function formatEmployeeCost(count: number, includedEmployees: number): string {
+  const cost = calcEmployeeCost(count, includedEmployees)
   if (cost === 0) return "Included in plan"
-  if (count <= 50) return `+$${cost}/mo (${count - 5} emp × $10)`
-  return `+$${cost}/mo (45 × $10 + ${count - 50} × $8)`
+  return `+$${cost}/mo (${count - includedEmployees} emp × $10)`
 }
 
 export const ONE_TIME_SERVICES = {

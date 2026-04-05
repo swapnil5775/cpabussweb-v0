@@ -2,25 +2,29 @@ import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site-header"
 
 export const metadata: Metadata = {
-  title: "Business Formation, Compliance & Advisory Services | BookKeeping.business",
+  title: "LLC Formation, Business Compliance & Advisory Services for Small Business",
   description:
-    "LLC formation assistance, registered agent services, state filings, financial analysis, and strategic business consulting. Quarterly check-ins included with all business services.",
+    "LLC formation assistance, EIN application, registered agent services, state compliance filings, acquisition due diligence, and strategic business consulting for small businesses across the USA.",
   keywords: [
-    "LLC formation assistance",
-    "EIN application help",
-    "business compliance services",
-    "registered agent services",
-    "state filing support",
-    "business financial analysis",
-    "small business consulting",
-    "acquisition due diligence",
+    "LLC formation service online",
+    "LLC formation assistance USA",
+    "EIN application service",
+    "registered agent services small business",
+    "state compliance filing service",
+    "annual report filing service",
+    "business acquisition due diligence",
+    "small business financial consulting",
+    "business compliance services USA",
+    "LLC formation for restaurants",
+    "business advisory service online",
   ],
   openGraph: {
-    title: "Business Formation, Compliance & Advisory Services | BookKeeping.business",
+    title: "LLC Formation, Business Compliance & Advisory Services | BookKeeping.business",
     description:
-      "LLC formation, compliance services, and strategic business consulting with quarterly check-ins included.",
-    url: "https://bookkeeping.business/business-services",
+      "LLC formation, EIN application, registered agent, state filings, and business consulting for small businesses across the USA.",
+    url: "https://www.bookkeeping.business/business-services",
   },
+  alternates: { canonical: "https://www.bookkeeping.business/business-services" },
 }
 import { SiteFooter } from "@/components/site-footer"
 import { Button } from "@/components/ui/button"

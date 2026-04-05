@@ -33,27 +33,30 @@ import { CALENDLY_URL, CONTACT_EMAIL } from "@/lib/constants"
 export const metadata: Metadata = {
   title: "Online Bookkeeping & Tax Services for Small Business | BookKeeping.business",
   description:
-    "All-in-one bookkeeping and tax preparation for restaurants, hotels, childcare centers, realtors, home-based businesses, and small businesses. AI-assisted workflows with dedicated human review — no extra software subscriptions.",
+    "Dedicated online bookkeeping, payroll, and tax services for restaurants, hotels, childcare centers, realtors, and small businesses across the USA. QuickBooks, Gusto, and Bill.com included — one flat monthly fee.",
   keywords: [
     "online bookkeeping services",
-    "small business bookkeeping",
-    "tax preparation services",
-    "restaurant bookkeeping",
-    "hotel accounting services",
-    "childcare bookkeeping",
-    "realtor accounting",
+    "small business bookkeeping service",
+    "bookkeeping and payroll service",
+    "virtual bookkeeper USA",
+    "monthly bookkeeping service small business",
+    "restaurant bookkeeping services",
+    "hotel bookkeeping services",
+    "childcare bookkeeping services",
+    "realtor bookkeeping services",
     "home-based business bookkeeping",
-    "tutoring center accounting",
-    "virtual bookkeeper",
-    "AI bookkeeping",
-    "no QuickBooks needed",
+    "Pilot bookkeeping alternative",
+    "Collective bookkeeping alternative",
+    "bookkeeping service QuickBooks included",
+    "affordable online bookkeeper",
   ],
   openGraph: {
     title: "Online Bookkeeping & Tax Services for Small Business | BookKeeping.business",
     description:
-      "All-in-one bookkeeping and tax for restaurants, hotels, childcare, realtors, and small businesses — no extra subscriptions required.",
-    url: "https://bookkeeping.business",
+      "Dedicated bookkeeping, payroll, and tax for restaurants, hotels, childcare, and small businesses — all software included, one flat monthly fee.",
+    url: "https://www.bookkeeping.business",
   },
+  alternates: { canonical: "https://www.bookkeeping.business" },
 }
 
 export default async function HomePage() {
@@ -97,14 +100,12 @@ export default async function HomePage() {
                 >
                   Create Free Account
                 </Link>
-                <a
-                  href={CALENDLY_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href="/bookkeeping#pricing"
                   className="inline-flex items-center justify-center px-8 py-4 rounded-xl border-2 border-primary/20 text-primary dark:text-foreground font-bold text-base hover:bg-primary/5 transition-all"
                 >
-                  Schedule a Call
-                </a>
+                  Pricing
+                </Link>
               </div>
 
               <div className="flex items-center gap-4 pt-2">

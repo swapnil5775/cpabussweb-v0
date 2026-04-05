@@ -96,7 +96,7 @@ export default async function UpgradePage() {
 
   const hasProfile = !!(bp?.business_name || bp?.entity_type || cp?.full_name)
   const empCount: number = bp?.employee_count ?? 0
-  const empCost = calcEmployeeCost(empCount)
+  const empCost = calcEmployeeCost(empCount, 2)
   const workerTypes: string[] = Array.isArray(bp?.worker_types) ? bp.worker_types : []
 
   return (
@@ -161,7 +161,7 @@ export default async function UpgradePage() {
               {empCount > 0 && (
                 <SummaryRow
                   title="Employees"
-                  value={`${empCount} employee${empCount !== 1 ? "s" : ""} — ${formatEmployeeCost(empCount)}`}
+                  value={`${empCount} employee${empCount !== 1 ? "s" : ""} — ${formatEmployeeCost(empCount, 2)}`}
                   step={6}
                 />
               )}

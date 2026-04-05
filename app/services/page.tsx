@@ -2,29 +2,30 @@ import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site-header"
 
 export const metadata: Metadata = {
-  title: "Bookkeeping & Tax Services for Restaurants, Hotels, Childcare & Small Business | BookKeeping.business",
+  title: "Bookkeeping, Payroll & Tax Services for Small Business — All-In-One",
   description:
-    "Full-service bookkeeping and tax preparation for restaurants, hotels, childcare centers, realtors, tutoring centers, home-based businesses, and small businesses — all in one place, no separate software needed.",
+    "Complete bookkeeping, payroll, tax preparation, and business services for restaurants, hotels, childcare centers, realtors, and small businesses across the USA. One team, one platform, all software included.",
   keywords: [
-    "restaurant bookkeeping services",
-    "hotel accounting services",
-    "childcare bookkeeping",
-    "daycare accounting",
-    "realtor bookkeeping",
-    "home-based business accounting",
+    "bookkeeping and tax services small business",
+    "bookkeeping payroll and tax service",
+    "restaurant bookkeeping and tax service",
+    "hotel accounting and tax service",
+    "childcare center bookkeeping service",
+    "realtor bookkeeping and tax",
+    "home-based business accounting service",
     "tutoring center bookkeeping",
-    "small business tax preparation",
-    "LLC formation assistance",
-    "monthly bookkeeping services",
-    "S-corp tax filing",
-    "no QuickBooks subscription",
+    "LLC formation service",
+    "online bookkeeping all inclusive",
+    "small business financial services USA",
+    "bookkeeping service no software fees",
   ],
   openGraph: {
-    title: "Bookkeeping & Tax Services for Restaurants, Hotels, Childcare & Small Business | BookKeeping.business",
+    title: "Bookkeeping, Payroll & Tax Services for Small Business | BookKeeping.business",
     description:
-      "All-in-one bookkeeping, tax prep, and business services for restaurants, hotels, childcare centers, realtors, and home-based businesses.",
-    url: "https://bookkeeping.business/services",
+      "Complete bookkeeping, payroll, and tax services for restaurants, hotels, childcare, and small businesses — one team, all software included.",
+    url: "https://www.bookkeeping.business/services",
   },
+  alternates: { canonical: "https://www.bookkeeping.business/services" },
 }
 import { SiteFooter } from "@/components/site-footer"
 import { Button } from "@/components/ui/button"
@@ -52,10 +53,10 @@ export default function ServicesPage() {
   const services = [
     {
       title: "Monthly Bookkeeping",
-      description: "All-in-one bookkeeping with tax prep & filing included for you and your business",
+      description: "Monthly bookkeeping with payroll included — personal & business tax prep available as an Add-On",
       icon: BookOpen,
       href: "/bookkeeping",
-      features: ["Monthly reconciliation", "Personal tax prep included", "Business tax prep included", "Quarterly check-ins"],
+      features: ["Monthly reconciliation", "Payroll included per plan", "Personal tax prep as Add-On", "Quarterly check-ins"],
       highlight: true,
     },
     {
@@ -259,7 +260,7 @@ export default function ServicesPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <ul className="space-y-3 text-sm">
-                    {["Bookkeeping + tax in one plan", "Business & personal returns included", "No separate vendors to manage", "Single secure portal for all documents"].map((f) => (
+                    {["Bookkeeping + payroll in every plan", "Tax prep available as Add-On", "No separate vendors to manage", "Single secure portal for all documents"].map((f) => (
                       <li key={f} className="flex items-center gap-2">
                         <div className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
                         <span className="text-muted-foreground">{f}</span>
@@ -271,13 +272,13 @@ export default function ServicesPage() {
 
               <Card className="border-primary">
                 <CardHeader>
-                  <Badge className="w-fit mb-2">All-Inclusive</Badge>
+                  <Badge className="w-fit mb-2">Flexible</Badge>
                   <CardTitle>Complete Service</CardTitle>
-                  <CardDescription>No surprises, no add-ons</CardDescription>
+                  <CardDescription>Core included, extras as Add-Ons</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <ul className="space-y-3 text-sm">
-                    {["Monthly bookkeeping & reconciliation", "Business tax prep & e-filing", "Owner's personal tax prep & filing", "Quarterly strategy check-ins", "Dedicated account rep"].map((f) => (
+                    {["Monthly bookkeeping & reconciliation", "Payroll included per plan (2–5 employees)", "Personal & business tax prep as Add-On", "Quarterly strategy check-ins", "Dedicated account rep"].map((f) => (
                       <li key={f} className="flex items-center gap-2">
                         <div className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
                         <span className="text-muted-foreground">{f}</span>
@@ -307,7 +308,7 @@ export default function ServicesPage() {
 
             <div className="mt-12 text-center">
               <p className="text-sm text-muted-foreground">
-                All plans include: Owner's personal tax prep & filing, business tax prep & filing, and quarterly check-ins. Custom quotes based on your specific needs.
+                All plans include: monthly bookkeeping, payroll (2–5 employees depending on plan), and quarterly check-ins. Personal & business tax prep available as an Add-On on any plan. <Link href="/bookkeeping#pricing" className="underline underline-offset-2 hover:text-foreground">See full plan details →</Link>
               </p>
             </div>
           </div>

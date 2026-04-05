@@ -2,29 +2,32 @@ import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site-header"
 
 export const metadata: Metadata = {
-  title: "Tax Preparation for Restaurants, Realtors, Childcare & Small Business | BookKeeping.business",
+  title: "Small Business Tax Preparation Services — Federal & State E-Filing",
   description:
-    "Business and personal tax preparation for restaurants, hotels, childcare centers, realtors, home-based businesses, and tutoring centers. S-Corp, LLC, self-employed, and partnership returns — human-reviewed with federal and state e-filing.",
+    "Professional tax preparation for small businesses, restaurants, hotels, childcare centers, realtors, and self-employed individuals across the USA. S-Corp, LLC, partnership, and 1040 returns — human-reviewed with federal and all-state e-filing.",
   keywords: [
-    "restaurant tax preparation",
-    "hotel tax filing",
-    "childcare business tax prep",
-    "realtor tax services",
-    "home-based business tax",
-    "tutoring center tax prep",
-    "self-employed tax preparation",
-    "S-corp tax filing",
-    "small business tax returns",
-    "LLC tax filing",
+    "small business tax preparation",
+    "online tax preparation service",
+    "restaurant tax preparation service",
+    "hotel business tax filing",
+    "childcare center tax prep",
+    "realtor tax preparation",
+    "self-employed tax service",
+    "S-corp tax filing service",
+    "LLC tax return preparation",
+    "partnership tax filing",
     "federal and state tax e-filing",
-    "1099 tax prep",
+    "1099 tax preparation",
+    "Schedule C tax prep",
+    "small business tax accountant online",
   ],
   openGraph: {
-    title: "Tax Preparation for Restaurants, Realtors, Childcare & Small Business | BookKeeping.business",
+    title: "Small Business Tax Preparation — Federal & State E-Filing | BookKeeping.business",
     description:
-      "Business and personal tax prep for restaurants, hotels, childcare, realtors, and small businesses — human-reviewed with federal and state e-filing.",
-    url: "https://bookkeeping.business/tax-prep",
+      "Professional tax prep for restaurants, hotels, childcare, realtors, and small businesses — human-reviewed with federal and all-state e-filing.",
+    url: "https://www.bookkeeping.business/tax-prep",
   },
+  alternates: { canonical: "https://www.bookkeeping.business/tax-prep" },
 }
 import { SiteFooter } from "@/components/site-footer"
 import { Button } from "@/components/ui/button"

@@ -21,24 +21,26 @@ import {
 import Link from "next/link"
 
 export const metadata: Metadata = {
-  title: "How It Works - Professional Tax Prep with First Month Free | BookKeeping.business",
+  title: "How Our Bookkeeping & Tax Service Works — Simple 4-Step Onboarding",
   description:
-    "Join our service with a free first month. Upload documents, get dedicated onboarding, and experience professional tax preparation. See how we compare to TurboTax.",
+    "Getting started takes minutes. Connect your accounts, complete onboarding, and get a dedicated bookkeeper managing your books, payroll, and taxes every month. No software to set up — we handle everything.",
   keywords: [
-    "how tax preparation works",
-    "first month free bookkeeping",
-    "professional tax onboarding",
-    "vs TurboTax",
-    "dedicated accountant",
-    "document checklist",
-    "tax prep process",
+    "how online bookkeeping works",
+    "bookkeeping service onboarding",
+    "get a virtual bookkeeper",
+    "how to hire a bookkeeper online",
+    "online bookkeeper setup process",
+    "dedicated bookkeeper for small business",
+    "bookkeeping service sign up",
+    "small business accounting service process",
   ],
   openGraph: {
-    title: "How It Works - Professional Tax Prep with First Month Free",
+    title: "How Our Bookkeeping & Tax Service Works | BookKeeping.business",
     description:
-      "Get started with a free first month. Professional onboarding, dedicated support, and expert tax preparation.",
-    url: "https://bookkeeping.business/how-it-works",
+      "Simple 4-step onboarding. Connect your accounts, get a dedicated bookkeeper, and have your books, payroll, and taxes handled every month.",
+    url: "https://www.bookkeeping.business/how-it-works",
   },
+  alternates: { canonical: "https://www.bookkeeping.business/how-it-works" },
 }
 
 export default function HowItWorksPage() {

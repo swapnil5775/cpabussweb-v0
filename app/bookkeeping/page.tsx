@@ -2,29 +2,32 @@ import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site-header"
 
 export const metadata: Metadata = {
-  title: "Monthly Bookkeeping for Restaurants, Hotels, Childcare & Small Business | BookKeeping.business",
+  title: "Monthly Bookkeeping Services for Small Business — Plans from $249/mo",
   description:
-    "Monthly bookkeeping services for restaurants, hotels, childcare centers, realtors, tutoring centers, and home-based businesses. Includes business and personal tax prep — no QuickBooks or Xero subscription needed.",
+    "Monthly bookkeeping services for restaurants, hotels, childcare centers, realtors, and small businesses across the USA. Payroll included, dedicated bookkeeper, QuickBooks managed for you — plans from $249/mo.",
   keywords: [
-    "restaurant bookkeeping services",
-    "hotel bookkeeping",
-    "childcare bookkeeping services",
-    "daycare accounting",
-    "realtor bookkeeping",
-    "home-based business bookkeeping",
-    "tutoring business accounting",
     "monthly bookkeeping services",
-    "bookkeeping with tax prep included",
-    "virtual bookkeeper small business",
-    "bank reconciliation services",
-    "no QuickBooks needed",
+    "small business bookkeeping services",
+    "online bookkeeping for restaurants",
+    "hotel bookkeeping service",
+    "childcare bookkeeping services",
+    "daycare accounting services",
+    "realtor bookkeeping services",
+    "home-based business bookkeeping",
+    "tutoring center accounting",
+    "virtual bookkeeper for small business",
+    "bookkeeping with payroll included",
+    "affordable bookkeeping service USA",
+    "QuickBooks managed bookkeeping",
+    "monthly bank reconciliation service",
   ],
   openGraph: {
-    title: "Monthly Bookkeeping for Restaurants, Hotels, Childcare & Small Business | BookKeeping.business",
+    title: "Monthly Bookkeeping Services for Small Business — Plans from $249/mo | BookKeeping.business",
     description:
-      "Monthly bookkeeping with tax prep included — serving restaurants, hotels, childcare, realtors, and small businesses. No extra software subscriptions.",
-    url: "https://bookkeeping.business/bookkeeping",
+      "Monthly bookkeeping for restaurants, hotels, childcare, and small businesses. Payroll included, QuickBooks managed, dedicated bookkeeper — plans from $249/mo.",
+    url: "https://www.bookkeeping.business/bookkeeping",
   },
+  alternates: { canonical: "https://www.bookkeeping.business/bookkeeping" },
 }
 import { SiteFooter } from "@/components/site-footer"
 import { Button } from "@/components/ui/button"
@@ -37,6 +40,7 @@ export default function BookkeepingPage() {
   const tiers = [
     {
       name: "Essentials",
+      price: "$249",
       label: "For solopreneurs & small businesses",
       description: "Clean, current books with everything you need to stay compliant and tax-ready.",
       features: [
@@ -46,11 +50,13 @@ export default function BookkeepingPage() {
         "Dedicated bookkeeper",
         "Email support",
         "Quarterly business review",
-        "Owner's personal tax prep & filing included",
+        "Payroll for Owner + 1 Employee included",
+        "Personal tax prep & filing available as Add-On",
       ],
     },
     {
       name: "Growth",
+      price: "$349",
       label: "For scaling businesses",
       description: "Advanced reporting and more frequent reviews as your business complexity grows.",
       features: [
@@ -60,12 +66,14 @@ export default function BookkeepingPage() {
         "Expense tracking & insights",
         "Priority email support",
         "Monthly business review",
-        "Owner's (or married couple) tax prep & filing included",
+        "Payroll for up to 3 Employees included",
+        "Personal & couple tax prep available as Add-On",
       ],
       popular: true,
     },
     {
       name: "Enterprise",
+      price: "$499",
       label: "For established & complex businesses",
       description: "Full-service support for businesses with multi-entity structures and complex needs.",
       features: [
@@ -75,7 +83,11 @@ export default function BookkeepingPage() {
         "Custom reporting",
         "Dedicated account manager",
         "Phone + email support",
-        "Owner's (or married couple) tax prep & filing included",
+        "Payroll for up to 5 Employees included",
+        "Accounts Payable & Receivable (AP/AR)",
+        "15 ACH + 15 Mailed Checks/month included",
+        "Additional employees: +$10/mo each",
+        "Personal & couple tax prep available as Add-On",
       ],
     },
   ]
@@ -183,7 +195,7 @@ export default function BookkeepingPage() {
         </section>
 
         {/* Pricing Tiers */}
-        <section className="container pb-24">
+        <section id="pricing" className="container pb-24">
           <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
             {tiers.map((tier) => (
               <Card key={tier.name} className={tier.popular ? "border-primary shadow-lg" : ""}>
@@ -195,7 +207,11 @@ export default function BookkeepingPage() {
                 <CardHeader className="text-center pb-8">
                   <CardTitle className="text-lg">{tier.name}</CardTitle>
                   <Badge variant="outline" className="mt-2 w-fit mx-auto text-xs">{tier.label}</Badge>
-                  <CardDescription className="mt-3 leading-relaxed">{tier.description}</CardDescription>
+                  <div className="mt-4">
+                    <span className="text-4xl font-black text-primary">{tier.price}</span>
+                    <span className="text-sm text-muted-foreground">/month</span>
+                  </div>
+                  <CardDescription className="mt-2 leading-relaxed">{tier.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <ul className="space-y-3">

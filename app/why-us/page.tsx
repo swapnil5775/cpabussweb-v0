@@ -2,29 +2,32 @@ import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site-header"
 
 export const metadata: Metadata = {
-  title: "Why Choose Us Over Big CPA Firms & TurboTax | BookKeeping.business",
+  title: "Best Online Bookkeeping Service for Small Business — Better Than Pilot & Collective",
   description:
-    "Compare BookKeeping.business to traditional CPA firms and DIY tools like TurboTax. Get CFO-level service, all-in-one, with quarterly check-ins, dedicated support, and business + personal tax prep all under one roof.",
+    "See why small business owners choose BookKeeping.business over Pilot, Collective, Bench, and traditional CPA firms. Payroll included, all software paid for, dedicated bookkeeper — at a price that makes sense.",
   keywords: [
-    "better than TurboTax",
-    "QuickBooks alternative",
-    "Gusto alternative",
-    "affordable CPA alternative",
-    "virtual CFO services",
-    "bookkeeping with tax prep included",
-    "restaurant bookkeeping service",
-    "hotel accounting firm",
-    "childcare center bookkeeping",
-    "realtor accounting services",
-    "home-based business bookkeeping",
-    "no software subscriptions needed",
+    "best online bookkeeping service",
+    "Pilot.com alternative",
+    "Collective.com alternative",
+    "Bench bookkeeping alternative",
+    "better than Pilot bookkeeping",
+    "bookkeeping service vs CPA firm",
+    "affordable bookkeeping service small business",
+    "bookkeeping service with payroll",
+    "online bookkeeper vs TurboTax",
+    "dedicated bookkeeper online",
+    "bookkeeping service all software included",
+    "restaurant bookkeeping service USA",
+    "hotel accounting service USA",
+    "childcare bookkeeping USA",
   ],
   openGraph: {
-    title: "Why Choose Us Over Big CPA Firms & TurboTax | BookKeeping.business",
+    title: "Best Online Bookkeeping Service — Better Than Pilot, Collective & CPA Firms | BookKeeping.business",
     description:
-      "CFO-level service, all-in-one. Dedicated support with business and personal tax prep included under one roof.",
-    url: "https://bookkeeping.business/why-us",
+      "Payroll included, all software paid for, dedicated bookkeeper. See why small businesses choose us over Pilot, Collective, and traditional CPA firms.",
+    url: "https://www.bookkeeping.business/why-us",
   },
+  alternates: { canonical: "https://www.bookkeeping.business/why-us" },
 }
 import { SiteFooter } from "@/components/site-footer"
 import { Button } from "@/components/ui/button"

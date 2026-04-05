@@ -332,7 +332,8 @@ function OnboardingPageInner() {
   function back() { setStep((s) => s - 1); window.scrollTo(0, 0) }
 
   const progress = ((step - 1) / (TOTAL_STEPS - 1)) * 100
-  const empCost = calcEmployeeCost(data.employeeCount)
+  // Used for employee-step preview — shows cost at Essentials level (most conservative)
+  const empCost = calcEmployeeCost(data.employeeCount, 2)
 
   if (prefilling) {
     return (
@@ -573,37 +574,20 @@ function OnboardingPageInner() {
                 </div>
 
                 {/* Pricing breakdown */}
-                <div className={cn(
-                  "rounded-lg p-3 text-sm space-y-1",
-                  empCost === 0 ? "bg-green-50 border border-green-200" : "bg-primary/5 border border-primary/20"
-                )}>
+                <div className="rounded-lg p-3 text-sm space-y-1 bg-primary/5 border border-primary/20">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">First 5 employees</span>
-                    <span className="font-medium text-green-600">Free</span>
+                    <span className="text-muted-foreground">Employees included in plan</span>
+                    <span className="font-medium text-green-600">2–5 (varies by plan)</span>
                   </div>
-                  {data.employeeCount > 5 && data.employeeCount <= 50 && (
+                  {data.employeeCount > 2 && (
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Employees 6–{data.employeeCount} ({data.employeeCount - 5} × $10)</span>
-                      <span className="font-medium">+${(data.employeeCount - 5) * 10}/mo</span>
+                      <span className="text-muted-foreground">Additional employees</span>
+                      <span className="font-medium">+$10/mo each</span>
                     </div>
                   )}
-                  {data.employeeCount > 50 && (
-                    <>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Employees 6–50 (45 × $10)</span>
-                        <span className="font-medium">+$450/mo</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Employees 51–{data.employeeCount} ({data.employeeCount - 50} × $8)</span>
-                        <span className="font-medium">+${(data.employeeCount - 50) * 8}/mo</span>
-                      </div>
-                    </>
-                  )}
                   <div className="flex justify-between border-t border-border/50 pt-1 mt-1">
-                    <span className="font-semibold">Payroll add-on</span>
-                    <span className={cn("font-bold", empCost === 0 ? "text-green-600" : "text-primary")}>
-                      {empCost === 0 ? "Included" : `+$${empCost}/mo`}
-                    </span>
+                    <span className="font-semibold">Exact cost shown per plan below</span>
+                    <span className="font-bold text-primary">↓</span>
                   </div>
                 </div>
               </div>
@@ -685,12 +669,10 @@ function OnboardingPageInner() {
               </div>
 
               {/* Employee cost reminder */}
-              {empCost > 0 && (
+              {data.employeeCount > 2 && (
                 <div className="rounded-xl bg-primary/5 border border-primary/20 px-4 py-3 text-sm">
-                  <span className="font-medium">Payroll add-on: </span>
-                  <span className="text-primary font-semibold">+${empCost}/mo</span>
-                  <span className="text-muted-foreground ml-1">({formatEmployeeCost(data.employeeCount)})</span>
-                  <span className="text-muted-foreground ml-1">will be added to your plan price.</span>
+                  <span className="font-medium">You have {data.employeeCount} employees. </span>
+                  <span className="text-muted-foreground">Each plan includes a set number — extra employees are +$10/mo each. See per-plan cost below.</span>
                 </div>
               )}
 
@@ -700,7 +682,8 @@ function OnboardingPageInner() {
 
               <div className="space-y-3">
                 {(Object.entries(PLANS) as [PlanKey, typeof PLANS[PlanKey]][]).map(([key, plan]) => {
-                  const total = plan.basePrice + empCost
+                  const planEmpCost = calcEmployeeCost(data.employeeCount, plan.includedEmployees)
+                  const total = plan.basePrice + planEmpCost
                   return (
                     <div key={key} className={cn(
                       "rounded-2xl border-2 p-5 space-y-4 transition-all",
@@ -716,8 +699,8 @@ function OnboardingPageInner() {
                         </div>
                         <div className="text-right shrink-0">
                           <div className="text-2xl font-black text-primary">${total}<span className="text-sm font-normal text-muted-foreground">/mo</span></div>
-                          {empCost > 0 && (
-                            <div className="text-xs text-muted-foreground">${plan.basePrice} + ${empCost} payroll</div>
+                          {planEmpCost > 0 && (
+                            <div className="text-xs text-muted-foreground">${plan.basePrice} + ${planEmpCost} payroll</div>
                           )}
                         </div>
                       </div>

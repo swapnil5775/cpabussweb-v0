@@ -2,26 +2,28 @@ import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site-header"
 
 export const metadata: Metadata = {
-  title: "FAQs - Tax Prep, Bookkeeping & Business Services Questions | BookKeeping.business",
+  title: "Bookkeeping & Tax Service FAQs — Common Questions Answered",
   description:
-    "Answers to frequently asked questions about our tax preparation, bookkeeping services, security, and process. Learn how we combine AI assistance with human expertise — all in one place.",
+    "Answers to common questions about our bookkeeping, payroll, and tax services. Learn about pricing, what's included, payroll headcount, AP/AR limits, software costs, and more.",
   keywords: [
-    "bookkeeping FAQ",
-    "tax preparation questions",
-    "restaurant bookkeeping FAQ",
-    "childcare accounting questions",
-    "realtor tax prep FAQ",
-    "home-based business bookkeeping help",
-    "hotel accounting FAQ",
-    "small business accounting questions",
-    "AI bookkeeping questions",
+    "bookkeeping service FAQ",
+    "online bookkeeping questions",
+    "what does bookkeeping service include",
+    "payroll included bookkeeping",
+    "bookkeeping service cost",
+    "how much does a bookkeeper cost",
+    "small business bookkeeping questions",
+    "QuickBooks included bookkeeping service",
+    "bookkeeping for restaurants FAQ",
+    "tax prep service questions",
   ],
   openGraph: {
-    title: "FAQs - Tax Prep, Bookkeeping & Business Services Questions | BookKeeping.business",
+    title: "Bookkeeping & Tax Service FAQs | BookKeeping.business",
     description:
-      "Find answers to common questions about our tax preparation, bookkeeping services, and process.",
-    url: "https://bookkeeping.business/faqs",
+      "Common questions about our bookkeeping, payroll, and tax services — pricing, what's included, software costs, and more.",
+    url: "https://www.bookkeeping.business/faqs",
   },
+  alternates: { canonical: "https://www.bookkeeping.business/faqs" },
 }
 import { SiteFooter } from "@/components/site-footer"
 import { Button } from "@/components/ui/button"
@@ -51,9 +53,9 @@ export default function FAQsPage() {
             "You'll be assigned a dedicated account representative who will handle your account throughout the year. For tax returns, a licensed tax professional will prepare and review your filing. For bookkeeping, you'll work with a dedicated bookkeeper who gets to know your business.",
         },
         {
-          question: "Do I need to pay for QuickBooks, Gusto, or any other software?",
+          question: "Do I need to pay for QuickBooks, Gusto, Bill.com, or any other software?",
           answer:
-            "No — never. If our team needs any software or platform to complete your work, that is our operating expense, not yours. Traditional bookkeepers and CPAs have long passed software subscription costs to clients as line-item charges. We do not do that. You hire us to get the job done, and our team comes fully equipped with every tool required. One engagement covers everything — no separate software subscriptions, no pass-through fees, no surprises.",
+            "No — never. We use QuickBooks Online for bookkeeping, Gusto for payroll, and Bill.com for Accounts Payable and Receivable workflows. All of these are paid for by us as part of our operating stack. You will never receive a separate software invoice or pass-through charge from us. One monthly service fee covers everything — no hidden platform costs, no add-on subscriptions, no surprises.",
         },
         {
           question: "How secure is my data?",
@@ -93,7 +95,7 @@ export default function FAQsPage() {
         {
           question: "Can you help with IRS notices?",
           answer:
-            "Yes, we can help you understand and respond to IRS notices. This is billed separately as it requires additional research and correspondence work. Contact us as soon as you receive a notice.",
+            "For IRS-related matters, we recommend connecting with an Enrolled Agent (EA) in our group who specializes in IRS correspondence and representation. Reach out to us and we'll refer you to the right person — the sooner you contact us after receiving a notice, the better.",
         },
       ],
     },
@@ -119,6 +121,26 @@ export default function FAQsPage() {
           question: "What if my transaction count varies each month?",
           answer:
             "Our service tiers have flexibility built in. If your transaction volume fluctuates, we won't change your plan every month. If your business grows and volume consistently increases, we'll have a conversation about the right service level for you.",
+        },
+        {
+          question: "How many employees are included in payroll, and what does extra cost?",
+          answer:
+            "Each plan includes a set number of employees in payroll at no extra charge: Essentials covers the Owner + 1 Employee, Growth covers up to 3 Employees, and Enterprise covers up to 5 Employees. If you have more employees than your plan includes, each additional employee is $10/month. For example, if you're on Growth with 5 employees, the 4th and 5th employees are +$20/month added to your plan price.",
+        },
+        {
+          question: "What happens if I hire more employees during the year?",
+          answer:
+            "No problem — just let us know and we'll update your payroll setup in Gusto and adjust your billing accordingly. The additional employee add-on is $10/month per employee beyond what your plan includes. There's no onboarding fee for adding employees mid-year.",
+        },
+        {
+          question: "What is Accounts Payable & Receivable (AP/AR) and which plan includes it?",
+          answer:
+            "AP/AR management means we handle vendor bill payments (Accounts Payable) and client invoice tracking and collections (Accounts Receivable) on your behalf using Bill.com. This is included in the Enterprise plan, which covers 15 ACH payments and 15 mailed checks per month at no extra cost. If your volume exceeds those limits, additional transactions are billed at cost with no markup. AP/AR is not included in Essentials or Growth — contact us if you need it added. See the full fee schedule at bookkeeping.business/ap-ar-fees.",
+        },
+        {
+          question: "What if I need more than 15 ACH or 15 mailed checks in a month on Enterprise?",
+          answer:
+            "The Enterprise plan includes 15 ACH transactions and 15 mailed checks per month. If you exceed those limits, overages are billed at Bill.com's standard published rates — passed through at cost with zero markup. For example, a standard ACH is $0.59 and a mailed check is $1.99. There are no surprise charges — we notify you if your volume is trending above your included limits. For very high AP/AR volume, reach out to discuss a custom arrangement. Full rate details are at bookkeeping.business/ap-ar-fees.",
         },
       ],
     },

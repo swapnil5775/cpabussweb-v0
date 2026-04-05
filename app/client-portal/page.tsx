@@ -29,25 +29,28 @@ import {
 import Link from "next/link"
 
 export const metadata: Metadata = {
-  title: "All-in-One Business Financial Platform | BookKeeping.business",
+  title: "All-in-One Bookkeeping & Financial Platform — No Software Subscriptions",
   description:
-    "One platform for your entire financial operation. Team access, payroll, W-2 & 1099 issuance, invoice management, bank feeds, bookkeeping, quarterly filings — no QuickBooks, Gusto, or TurboTax subscriptions required.",
+    "One platform manages your bookkeeping, payroll, AP/AR, W-2 & 1099 filings, and bank reconciliation. QuickBooks, Gusto, and Bill.com included — we pay for everything. No software subscriptions for you.",
   keywords: [
     "all-in-one bookkeeping platform",
-    "payroll service small business",
+    "bookkeeping service QuickBooks included",
+    "payroll service Gusto included",
+    "AP AR Bill.com service",
     "W-2 1099 filing service",
-    "invoice management",
-    "bank feed reconciliation",
-    "no QuickBooks needed",
-    "team bookkeeping access",
-    "quarterly payroll filings",
+    "bank reconciliation service",
+    "no software subscription bookkeeping",
+    "bookkeeping service all inclusive",
+    "online bookkeeper no QuickBooks needed",
+    "bookkeeping and payroll all in one",
   ],
   openGraph: {
-    title: "All-in-One Business Financial Platform | BookKeeping.business",
+    title: "All-in-One Bookkeeping & Financial Platform — No Software Subscriptions | BookKeeping.business",
     description:
-      "One platform replaces QuickBooks, Gusto, TurboTax, and more. Your whole team, all your documents, all your financials — in one place.",
-    url: "https://bookkeeping.business/client-portal",
+      "Bookkeeping, payroll, AP/AR, and tax all in one place. QuickBooks, Gusto, and Bill.com included — we pay for everything.",
+    url: "https://www.bookkeeping.business/client-portal",
   },
+  alternates: { canonical: "https://www.bookkeeping.business/client-portal" },
 }
 
 export default function PlatformPage() {

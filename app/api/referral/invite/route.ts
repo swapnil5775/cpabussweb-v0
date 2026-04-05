@@ -65,7 +65,7 @@ export async function POST(request: Request) {
         <a href="${referralLink}" style="display:inline-block;background:#0f172a;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600">
           Create your free account →
         </a>
-        <p style="color:#999;font-size:12px;margin-top:32px">Plans start at $149/month. No contracts.</p>
+        <p style="color:#999;font-size:12px;margin-top:32px">Plans start at $249/month. No contracts.</p>
       </div>
     `,
   })

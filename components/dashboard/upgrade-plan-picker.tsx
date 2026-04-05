@@ -22,7 +22,7 @@ export function UpgradePlanPicker({ employeeCount }: { employeeCount: number }) 
       })
       const d = await res.json()
       if (d.fallback) { window.location.href = `/contact?plan=${plan}&source=upgrade`; return }
-      if (!res.ok || !d.url) throw new Error("Failed to start checkout — please try again.")
+      if (!res.ok || !d.url) throw new Error(d.error ?? "Failed to start checkout — please try again.")
       window.location.href = d.url
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.")
@@ -30,14 +30,13 @@ export function UpgradePlanPicker({ employeeCount }: { employeeCount: number }) 
     }
   }
 
-  const empCost = calcEmployeeCost(employeeCount)
-
   return (
     <div className="space-y-3">
       {error && (
         <p className="text-sm text-destructive bg-destructive/10 rounded-lg px-3 py-2">{error}</p>
       )}
       {(Object.entries(PLANS) as [PlanKey, typeof PLANS[PlanKey]][]).map(([key, plan]) => {
+        const empCost = calcEmployeeCost(employeeCount, plan.includedEmployees)
         const total = plan.basePrice + empCost
         const isLoading = loading === key
         return (
@@ -70,9 +69,7 @@ export function UpgradePlanPicker({ employeeCount }: { employeeCount: number }) 
                       <span className="ml-2">
                         + Payroll add-on: <span className="font-medium text-foreground">+${empCost}/mo</span>
                         <span className="text-muted-foreground/70">
-                          {" "}({employeeCount <= 50
-                            ? `${employeeCount - 5} emp × $10`
-                            : `45 × $10 + ${employeeCount - 50} × $8`})
+                          {" "}({employeeCount - plan.includedEmployees} emp × $10)
                         </span>
                       </span>
                     )}

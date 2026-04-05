@@ -89,7 +89,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ error: "Must provide plan or serviceType" }, { status: 400 })
   } catch (err) {
-    console.error("Stripe checkout error:", err)
-    return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 })
+    const msg = err instanceof Error ? err.message : String(err)
+    console.error("Stripe checkout error:", msg)
+    return NextResponse.json({ error: msg }, { status: 500 })
   }
 }

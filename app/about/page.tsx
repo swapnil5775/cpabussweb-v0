@@ -2,27 +2,28 @@ import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site-header"
 
 export const metadata: Metadata = {
-  title: "About Us - AI-Assisted, Human-Reviewed Tax & Bookkeeping | BookKeeping.business",
+  title: "About BookKeeping.business — Online Bookkeeping & Tax Service for Small Business",
   description:
-    "Learn about our mission to combine AI efficiency with human expertise. We deliver accurate, compliant tax and bookkeeping services — all centralized in one place with dedicated account reps.",
+    "BookKeeping.business provides professional online bookkeeping, payroll, and tax services for small businesses across the USA. Dedicated bookkeepers, all software included — one team for everything.",
   keywords: [
-    "bookkeeping for small business",
-    "AI-assisted bookkeeping",
-    "human-reviewed tax services",
-    "restaurant bookkeeping firm",
-    "hotel accounting services",
-    "childcare bookkeeping company",
-    "realtor tax preparation",
-    "home-based business accounting",
-    "all-in-one accounting platform",
-    "no QuickBooks or Xero needed",
+    "bookkeeping company for small business",
+    "online bookkeeping firm USA",
+    "professional bookkeeping service",
+    "virtual bookkeeping company",
+    "small business accounting firm online",
+    "restaurant bookkeeping company",
+    "hotel accounting firm",
+    "childcare accounting service",
+    "bookkeeping service with payroll",
+    "all-in-one bookkeeping and tax service",
   ],
   openGraph: {
-    title: "About Us - AI-Assisted, Human-Reviewed Tax & Bookkeeping | BookKeeping.business",
+    title: "About BookKeeping.business — Online Bookkeeping & Tax for Small Business",
     description:
-      "Combining AI efficiency with human expertise for accurate, compliant tax and bookkeeping services.",
-    url: "https://bookkeeping.business/about",
+      "Professional bookkeeping, payroll, and tax for small businesses — dedicated bookkeepers, all software included, one flat monthly fee.",
+    url: "https://www.bookkeeping.business/about",
   },
+  alternates: { canonical: "https://www.bookkeeping.business/about" },
 }
 import { SiteFooter } from "@/components/site-footer"
 import { Button } from "@/components/ui/button"
