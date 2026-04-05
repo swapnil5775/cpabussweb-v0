@@ -23,13 +23,12 @@ function detectMime(filename: string, declared?: string): string {
 
 /**
  * Extract the receipt token from the To: address.
- * Supports two formats:
- *   fileme+bkabc123@bookkeeping.business  → returns "bkabc123"
- *   fileme@bookkeeping.business           → returns null (legacy / no token)
+ * Format: bk{hex}@bookkeeping.business (delivered via catch-all + individual forwarder)
+ * e.g. bkc0ef3745c8@bookkeeping.business → returns "bkc0ef3745c8"
  */
 function extractTokenFromTo(toText: string | undefined): string | null {
   if (!toText) return null
-  const match = toText.match(/fileme\+([^@\s>]+)@bookkeeping\.business/i)
+  const match = toText.match(/(bk[a-f0-9]{10,})@bookkeeping\.business/i)
   return match?.[1] ?? null
 }
 
