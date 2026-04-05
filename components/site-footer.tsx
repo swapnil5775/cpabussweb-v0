@@ -37,6 +37,7 @@ export function SiteFooter() {
                 { href: "/tax-prep", label: "Tax Prep" },
                 { href: "/services", label: "Catchup Books" },
                 { href: "/business-services", label: "Business Services" },
+                { href: "/receipt-capture", label: "Receipt Capture" },
               ].map(({ href, label }) => (
                 <li key={href}>
                   <Link href={href} className="hover:text-primary transition-colors">{label}</Link>

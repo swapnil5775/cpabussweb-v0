@@ -27,6 +27,9 @@ import {
   FileBadge,
   Receipt,
   ScanLine,
+  Mail,
+  Smartphone,
+  AlertCircle,
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { CALENDLY_URL, CONTACT_EMAIL } from "@/lib/constants"
@@ -369,6 +372,91 @@ export default async function HomePage() {
                 </Link>
               </div>
 
+            </div>
+          </div>
+        </section>
+
+        {/* ── Receipt Capture Feature Highlight ── */}
+        <section className="py-24 px-6 lg:px-8 bg-card border-t border-border">
+          <div className="mx-auto max-w-7xl">
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+
+              {/* Left: copy */}
+              <div className="space-y-6">
+                <Badge variant="outline" className="text-xs font-semibold uppercase tracking-wider border-primary/30 text-primary">
+                  New — Receipt Capture
+                </Badge>
+                <h2 className="text-3xl lg:text-4xl font-bold text-primary dark:text-foreground leading-tight">
+                  No more &ldquo;can you send me that receipt?&rdquo; emails.
+                </h2>
+                <p className="text-muted-foreground leading-relaxed text-lg">
+                  Tools like Dext and Hubdoc charge $30–$65/month extra just to capture receipts. QBO charges extra too.
+                  We built it in. No new subscription. No separate login. Already in your plan.
+                </p>
+                <p className="text-muted-foreground leading-relaxed">
+                  Drop receipts in the portal, forward them by email, or snap a photo on your phone. Our AI reads every one — vendor, date, total, tax, category — and your bookkeeper sees it instantly. The loop of chasing missing receipts by email is over.
+                </p>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {[
+                    { icon: Upload, text: "Upload in portal" },
+                    { icon: Mail, text: "Forward by email" },
+                    { icon: Smartphone, text: "Snap on mobile" },
+                    { icon: Zap, text: "AI reads it instantly" },
+                    { icon: Shield, text: "12-month audit trail" },
+                    { icon: X, text: "No Dext subscription" },
+                  ].map(({ icon: Icon, text }) => (
+                    <div key={text} className="flex items-center gap-2 text-sm">
+                      {text.startsWith("No") ? (
+                        <div className="h-5 w-5 rounded-full bg-red-100 dark:bg-red-950/30 flex items-center justify-center flex-shrink-0">
+                          <Icon aria-hidden="true" className="h-3 w-3 text-red-500" />
+                        </div>
+                      ) : (
+                        <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <Icon aria-hidden="true" className="h-3 w-3 text-primary" />
+                        </div>
+                      )}
+                      <span className={text.startsWith("No") ? "text-muted-foreground line-through" : "text-muted-foreground"}>{text}</span>
+                    </div>
+                  ))}
+                </div>
+                <Link
+                  href="/receipt-capture"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-bold text-sm hover:opacity-90 transition-all"
+                >
+                  See How Receipt Capture Works
+                  <ArrowRight aria-hidden="true" className="h-4 w-4" />
+                </Link>
+              </div>
+
+              {/* Right: visual flow */}
+              <div className="space-y-3">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-5">How a receipt flows through</p>
+
+                {[
+                  { step: "1", icon: Upload, label: "Receipt comes in", detail: "Upload, email forward, or phone photo", color: "bg-primary/10 text-primary" },
+                  { step: "2", icon: ScanLine, label: "AI reads it", detail: "Vendor · Date · Total · Tax · Category extracted in seconds", color: "bg-primary/10 text-primary" },
+                  { step: "3", icon: Shield, label: "Bookkeeper sees it instantly", detail: "Logged, timestamped, and matched to your books", color: "bg-green-100 text-green-700 dark:bg-green-950/30 dark:text-green-400" },
+                  { step: "4", icon: Check, label: "Audit-ready — forever", detail: "Original file stored for 12 months on paid plans", color: "bg-green-100 text-green-700 dark:bg-green-950/30 dark:text-green-400" },
+                ].map(({ step, icon: Icon, label, detail, color }) => (
+                  <div key={step} className="flex items-start gap-4 p-4 rounded-2xl bg-background border border-border">
+                    <div className={`h-10 w-10 rounded-xl flex items-center justify-center flex-shrink-0 ${color}`}>
+                      <Icon aria-hidden="true" className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-sm">{label}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{detail}</p>
+                    </div>
+                    <span className="ml-auto text-xs font-black text-muted-foreground/30 self-center">{step}</span>
+                  </div>
+                ))}
+
+                <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-900/30 p-4 flex items-start gap-3">
+                  <AlertCircle aria-hidden="true" className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
+                    <strong>Dext charges $30–$65/month</strong> for this. QuickBooks charges extra too. With us, it&apos;s already included in your plan — no separate subscription, no surprise invoice.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </section>

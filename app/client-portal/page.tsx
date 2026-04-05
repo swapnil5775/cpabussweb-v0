@@ -25,6 +25,8 @@ import {
   FileBadge,
   AlertCircle,
   Landmark,
+  ScanLine,
+  Mail,
 } from "lucide-react"
 import Link from "next/link"
 
@@ -110,6 +112,7 @@ export default function PlatformPage() {
               {[
                 { name: "QuickBooks", what: "Bookkeeping" },
                 { name: "Gusto", what: "Payroll" },
+                { name: "Dext / Hubdoc", what: "Receipt capture" },
                 { name: "Xero", what: "Accounting" },
                 { name: "TurboTax", what: "Tax Filing" },
               ].map(({ name, what }) => (
@@ -247,6 +250,43 @@ export default function PlatformPage() {
                       </li>
                     ))}
                   </ul>
+                </CardContent>
+              </Card>
+
+              {/* Receipt Capture */}
+              <Card className="border-primary/30 shadow-md hover:shadow-lg transition-all">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-2">
+                      <ScanLine aria-hidden="true" className="h-6 w-6" />
+                    </div>
+                    <Badge className="text-xs mb-2 bg-green-100 text-green-800 border-0">Included — No Add-On</Badge>
+                  </div>
+                  <CardTitle>Receipt Capture</CardTitle>
+                  <CardDescription>Upload, email, or snap — AI does the rest</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    {[
+                      "Upload receipts directly in the portal",
+                      "Forward by email to your dedicated address",
+                      "Snap a photo on mobile — HEIC supported",
+                      "AI extracts vendor, date, total, tax, category",
+                      "Full searchable log with original files",
+                      "No Dext, Hubdoc, or QBO add-on needed",
+                    ].map((f) => (
+                      <li key={f} className="flex items-start gap-2">
+                        <Check aria-hidden="true" className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-4 pt-4 border-t border-border">
+                    <Link href="/receipt-capture" className="text-xs text-primary hover:underline flex items-center gap-1">
+                      How receipt capture works
+                      <ArrowRight className="h-3 w-3" />
+                    </Link>
+                  </div>
                 </CardContent>
               </Card>
 
@@ -496,6 +536,7 @@ export default function PlatformPage() {
                   {[
                     { label: "QuickBooks Online", included: false },
                     { label: "Gusto Payroll", included: false },
+                    { label: "Dext / Hubdoc receipt capture", included: false },
                     { label: "Xero or Wave", included: false },
                     { label: "TurboTax Business", included: false },
                     { label: "Separate invoicing software", included: false },
