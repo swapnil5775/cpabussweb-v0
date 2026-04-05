@@ -10,6 +10,7 @@ import {
   CheckCircle2, AlertCircle, Link2, RefreshCw, Building2,
   Users, Zap, Clock, BookOpen, UserPlus, Briefcase, Webhook,
   Mail, Calendar, ShieldCheck, CreditCard, Package, ChevronDown, ChevronUp,
+  Inbox, Copy, Check,
 } from "lucide-react"
 
 type UserSub = {
@@ -34,7 +35,7 @@ type UserRow = {
   full_name: string | null
   created_at: string
   last_sign_in: string | null
-  orgs: { id: string; name: string; is_default: boolean }[]
+  orgs: { id: string; name: string; is_default: boolean; receipt_email_token: string | null }[]
   subscriptions: UserSub[]
   service_orders: UserOrder[]
 }
@@ -98,6 +99,36 @@ export default function AdminPage() {
   const [usersData, setUsersData] = useState<UserRow[]>([])
   const [usersLoading, setUsersLoading] = useState(true)
   const [expandedUser, setExpandedUser] = useState<string | null>(null)
+
+  // Receipt email backfill state
+  const [backfilling, setBackfilling] = useState(false)
+  const [backfillResult, setBackfillResult] = useState<{ processed: number; results?: { org_name: string; token: string; forwarder: string }[] } | null>(null)
+  const [copiedToken, setCopiedToken] = useState<string | null>(null)
+
+  async function backfillTokens() {
+    setBackfilling(true)
+    setBackfillResult(null)
+    try {
+      const res = await fetch("/api/admin/backfill-receipt-tokens", { method: "POST" })
+      const d = await res.json()
+      setBackfillResult(d)
+      if (res.ok && d.processed > 0) {
+        // Reload user list to reflect new tokens
+        fetch("/api/admin/users")
+          .then((r) => r.ok ? r.json() : null)
+          .then((d) => { if (d?.users) setUsersData(d.users) })
+      }
+    } finally {
+      setBackfilling(false)
+    }
+  }
+
+  function copyToClipboard(text: string) {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedToken(text)
+      setTimeout(() => setCopiedToken(null), 1500)
+    })
+  }
 
   // Webhook verification state
   const [webhookStatus, setWebhookStatus] = useState<{ token_received: boolean; verified: boolean; verified_at: string | null; subscription_uuid: string | null } | null>(null)
@@ -304,15 +335,42 @@ export default function AdminPage() {
 
         return (
           <div className="space-y-3">
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center justify-between gap-3 flex-wrap">
               <h2 className="font-semibold text-base flex items-center gap-2">
                 <ShieldCheck className="h-4 w-4 text-primary" />
                 All Users
               </h2>
-              {!usersLoading && (
-                <span className="text-xs text-muted-foreground">{usersData.length} total</span>
-              )}
+              <div className="flex items-center gap-3">
+                {!usersLoading && (
+                  <span className="text-xs text-muted-foreground">{usersData.length} total</span>
+                )}
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="gap-1.5 bg-transparent text-xs"
+                  onClick={backfillTokens}
+                  disabled={backfilling}
+                >
+                  <Inbox className="h-3.5 w-3.5" />
+                  {backfilling ? "Creating…" : "Backfill Receipt Emails"}
+                </Button>
+              </div>
             </div>
+            {backfillResult && (
+              <div className={`rounded-lg border px-4 py-3 text-xs ${backfillResult.processed === 0 ? "border-green-300 bg-green-50 text-green-800" : "border-blue-300 bg-blue-50 text-blue-900"}`}>
+                {backfillResult.processed === 0
+                  ? "All organizations already have receipt email addresses."
+                  : (
+                    <div className="space-y-1">
+                      <p className="font-semibold">Created {backfillResult.processed} receipt email address{backfillResult.processed !== 1 ? "es" : ""}:</p>
+                      {backfillResult.results?.map((r, i) => (
+                        <p key={i}><span className="font-medium">{r.org_name}</span> → <span className="font-mono">{r.forwarder}</span></p>
+                      ))}
+                    </div>
+                  )
+                }
+              </div>
+            )}
 
             {/* Summary stat row */}
             <div className="grid gap-3 sm:grid-cols-4">
@@ -404,6 +462,24 @@ export default function AdminPage() {
                                     </span>
                                   )}
                                 </span>
+                              {u.orgs.filter((o) => o.receipt_email_token).map((o) => {
+                                const addr = `${o.receipt_email_token}@bookkeeping.business`
+                                return (
+                                  <button
+                                    key={o.id}
+                                    onClick={() => copyToClipboard(addr)}
+                                    className="flex items-center gap-1 text-xs font-mono text-primary/80 hover:text-primary truncate max-w-[260px]"
+                                    title={`Copy receipt email for ${o.name}`}
+                                  >
+                                    <Inbox className="h-3 w-3 shrink-0" />
+                                    {addr}
+                                    {copiedToken === addr
+                                      ? <Check className="h-3 w-3 text-green-600 shrink-0" />
+                                      : <Copy className="h-3 w-3 shrink-0 opacity-50" />
+                                    }
+                                  </button>
+                                )
+                              })}
                               </div>
                             </div>
 

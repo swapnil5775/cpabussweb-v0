@@ -29,7 +29,7 @@ export async function GET() {
     { data: orders },
     { data: clientProfiles },
   ] = await Promise.all([
-    admin.from("organizations").select("id, user_id, name, is_default").in("user_id", userIds),
+    admin.from("organizations").select("id, user_id, name, is_default, receipt_email_token").in("user_id", userIds),
     admin.from("subscriptions").select("user_id, organization_id, plan, status, created_at").in("user_id", userIds),
     admin.from("service_orders")
       .select("user_id, organization_id, service_type, status, intake_status, order_number, created_at")
@@ -39,7 +39,7 @@ export async function GET() {
   ])
 
   // Build lookup maps
-  const orgsByUser: Record<string, Array<{ id: string; name: string; is_default: boolean }>> = {}
+  const orgsByUser: Record<string, Array<{ id: string; name: string; is_default: boolean; receipt_email_token: string | null }>> = {}
   for (const org of orgs ?? []) {
     if (!orgsByUser[org.user_id]) orgsByUser[org.user_id] = []
     orgsByUser[org.user_id].push(org)
