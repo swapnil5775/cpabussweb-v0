@@ -11,7 +11,7 @@
     },
     {
       "path": "/api/cron/receipts-email",
-      "schedule": "*/15 * * * *"
+      "schedule": "* * * * *"
     }
   ]
 }

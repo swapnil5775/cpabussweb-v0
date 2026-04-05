@@ -53,7 +53,21 @@ export async function GET() {
     .single()
 
   if (!org?.receipt_email_token) {
-    const token = "bk" + crypto.randomBytes(5).toString("hex")
+    // Get org name to build friendly slug
+    const { data: orgDetails } = await admin
+      .from("organizations")
+      .select("name")
+      .eq("id", organizationId)
+      .single()
+
+    const slug = (orgDetails?.name ?? "org")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 20)
+    const hex = crypto.randomBytes(3).toString("hex") // 6 chars
+    const token = `${slug}-${hex}`
+
     const { data: updated } = await admin
       .from("organizations")
       .update({ receipt_email_token: token })

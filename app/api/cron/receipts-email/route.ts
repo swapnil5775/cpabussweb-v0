@@ -22,14 +22,13 @@ function detectMime(filename: string, declared?: string): string {
 }
 
 /**
- * Extract the receipt token from the To: address.
- * Format: bk{hex}@bookkeeping.business (delivered via catch-all + individual forwarder)
- * e.g. bkc0ef3745c8@bookkeeping.business → returns "bkc0ef3745c8"
+ * Extract the local part (before @) from a To: address pointing at bookkeeping.business
+ * e.g. "swamip-llc-c0ef37@bookkeeping.business" → "swamip-llc-c0ef37"
  */
-function extractTokenFromTo(toText: string | undefined): string | null {
+function extractLocalFromTo(toText: string | undefined): string | null {
   if (!toText) return null
-  const match = toText.match(/(bk[a-f0-9]{10,})@bookkeeping\.business/i)
-  return match?.[1] ?? null
+  const match = toText.match(/([a-z0-9][a-z0-9._-]*)@bookkeeping\.business/i)
+  return match?.[1]?.toLowerCase() ?? null
 }
 
 export async function GET(request: NextRequest) {
@@ -82,17 +81,17 @@ export async function GET(request: NextRequest) {
         const receivedAt = parsed.date?.toISOString() ?? new Date().toISOString()
         const monthYear = new Date().toISOString().slice(0, 7)
 
-        // ── Step 1: Try token-based routing (primary, secure) ──────────────────
-        const token = extractTokenFromTo(toText)
+        // ── Step 1: Route by To: address → DB lookup on receipt_email_token ──────
+        const localPart = extractLocalFromTo(toText)
         let userId: string | null = null
         let organizationId: string | null = null
         let routeMethod = "unmatched"
 
-        if (token) {
+        if (localPart && localPart !== "fileme") {
           const { data: org } = await admin
             .from("organizations")
             .select("id, owner_id")
-            .eq("receipt_email_token", token)
+            .eq("receipt_email_token", localPart)
             .single()
           if (org) {
             organizationId = org.id
