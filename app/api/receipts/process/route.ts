@@ -24,49 +24,77 @@ type ExtractedReceipt = {
   category: string | null
 }
 
-async function extractWithClaude(
-  fileBytes: Uint8Array,
-  mimeType: string
-): Promise<ExtractedReceipt | null> {
+function parseJson(text: string): ExtractedReceipt | null {
+  const jsonStr = text.replace(/^```json?\n?/, "").replace(/\n?```$/, "").trim()
+  try { return JSON.parse(jsonStr) as ExtractedReceipt }
+  catch { return null }
+}
+
+// Primary: Claude claude-haiku-4-5 — cheapest, best structured receipt extraction, handles images + PDFs
+async function extractWithClaude(fileBytes: Uint8Array, mimeType: string): Promise<ExtractedReceipt | null> {
   if (!process.env.ANTHROPIC_API_KEY) return null
 
-  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
-  const base64 = Buffer.from(fileBytes).toString("base64")
-
-  // Claude supports images + PDFs via document block
   const isImage = mimeType.startsWith("image/")
   const isPdf = mimeType === "application/pdf"
   if (!isImage && !isPdf) return null
 
-  const contentBlock = isImage
-    ? ({
-        type: "image" as const,
-        source: { type: "base64" as const, media_type: mimeType as "image/jpeg" | "image/png" | "image/gif" | "image/webp", data: base64 },
-      })
-    : ({
-        type: "document" as const,
-        source: { type: "base64" as const, media_type: "application/pdf" as const, data: base64 },
-      })
+  try {
+    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+    const base64 = Buffer.from(fileBytes).toString("base64")
 
-  const response = await anthropic.messages.create({
-    model: "claude-haiku-4-5-20251001",
-    max_tokens: 512,
-    messages: [
-      {
-        role: "user",
-        content: [contentBlock, { type: "text", text: EXTRACT_PROMPT }],
-      },
-    ],
-  })
+    const contentBlock = isImage
+      ? ({ type: "image" as const, source: { type: "base64" as const, media_type: mimeType as "image/jpeg" | "image/png" | "image/gif" | "image/webp", data: base64 } })
+      : ({ type: "document" as const, source: { type: "base64" as const, media_type: "application/pdf" as const, data: base64 } })
 
-  const text = response.content[0]?.type === "text" ? response.content[0].text.trim() : ""
-  // Strip markdown fences if present
-  const jsonStr = text.replace(/^```json?\n?/, "").replace(/\n?```$/, "").trim()
+    const response = await anthropic.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 512,
+      messages: [{ role: "user", content: [contentBlock, { type: "text", text: EXTRACT_PROMPT }] }],
+    })
+
+    const text = response.content[0]?.type === "text" ? response.content[0].text.trim() : ""
+    return parseJson(text)
+  } catch (err) {
+    console.error("Claude OCR failed:", err)
+    return null
+  }
+}
+
+// Fallback: GPT-4o-mini — kicks in if Claude fails or key missing, images only (PDFs need text layer)
+async function extractWithOpenAI(fileBytes: Uint8Array, mimeType: string): Promise<ExtractedReceipt | null> {
+  if (!process.env.OPENAI_API_KEY) return null
+  if (!mimeType.startsWith("image/")) return null // GPT-4o-mini vision handles images; PDFs need different approach
 
   try {
-    const parsed = JSON.parse(jsonStr) as ExtractedReceipt
-    return parsed
-  } catch {
+    const base64 = Buffer.from(fileBytes).toString("base64")
+    const dataUrl = `data:${mimeType};base64,${base64}`
+
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        max_tokens: 512,
+        messages: [
+          {
+            role: "user",
+            content: [
+              { type: "image_url", image_url: { url: dataUrl, detail: "low" } },
+              { type: "text", text: EXTRACT_PROMPT },
+            ],
+          },
+        ],
+      }),
+    })
+
+    const json = await res.json()
+    const text: string = json?.choices?.[0]?.message?.content ?? ""
+    return parseJson(text)
+  } catch (err) {
+    console.error("OpenAI OCR failed:", err)
     return null
   }
 }
@@ -86,41 +114,30 @@ export async function POST(request: NextRequest) {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 
-  // Mark as processing
   await admin.from("receipts").update({ status: "processing", updated_at: new Date().toISOString() }).eq("id", receipt_id)
 
-  // Fetch receipt record
   const { data: receipt } = await admin.from("receipts").select("storage_path, file_name").eq("id", receipt_id).single()
   if (!receipt) return NextResponse.json({ error: "Receipt not found" }, { status: 404 })
 
-  // Download file from Supabase storage
-  const { data: fileData, error: downloadError } = await admin.storage
-    .from("documents")
-    .download(receipt.storage_path)
-
+  const { data: fileData, error: downloadError } = await admin.storage.from("documents").download(receipt.storage_path)
   if (downloadError || !fileData) {
     await admin.from("receipts").update({ status: "pending", updated_at: new Date().toISOString() }).eq("id", receipt_id)
     return NextResponse.json({ error: "File download failed" }, { status: 500 })
   }
 
-  // Detect MIME from file extension as fallback
   const ext = receipt.file_name.split(".").pop()?.toLowerCase() ?? ""
   const mimeMap: Record<string, string> = {
     jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png",
-    heic: "image/heic", heif: "image/heic", webp: "image/webp",
-    pdf: "application/pdf",
+    heic: "image/heic", heif: "image/heic", webp: "image/webp", pdf: "application/pdf",
   }
   const mimeType = mimeMap[ext] ?? fileData.type ?? "image/jpeg"
-
   const bytes = new Uint8Array(await fileData.arrayBuffer())
-  const extracted = await extractWithClaude(bytes, mimeType)
+
+  // Try Claude first, then OpenAI as fallback
+  const extracted = (await extractWithClaude(bytes, mimeType)) ?? (await extractWithOpenAI(bytes, mimeType))
 
   if (!extracted) {
-    // No API key or unsupported type — leave as pending for manual review
-    await admin.from("receipts").update({
-      status: "pending",
-      updated_at: new Date().toISOString(),
-    }).eq("id", receipt_id)
+    await admin.from("receipts").update({ status: "pending", updated_at: new Date().toISOString() }).eq("id", receipt_id)
     return NextResponse.json({ status: "pending_manual" })
   }
 
