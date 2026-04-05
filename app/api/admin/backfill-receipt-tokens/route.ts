@@ -13,7 +13,7 @@ const RECEIPT_DOMAIN = "bookkeeping.business"
 const RECEIPT_INBOX = `fileme@${RECEIPT_DOMAIN}`
 const ADMIN_EMAIL = process.env.NOTIFICATION_EMAIL!
 
-async function createEmailForwarder(local: string): Promise<{ ok: boolean; error?: string }> {
+async function twentyIPost(body: object): Promise<{ ok: boolean; status: number; error?: string }> {
   try {
     const res = await fetch(
       `https://api.20i.com/package/${TWENTY_I_PACKAGE_ID}/email/${RECEIPT_DOMAIN}`,
@@ -23,19 +23,27 @@ async function createEmailForwarder(local: string): Promise<{ ok: boolean; error
           Authorization: `Bearer ${TWENTY_I_BEARER}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          new: { forward: { local, remote: RECEIPT_INBOX } },
-        }),
+        body: JSON.stringify(body),
       }
     )
     if (!res.ok) {
       const text = await res.text().catch(() => "")
-      return { ok: false, error: `20i ${res.status}: ${text.slice(0, 200)}` }
+      return { ok: false, status: res.status, error: text.slice(0, 200) }
     }
-    return { ok: true }
+    return { ok: true, status: res.status }
   } catch (e) {
-    return { ok: false, error: String(e) }
+    return { ok: false, status: 0, error: String(e) }
   }
+}
+
+async function provisionReceiptEmail(local: string): Promise<{ mailbox: string; forwarder: string }> {
+  const password = crypto.randomBytes(12).toString("base64url")
+  const mb = await twentyIPost({ new: { mailbox: { local, send: "true", receive: "true", password } } })
+  const fw = await twentyIPost({ new: { forward: { local, remote: RECEIPT_INBOX } } })
+
+  const mbStatus = mb.ok ? "created" : mb.status === 502 ? "already_exists" : `failed_${mb.status}`
+  const fwStatus = fw.ok ? "created" : fw.status === 502 ? "already_exists" : `failed_${fw.status}`
+  return { mailbox: mbStatus, forwarder: fwStatus }
 }
 
 export async function POST() {
@@ -62,7 +70,7 @@ export async function POST() {
     return NextResponse.json({ message: "All organizations already have receipt email tokens.", processed: 0 })
   }
 
-  const results: { org_id: string; org_name: string; token: string; forwarder: string }[] = []
+  const results: { org_id: string; org_name: string; token: string; forwarder: string; mailbox: string; forward_rule: string }[] = []
 
   for (const org of orgs) {
     const slug = (org.name ?? "org")
@@ -78,12 +86,14 @@ export async function POST() {
       .update({ receipt_email_token: token })
       .eq("id", org.id)
 
-    const fw = await createEmailForwarder(token)
+    const provision = await provisionReceiptEmail(token)
     results.push({
       org_id: org.id,
       org_name: org.name,
       token,
-      forwarder: fw.ok ? `${token}@${RECEIPT_DOMAIN}` : `FAILED: ${fw.error}`,
+      forwarder: `${token}@${RECEIPT_DOMAIN}`,
+      mailbox: provision.mailbox,
+      forward_rule: provision.forwarder,
     })
   }
 

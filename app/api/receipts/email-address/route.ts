@@ -12,7 +12,7 @@ const TWENTY_I_PACKAGE_ID = process.env.TWENTY_I_PACKAGE_ID ?? "3653391"
 const RECEIPT_DOMAIN = "bookkeeping.business"
 const RECEIPT_INBOX = `fileme@${RECEIPT_DOMAIN}`
 
-async function createEmailForwarder(local: string): Promise<void> {
+async function twentyIPost(body: object): Promise<void> {
   try {
     await fetch(
       `https://api.20i.com/package/${TWENTY_I_PACKAGE_ID}/email/${RECEIPT_DOMAIN}`,
@@ -22,14 +22,19 @@ async function createEmailForwarder(local: string): Promise<void> {
           Authorization: `Bearer ${TWENTY_I_BEARER}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          new: { forward: { local, remote: RECEIPT_INBOX } },
-        }),
+        body: JSON.stringify(body),
       }
     )
   } catch {
     // Non-fatal — catch-all is the safety net
   }
+}
+
+async function provisionReceiptEmail(local: string): Promise<void> {
+  const password = crypto.randomBytes(12).toString("base64url")
+  // Create mailbox (visible in 20i StackCP), then add forwarder
+  await twentyIPost({ new: { mailbox: { local, send: "true", receive: "true", password } } })
+  await twentyIPost({ new: { forward: { local, remote: RECEIPT_INBOX } } })
 }
 
 export async function GET() {
@@ -76,8 +81,8 @@ export async function GET() {
       .single()
     org = updated
 
-    // Auto-create dedicated forwarder via 20i API
-    if (token) await createEmailForwarder(token)
+    // Auto-create mailbox + forwarder via 20i API
+    if (token) await provisionReceiptEmail(token)
   }
 
   const token = org?.receipt_email_token
