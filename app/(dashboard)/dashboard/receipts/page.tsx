@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import {
   Upload, Loader2, Receipt, CheckCircle2, Clock, AlertCircle,
-  Mail, Smartphone, FileText, Download, Trash2, Eye, X
+  Mail, Smartphone, FileText, Download, Trash2, Eye, X, Copy, Check
 } from "lucide-react"
 
 type ReceiptRow = {
@@ -66,17 +66,14 @@ export default function ReceiptsPage() {
   const [error, setError] = useState<string | null>(null)
   const [dragOver, setDragOver] = useState(false)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
-  const [organizationId, setOrganizationId] = useState<string | null>(null)
+  const [receiptEmail, setReceiptEmail] = useState<string>("fileme@bookkeeping.business")
+  const [copied, setCopied] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const supabase = createClient()
 
   const fetchReceipts = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
-    const orgRes = await fetch("/api/organizations")
-    const orgData = await orgRes.json().catch(() => ({}))
-    const orgId = orgData?.activeOrganizationId ?? null
-    setOrganizationId(orgId)
 
     const { data } = await supabase
       .from("receipts")
@@ -88,6 +85,20 @@ export default function ReceiptsPage() {
     setReceipts((data ?? []) as ReceiptRow[])
     setLoading(false)
   }, [supabase])
+
+  useEffect(() => {
+    fetch("/api/receipts/email-address")
+      .then(r => r.json())
+      .then(d => { if (d.receipt_email) setReceiptEmail(d.receipt_email) })
+      .catch(() => {})
+  }, [])
+
+  function copyEmail() {
+    navigator.clipboard.writeText(receiptEmail).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
 
   useEffect(() => { fetchReceipts() }, [fetchReceipts])
 
@@ -166,8 +177,7 @@ export default function ReceiptsPage() {
             <Badge variant="outline" className="text-xs font-medium border-primary/30 text-primary">Beta</Badge>
           </div>
           <p className="text-sm text-muted-foreground mt-1">
-            Upload receipts directly or forward them to{" "}
-            <span className="font-medium text-foreground">fileme@bookkeeping.business</span>. We extract and match them to your books.
+            Upload receipts directly or forward them to your personal receipt address. We extract and match them to your books.
           </p>
         </div>
         <Button onClick={() => fileInputRef.current?.click()} disabled={uploading}>
@@ -196,9 +206,19 @@ export default function ReceiptsPage() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0">
               <Mail className="h-4 w-4" />
             </div>
-            <div>
-              <p className="text-sm font-semibold">Email Forward</p>
-              <p className="text-xs text-muted-foreground">Forward receipts to <span className="font-medium">fileme@bookkeeping.business</span></p>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold">Your Receipt Email</p>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <span className="text-xs font-mono text-foreground truncate">{receiptEmail}</span>
+                <button
+                  onClick={copyEmail}
+                  className="shrink-0 text-muted-foreground hover:text-primary transition-colors"
+                  title="Copy email address"
+                >
+                  {copied ? <Check className="h-3.5 w-3.5 text-green-600" /> : <Copy className="h-3.5 w-3.5" />}
+                </button>
+              </div>
+              <p className="text-xs text-muted-foreground mt-0.5">Only receipts sent to your unique address are imported</p>
             </div>
           </CardContent>
         </Card>

@@ -21,6 +21,18 @@ function detectMime(filename: string, declared?: string): string {
   return map[ext] ?? declared ?? "application/octet-stream"
 }
 
+/**
+ * Extract the receipt token from the To: address.
+ * Supports two formats:
+ *   fileme+bkabc123@bookkeeping.business  → returns "bkabc123"
+ *   fileme@bookkeeping.business           → returns null (legacy / no token)
+ */
+function extractTokenFromTo(toText: string | undefined): string | null {
+  if (!toText) return null
+  const match = toText.match(/fileme\+([^@\s>]+)@bookkeeping\.business/i)
+  return match?.[1] ?? null
+}
+
 export async function GET(request: NextRequest) {
   const auth = request.headers.get("authorization")
   if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -36,7 +48,7 @@ export async function GET(request: NextRequest) {
     host: process.env.IMAP_HOST ?? "imap.bookkeeping.business",
     port: Number(process.env.IMAP_PORT ?? 993),
     secure: true,
-    tls: { rejectUnauthorized: false }, // cert is *.stackmail.com but domain is custom
+    tls: { rejectUnauthorized: false }, // cert is *.stackmail.com, custom domain mismatch
     auth: {
       user: process.env.IMAP_USER ?? "fileme@bookkeeping.business",
       pass: process.env.IMAP_PASS!,
@@ -45,18 +57,16 @@ export async function GET(request: NextRequest) {
   })
 
   let processed = 0
+  let skipped = 0
   let errors = 0
 
   try {
     await client.connect()
     await client.mailboxOpen("INBOX")
 
-    // Fetch all UNSEEN messages
     const uids: number[] = []
     for await (const msg of client.fetch("1:*", { flags: true })) {
-      if (msg.flags && !msg.flags.has("\\Seen")) {
-        uids.push(msg.uid)
-      }
+      if (msg.flags && !msg.flags.has("\\Seen")) uids.push(msg.uid)
     }
 
     for (const uid of uids) {
@@ -67,19 +77,43 @@ export async function GET(request: NextRequest) {
 
         const parsed = await simpleParser(msg.source as Buffer)
         const fromAddress = parsed.from?.value?.[0]?.address ?? null
+        const toRaw = parsed.to
+        const toText = (Array.isArray(toRaw) ? toRaw[0]?.text : toRaw?.text) ?? ""
         const subject = parsed.subject ?? "(no subject)"
         const receivedAt = parsed.date?.toISOString() ?? new Date().toISOString()
+        const monthYear = new Date().toISOString().slice(0, 7)
 
-        // Match sender email → Supabase user
+        // ── Step 1: Try token-based routing (primary, secure) ──────────────────
+        const token = extractTokenFromTo(toText)
         let userId: string | null = null
         let organizationId: string | null = null
+        let routeMethod = "unmatched"
 
-        if (fromAddress) {
+        if (token) {
+          const { data: org } = await admin
+            .from("organizations")
+            .select("id, owner_id")
+            .eq("receipt_email_token", token)
+            .single()
+          if (org) {
+            organizationId = org.id
+            userId = org.owner_id
+            routeMethod = "token"
+          }
+        }
+
+        // ── Step 2: Fallback — match FROM address to a registered user ─────────
+        // Only used when email was sent to bare fileme@ (no token) AND sender is a known user.
+        // Security note: FROM can be spoofed but this only applies to direct-to-fileme@ emails
+        // without a token — which we display as "legacy" and will phase out.
+        if (!organizationId && fromAddress) {
           const { data: { users } } = await admin.auth.admin.listUsers()
-          const matchedUser = users.find((u) => u.email?.toLowerCase() === fromAddress.toLowerCase())
+          const matchedUser = users.find(
+            (u) => u.email?.toLowerCase() === fromAddress.toLowerCase()
+          )
           if (matchedUser) {
             userId = matchedUser.id
-            // Get their active org (first active subscription's org, or first org)
+            // Prefer org with active subscription, else first org
             const { data: sub } = await admin
               .from("subscriptions")
               .select("organization_id")
@@ -100,67 +134,69 @@ export async function GET(request: NextRequest) {
                 .single()
               organizationId = org?.id ?? null
             }
+            if (organizationId) routeMethod = "from_match"
           }
         }
 
-        const monthYear = new Date().toISOString().slice(0, 7)
-
-        // Process each attachment
-        if (parsed.attachments && parsed.attachments.length > 0) {
-          for (const attachment of parsed.attachments) {
-            const mime = detectMime(attachment.filename ?? "file", attachment.contentType)
-            if (!ALLOWED_MIME.has(mime)) continue
-
-            const safeName = (attachment.filename ?? `email_receipt_${Date.now()}`).replace(/[^a-zA-Z0-9._-]/g, "_")
-            const storagePath = `receipts/${organizationId ?? fromAddress ?? "unmatched"}/${monthYear}/${Date.now()}_${safeName}`
-
-            const { error: storageError } = await admin.storage
-              .from("documents")
-              .upload(storagePath, attachment.content, { contentType: mime, upsert: false })
-
-            if (storageError) {
-              console.error("Storage upload error:", storageError.message)
-              errors++
-              continue
-            }
-
-            const { data: receipt } = await admin
-              .from("receipts")
-              .insert({
-                user_id: userId,
-                organization_id: organizationId,
-                storage_path: storagePath,
-                file_name: attachment.filename ?? safeName,
-                file_size_bytes: attachment.size ?? attachment.content.length,
-                source: "email",
-                status: "pending",
-                email_from: fromAddress,
-                email_subject: subject,
-                email_received_at: receivedAt,
-                month_year: monthYear,
-              })
-              .select("id")
-              .single()
-
-            if (receipt?.id) {
-              // Trigger OCR async
-              fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/receipts/process`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  receipt_id: receipt.id,
-                  internal_secret: process.env.CRON_SECRET,
-                }),
-              }).catch(() => {})
-              processed++
-            }
-          }
-        } else {
-          // Email body might itself be a forwarded receipt — skip for now, mark as no-attachment
-          // Could extract inline images in a future iteration
+        // ── Step 3: No match → skip (don't store under anyone's account) ───────
+        if (!organizationId) {
+          console.log(`Skipping email uid=${uid} from=${fromAddress}: no token, unrecognized sender`)
+          skipped++
+          await client.messageFlagsAdd(String(uid), ["\\Seen"], { uid: true })
+          continue
         }
 
-        // Mark email as SEEN so we don't re-process it
+        // ── Process attachments ────────────────────────────────────────────────
+        if (!parsed.attachments || parsed.attachments.length === 0) {
+          await client.messageFlagsAdd(String(uid), ["\\Seen"], { uid: true })
+          continue
+        }
+
+        for (const attachment of parsed.attachments) {
+          const mime = detectMime(attachment.filename ?? "file", attachment.contentType)
+          if (!ALLOWED_MIME.has(mime)) continue
+
+          const safeName = (attachment.filename ?? `email_receipt_${Date.now()}`).replace(/[^a-zA-Z0-9._-]/g, "_")
+          const storagePath = `receipts/${organizationId}/${monthYear}/${Date.now()}_${safeName}`
+
+          const { error: storageError } = await admin.storage
+            .from("documents")
+            .upload(storagePath, attachment.content, { contentType: mime, upsert: false })
+
+          if (storageError) {
+            console.error("Storage upload error:", storageError.message)
+            errors++
+            continue
+          }
+
+          const { data: receipt } = await admin
+            .from("receipts")
+            .insert({
+              user_id: userId,
+              organization_id: organizationId,
+              storage_path: storagePath,
+              file_name: attachment.filename ?? safeName,
+              file_size_bytes: attachment.size ?? attachment.content.length,
+              source: "email",
+              status: "pending",
+              email_from: fromAddress,
+              email_subject: subject,
+              email_received_at: receivedAt,
+              month_year: monthYear,
+            })
+            .select("id")
+            .single()
+
+          if (receipt?.id) {
+            fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/receipts/process`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ receipt_id: receipt.id, internal_secret: process.env.CRON_SECRET }),
+            }).catch(() => {})
+            processed++
+          }
+        }
+
         await client.messageFlagsAdd(String(uid), ["\\Seen"], { uid: true })
       } catch (msgErr) {
         console.error("Error processing email uid", uid, msgErr)
@@ -171,5 +207,5 @@ export async function GET(request: NextRequest) {
     await client.logout().catch(() => {})
   }
 
-  return NextResponse.json({ processed, errors, checked: new Date().toISOString() })
+  return NextResponse.json({ processed, skipped, errors, checked: new Date().toISOString() })
 }
