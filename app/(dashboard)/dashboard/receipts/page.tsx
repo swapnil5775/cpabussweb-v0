@@ -142,23 +142,37 @@ export default function ReceiptsPage() {
     if (expandedId === r.id) setExpandedId(null)
   }
 
+  async function getSignedUrl(storagePath: string): Promise<string | null> {
+    try {
+      const res = await fetch(`/api/receipts/signed-url?path=${encodeURIComponent(storagePath)}`)
+      if (!res.ok) return null
+      const json = await res.json()
+      return json.url ?? null
+    } catch {
+      return null
+    }
+  }
+
   async function handleView(r: ReceiptRow) {
-    const { data } = await supabase.storage.from("documents").createSignedUrl(r.storage_path, 120)
-    if (!data?.signedUrl) return
+    const url = await getSignedUrl(r.storage_path)
+    if (!url) return
     if (isPdf(r.file_name)) {
-      window.open(data.signedUrl, "_blank") // PDFs open in new tab
+      window.open(url, "_blank")
     } else {
       setPreviewIsPdf(false)
-      setPreviewUrl(data.signedUrl)
+      setPreviewUrl(url)
     }
   }
 
   async function handleDownload(r: ReceiptRow) {
-    const { data } = await supabase.storage.from("documents").createSignedUrl(r.storage_path, 60)
-    if (data?.signedUrl) {
-      const a = document.createElement("a"); a.href = data.signedUrl
-      a.download = r.file_name; a.click()
-    }
+    const url = await getSignedUrl(r.storage_path)
+    if (!url) return
+    const a = document.createElement("a")
+    a.href = url
+    a.download = r.file_name
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
   }
 
   const grouped = receipts.reduce<Record<string, ReceiptRow[]>>((acc, r) => {
