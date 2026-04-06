@@ -8,7 +8,7 @@ export const runtime = "nodejs"
 const TWENTY_I_BEARER = Buffer.from(
   (process.env.TWENTY_I_API_KEY ?? "").split("+")[0]
 ).toString("base64")
-const TWENTY_I_PACKAGE_ID = process.env.TWENTY_I_PACKAGE_ID ?? "3653391"
+const TWENTY_I_PACKAGE_ID = process.env.TWENTY_I_PACKAGE_ID ?? ""
 const RECEIPT_DOMAIN = "bookkeeping.business"
 const RECEIPT_INBOX = `fileme@${RECEIPT_DOMAIN}`
 const ADMIN_EMAIL = process.env.NOTIFICATION_EMAIL!

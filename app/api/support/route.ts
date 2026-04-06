@@ -8,7 +8,8 @@ import { Resend } from "resend"
 import { resolveActiveOrganizationId } from "@/lib/organizations"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
-const NOTIFICATION_EMAIL = process.env.NOTIFICATION_EMAIL ?? "swapnil5775@gmail.com"
+if (!process.env.NOTIFICATION_EMAIL) throw new Error("NOTIFICATION_EMAIL is not set")
+const NOTIFICATION_EMAIL = process.env.NOTIFICATION_EMAIL
 
 async function getAuthUser() {
   const cookieStore = await cookies()
@@ -119,17 +120,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Failed to send message" }, { status: 500 })
   }
 
+  const escHtml = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;")
   // Notify admin via Resend (non-blocking)
   resend.emails.send({
     from: "BookKeeping.business Support <noreply@webhost4ever.com>",
     to: NOTIFICATION_EMAIL,
     subject: `[Support] ${subject ?? "New reply"} — ${user.email}`,
     html: `
-      <p><strong>From:</strong> ${user.email}</p>
-      <p><strong>Subject:</strong> ${subject ?? "(reply)"}</p>
+      <p><strong>From:</strong> ${escHtml(user.email ?? "")}</p>
+      <p><strong>Subject:</strong> ${escHtml(subject ?? "(reply)")}</p>
       <p><strong>Message:</strong></p>
-      <blockquote style="border-left:3px solid #e5e7eb;padding-left:12px;color:#374151">${message.trim().replace(/\n/g, "<br>")}</blockquote>
-      <p style="color:#9ca3af;font-size:13px">Ticket ID: ${ticketId}</p>
+      <blockquote style="border-left:3px solid #e5e7eb;padding-left:12px;color:#374151">${escHtml(message.trim()).replace(/\n/g, "<br>")}</blockquote>
+      <p style="color:#9ca3af;font-size:13px">Ticket ID: ${escHtml(ticketId)}</p>
     `,
   }).catch(() => {})
 

@@ -49,13 +49,14 @@ function detectMime(filename: string, declared: string): string {
 }
 
 export async function POST(request: NextRequest) {
-  // Optional secret header check (set in Postmark webhook config)
+  // Mandatory secret header check — reject all requests if env var is not configured
   const secret = process.env.POSTMARK_INBOUND_SECRET
-  if (secret) {
-    const provided = request.headers.get("x-webhook-secret")
-    if (provided !== secret) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
+  if (!secret) {
+    return NextResponse.json({ error: "Webhook not configured" }, { status: 500 })
+  }
+  const provided = request.headers.get("x-webhook-secret")
+  if (provided !== secret) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
   const body = await request.json().catch(() => null) as PostmarkPayload | null

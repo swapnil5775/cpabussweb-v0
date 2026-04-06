@@ -50,7 +50,7 @@ export async function GET() {
   })
 
   response.cookies.set(ACTIVE_ORG_COOKIE, activeOrganizationId, {
-    httpOnly: false,
+    httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     path: "/",
@@ -103,7 +103,7 @@ export async function POST(request: Request) {
 
   const response = NextResponse.json({ organization: created })
   response.cookies.set(ACTIVE_ORG_COOKIE, created.id, {
-    httpOnly: false,
+    httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     path: "/",

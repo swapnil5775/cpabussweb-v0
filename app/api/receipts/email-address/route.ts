@@ -5,10 +5,10 @@ import { resolveActiveOrganizationId } from "@/lib/organizations"
 import { cookies } from "next/headers"
 import crypto from "crypto"
 
-const TWENTY_I_BEARER = Buffer.from(
-  (process.env.TWENTY_I_API_KEY ?? "c19e5157e066006a9").split("+")[0]
-).toString("base64")
-const TWENTY_I_PACKAGE_ID = process.env.TWENTY_I_PACKAGE_ID ?? "3653391"
+if (!process.env.TWENTY_I_API_KEY) throw new Error("TWENTY_I_API_KEY is not set")
+if (!process.env.TWENTY_I_PACKAGE_ID) throw new Error("TWENTY_I_PACKAGE_ID is not set")
+const TWENTY_I_BEARER = Buffer.from(process.env.TWENTY_I_API_KEY.split("+")[0]).toString("base64")
+const TWENTY_I_PACKAGE_ID = process.env.TWENTY_I_PACKAGE_ID
 const RECEIPT_DOMAIN = "bookkeeping.business"
 const RECEIPT_INBOX = `fileme@${RECEIPT_DOMAIN}`
 

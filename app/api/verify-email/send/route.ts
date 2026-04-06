@@ -6,6 +6,7 @@ import { NextResponse } from "next/server"
 import { createClient as createServiceClient } from "@supabase/supabase-js"
 import { Resend } from "resend"
 import { resolveActiveOrganizationId } from "@/lib/organizations"
+import crypto from "crypto"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
   if (authError || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   // Generate 6-digit code
-  const code = String(Math.floor(100000 + Math.random() * 900000))
+  const code = String(crypto.randomInt(100000, 1000000))
   const expires = new Date(Date.now() + 15 * 60 * 1000).toISOString() // 15 min
 
   const admin = createServiceClient(

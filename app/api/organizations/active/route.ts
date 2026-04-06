@@ -42,7 +42,7 @@ export async function POST(request: Request) {
 
   const response = NextResponse.json({ success: true, organization_id })
   response.cookies.set(ACTIVE_ORG_COOKIE, organization_id, {
-    httpOnly: false,
+    httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     path: "/",

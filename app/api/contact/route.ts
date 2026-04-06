@@ -19,12 +19,16 @@ function checkRateLimit(ip: string): boolean {
   return true
 }
 
+function escHtml(s: string) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;")
+}
+
 function row(label: string, value: string | null | undefined) {
   if (!value) return ""
   return `
     <tr style="border-bottom:1px solid #f3f4f6;">
-      <td style="padding:10px 16px;font-weight:600;color:#374151;white-space:nowrap;vertical-align:top;font-size:13px;width:160px;">${label}</td>
-      <td style="padding:10px 16px;color:#111827;font-size:13px;">${value}</td>
+      <td style="padding:10px 16px;font-weight:600;color:#374151;white-space:nowrap;vertical-align:top;font-size:13px;width:160px;">${escHtml(label)}</td>
+      <td style="padding:10px 16px;color:#111827;font-size:13px;">${escHtml(value)}</td>
     </tr>`
 }
 
@@ -123,14 +127,14 @@ export async function POST(request: Request) {
 
   <div style="background:${BRAND_GREEN};border-radius:14px;padding:22px 28px;margin-bottom:24px;">
     <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.55);">New Submission</p>
-    <h1 style="margin:6px 0 0;color:#fff;font-size:22px;font-weight:800;">📬 ${fullName}</h1>
-    <p style="margin:6px 0 0;color:rgba(255,255,255,0.6);font-size:13px;">${submittedAt} ET &nbsp;·&nbsp; bookkeeping.business/contact</p>
+    <h1 style="margin:6px 0 0;color:#fff;font-size:22px;font-weight:800;">📬 ${escHtml(fullName)}</h1>
+    <p style="margin:6px 0 0;color:rgba(255,255,255,0.6);font-size:13px;">${escHtml(submittedAt)} ET &nbsp;·&nbsp; bookkeeping.business/contact</p>
   </div>
 
   <div style="background:#fff;border-radius:14px;border:1px solid #e5e7eb;overflow:hidden;margin-bottom:20px;">
     <table style="width:100%;border-collapse:collapse;">
       ${row("Name", fullName)}
-      ${row("Email", `<a href="mailto:${email_}" style="color:${BRAND_GREEN};text-decoration:none;">${email_}</a>`)}
+      ${row("Email", email_)}
       ${row("Phone", typeof body.phone === "string" ? body.phone : null)}
       ${row("Preferred Contact", typeof body.preferredContact === "string" ? body.preferredContact : null)}
       ${row("Client Type", typeof body.clientType === "string" ? body.clientType : null)}
@@ -147,9 +151,9 @@ export async function POST(request: Request) {
   </div>
 
   <div style="text-align:center;margin-bottom:28px;">
-    <a href="mailto:${email_}?subject=Re: Your BookKeeping.business Inquiry"
+    <a href="mailto:${escHtml(email_)}?subject=Re: Your BookKeeping.business Inquiry"
        style="display:inline-block;background:${BRAND_GREEN};color:#fff;padding:13px 32px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;">
-      Reply to ${firstName_}
+      Reply to ${escHtml(firstName_)}
     </a>
   </div>
 
@@ -172,7 +176,7 @@ export async function POST(request: Request) {
   <div style="background:${BRAND_GREEN};border-radius:14px;padding:28px 32px;margin-bottom:28px;text-align:center;">
     <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);">BookKeeping.business</p>
     <h1 style="margin:0;color:#fff;font-size:24px;font-weight:800;line-height:1.3;">
-      We got your message, ${firstName_}!
+      We got your message, ${escHtml(firstName_)}!
     </h1>
   </div>
 
