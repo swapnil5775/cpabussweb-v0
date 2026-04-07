@@ -34,6 +34,7 @@ export function SiteFooter() {
             <ul className="space-y-3.5 text-sm text-muted-foreground">
               {[
                 { href: "/bookkeeping", label: "Bookkeeping" },
+                { href: "/ap-ar", label: "AP/AR Services" },
                 { href: "/tax-prep", label: "Tax Prep" },
                 { href: "/services", label: "Catchup Books" },
                 { href: "/business-services", label: "Business Services" },

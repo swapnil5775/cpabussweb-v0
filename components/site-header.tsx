@@ -35,6 +35,7 @@ export function SiteHeader() {
             { href: "/why-us", label: "Why Us" },
             { href: "/services", label: "Services" },
             { href: "/bookkeeping", label: "Bookkeeping" },
+            { href: "/ap-ar", label: "AP/AR" },
             { href: "/about", label: "About" },
             { href: "/faqs", label: "FAQs" },
             { href: "/contact", label: "Contact" },
