@@ -330,6 +330,7 @@ export default function WhyUsPage() {
                 { name: "TurboTax Business", what: "Business tax filing" },
                 { name: "TurboTax / H&R Block", what: "Personal tax filing" },
                 { name: "Dext / Hubdoc", what: "Receipt capture — no extra subscription" },
+                { name: "AP/AR Automation", what: "Bill.com-style automation — Enterprise plan" },
                 { name: "Wave / FreshBooks", what: "Invoicing & tracking" },
                 { name: "Xero", what: "Accounting software" },
               ].map(({ name, what }) => (
@@ -497,6 +498,18 @@ export default function WhyUsPage() {
                     <td className="text-center py-4 px-4 bg-primary/5 font-semibold text-primary text-xs">
                       <Check aria-hidden="true" className="h-4 w-4 mx-auto text-primary mb-1" />
                       Included
+                    </td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="py-4 px-4">
+                      <span className="font-medium">AP/AR Management</span>
+                      <span className="block text-xs text-muted-foreground">Bills paid, invoices sent, cash flow forecasted</span>
+                    </td>
+                    <td className="text-center py-4 px-4 text-muted-foreground text-xs">Extra sub<br/>($49–199/mo)</td>
+                    <td className="text-center py-4 px-4 text-muted-foreground text-xs">Add-on<br/>billed hourly</td>
+                    <td className="text-center py-4 px-4 bg-primary/5 font-semibold text-primary text-xs">
+                      <Check aria-hidden="true" className="h-4 w-4 mx-auto text-primary mb-1" />
+                      Enterprise — Included
                     </td>
                   </tr>
                   <tr>

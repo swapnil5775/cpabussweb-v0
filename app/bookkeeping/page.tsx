@@ -33,7 +33,7 @@ import { SiteFooter } from "@/components/site-footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Check, BookOpen, Globe2, Landmark, WalletCards } from "lucide-react"
+import { ArrowRight, Check, BookOpen, Globe2, Landmark, WalletCards, Inbox, Send, TrendingUp, Layers } from "lucide-react"
 import Link from "next/link"
 
 export default function BookkeepingPage() {
@@ -105,13 +105,13 @@ export default function BookkeepingPage() {
                 <BookOpen aria-hidden="true" className="h-8 w-8" />
               </div>
             </div>
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl text-balance">Monthly Bookkeeping for Restaurants, Hotels, Childcare & Small Business</h1>
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl text-balance">Monthly Bookkeeping for Restaurants, Law Firms, Startups, Property Management & Small Business</h1>
             <p className="text-lg text-muted-foreground leading-relaxed text-pretty">
-              Dedicated bookkeeping for every type of small business — restaurants, hotels, childcare centers, realtors,
-              tutoring centers, and home-based businesses. AI-assisted for efficiency, human-reviewed for accuracy.
+              Dedicated bookkeeping for every type of business — restaurants, hotels, law firms, startups, property management companies,
+              childcare centers, realtors, tutoring centers, and home-based businesses. AI-assisted for efficiency, human-reviewed for accuracy.
             </p>
             <p className="text-sm text-muted-foreground">
-              US and Canada clients are supported on QuickBooks Online or Xero. International clients in Australia, India, and the UK (including London) are onboarded on Xero.
+              US and Canada clients are supported on QuickBooks Online or Xero. International clients in Australia, India, and the UK (including London) are onboarded on Xero. Enterprise plan includes AP/AR automation and QuickBooks subscription at no extra cost.
             </p>
           </div>
         </section>
@@ -144,6 +144,36 @@ export default function BookkeepingPage() {
               ))}
             </CardContent>
           </Card>
+        </section>
+
+        {/* Industries served */}
+        <section className="container pb-16">
+          <div className="mx-auto max-w-4xl text-center space-y-4 mb-8">
+            <h2 className="text-2xl font-bold tracking-tight">Industries We Serve</h2>
+            <p className="text-muted-foreground text-sm">Specialists in your industry — not generic bookkeepers who learn as they go.</p>
+          </div>
+          <div className="flex flex-wrap gap-3 justify-center max-w-4xl mx-auto">
+            {[
+              "Restaurants & Food Service",
+              "Hotels & Hospitality",
+              "Law Firms",
+              "Startups & Tech Companies",
+              "Property Management Firms",
+              "Childcare & Daycares",
+              "Realtors & Real Estate Agents",
+              "Tutoring & Education Centers",
+              "Home-Based Businesses",
+              "Retail Shops",
+              "Freelancers & Consultants",
+              "Medical & Dental Practices",
+              "Construction & Trades",
+              "E-commerce Businesses",
+            ].map((industry) => (
+              <span key={industry} className="px-4 py-2 rounded-full border border-border bg-background text-sm text-muted-foreground hover:border-primary/30 hover:text-foreground transition-colors">
+                {industry}
+              </span>
+            ))}
+          </div>
         </section>
 
         {/* Region + platform */}
@@ -231,6 +261,73 @@ export default function BookkeepingPage() {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </section>
+
+        {/* AP/AR Section */}
+        <section className="container pb-16">
+          <div className="mx-auto max-w-5xl rounded-2xl border border-primary/20 bg-primary/5 overflow-hidden">
+            <div className="grid md:grid-cols-2 gap-0">
+              <div className="p-8 space-y-5">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Layers aria-hidden="true" className="h-5 w-5" />
+                  </div>
+                  <Badge variant="outline" className="border-primary/30 text-primary text-xs">Enterprise Plan</Badge>
+                </div>
+                <h2 className="text-2xl font-bold tracking-tight">Accounts Payable & Receivable — Fully Managed</h2>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  On Enterprise, we take over your entire AP/AR cycle. Vendor bills processed, approved, and paid.
+                  Customer invoices created, delivered, and followed up automatically. Cash flow forecasted week-by-week.
+                  All synced to QuickBooks in real time — no double entry, no manual matching.
+                </p>
+                <ul className="space-y-2">
+                  {[
+                    "Bill capture, GL coding, and approval workflow",
+                    "15 ACH + 15 mailed check payments per month",
+                    "Invoice creation, delivery, and payment links",
+                    "Automated AR reminders — no chasing from you",
+                    "30/60/90-day cash flow forecasting",
+                    "QuickBooks Online subscription included",
+                  ].map((f) => (
+                    <li key={f} className="flex items-center gap-2 text-sm">
+                      <Check aria-hidden="true" className="h-4 w-4 text-primary shrink-0" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link href="/ap-ar">
+                  <Button variant="outline" className="border-primary/30">
+                    See Full AP/AR Details
+                    <ArrowRight aria-hidden="true" className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+              <div className="p-8 border-t md:border-t-0 md:border-l border-primary/10 space-y-4">
+                <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Tech Stack — Automation First</p>
+                <div className="space-y-3">
+                  {[
+                    { icon: Inbox, label: "AP Automation", desc: "Bills captured, coded, and routed — zero manual entry" },
+                    { icon: Send, label: "AR Automation", desc: "Invoices sent, tracked, and followed up automatically" },
+                    { icon: TrendingUp, label: "Cash Flow Engine", desc: "Real-time position + scheduled AP/AR visibility" },
+                  ].map(({ icon: Icon, label, desc }) => (
+                    <div key={label} className="flex items-start gap-3 p-3 rounded-xl bg-background border border-border">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                        <Icon aria-hidden="true" className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold">{label}</p>
+                        <p className="text-xs text-muted-foreground">{desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="rounded-xl border border-primary/20 bg-background p-4 text-xs text-muted-foreground leading-relaxed">
+                  <strong className="text-foreground block mb-1">No add-on cost.</strong>
+                  AP/AR workflow tools typically cost $49–$199/month separately. On Enterprise, they&apos;re included — along with your QuickBooks subscription. One flat monthly fee covers everything.
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 

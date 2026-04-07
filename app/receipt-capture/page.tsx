@@ -182,6 +182,22 @@ export default function ReceiptCapturePage() {
                 </ul>
               </div>
             </div>
+
+            {/* Coming Soon */}
+            <div className="mt-8 rounded-2xl border border-dashed border-border bg-muted/20 p-6 flex flex-col sm:flex-row items-center gap-4">
+              <div className="flex items-center gap-3 shrink-0">
+                <div className="h-10 w-10 bg-amber-500/10 rounded-xl flex items-center justify-center text-amber-600">
+                  <Smartphone className="h-5 w-5" />
+                </div>
+                <Badge variant="outline" className="text-xs border-amber-500/30 text-amber-600 bg-amber-500/5">On the Roadmap</Badge>
+              </div>
+              <div>
+                <p className="font-semibold text-sm">WhatsApp & Telegram receipt upload — coming soon</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Forward receipts directly from WhatsApp or Telegram to your dedicated bot. Same AI extraction, zero extra steps. No app download, no login — just send and forget.
+                </p>
+              </div>
+            </div>
           </div>
         </section>
 

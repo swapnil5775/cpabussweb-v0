@@ -145,6 +145,46 @@ export default function FAQsPage() {
       ],
     },
     {
+      category: "Accounts Payable & Receivable (AP/AR)",
+      questions: [
+        {
+          question: "Which plan includes AP/AR management?",
+          answer:
+            "AP/AR management is included exclusively in the Enterprise plan ($499/month). This covers full accounts payable automation (vendor bill processing, approval workflows, payment scheduling), accounts receivable management (invoice creation, delivery, online payment links, reminders, and cash application), and 30/60/90-day cash flow forecasting. Essentials and Growth plans do not include AP/AR — contact us if you need it added at a different tier.",
+        },
+        {
+          question: "What exactly is Accounts Payable (AP) management?",
+          answer:
+            "Accounts Payable management means we handle everything related to bills your business owes to vendors and suppliers. We capture incoming bills, code them to the correct account, route them for your approval, and schedule payments via ACH or mailed check. The Enterprise plan includes 15 ACH payments and 15 mailed checks per month. Every payment syncs back to QuickBooks automatically — no manual reconciliation required.",
+        },
+        {
+          question: "What exactly is Accounts Receivable (AR) management?",
+          answer:
+            "Accounts Receivable management means we handle invoicing your customers and collecting what you're owed. We create professional invoices, deliver them by email with an online payment link (customers can pay by ACH or card), send automated reminders for overdue invoices, and apply payments when they come in. You also get a weekly AR aging report so you always know what's outstanding and who's overdue — without chasing anyone yourself.",
+        },
+        {
+          question: "Do you do cash flow forecasting, and how does it work?",
+          answer:
+            "Yes — cash flow forecasting is included in the Enterprise plan as part of AP/AR management. Because we manage both your incoming invoices (AR) and outgoing bill payments (AP), we have a real-time view of your actual cash position. We produce 30, 60, and 90-day cash flow projections that show scheduled bills versus expected customer collections, giving you a clear runway view. Monthly cash flow reviews are included with your dedicated account manager.",
+        },
+        {
+          question: "What happens if I exceed the included 15 ACH or 15 check payments per month?",
+          answer:
+            "Overages beyond the 15 ACH and 15 mailed check monthly allowance are billed at published platform rates — passed through at cost with zero markup. We notify you proactively if your volume is trending above the included limits so there are never surprise charges at month-end. For businesses with consistently high AP volume, contact us to discuss a custom arrangement.",
+        },
+        {
+          question: "Is AP/AR available for law firms and property management companies?",
+          answer:
+            "Yes — and these are two of the most common use cases. Law firms use AP/AR management for tracking client disbursements, vendor invoices, and trust account payables. Property management firms use it to manage vendor payments (maintenance, contractors), collect rent invoices from tenants, and forecast monthly cash position across multiple properties. Our team is experienced with both industries.",
+        },
+        {
+          question: "Do I need to be on QuickBooks to use AP/AR?",
+          answer:
+            "AP/AR is optimized for QuickBooks Online — which is included at no extra cost in the Enterprise plan. Xero is supported for international clients. All bill payments, invoices, and collections sync to your accounting platform in real time. If you're currently on a different platform, we'll migrate you during onboarding at no charge.",
+        },
+      ],
+    },
+    {
       category: "Business Services",
       questions: [
         {

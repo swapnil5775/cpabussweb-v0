@@ -227,7 +227,7 @@ export default async function HomePage() {
                     "Bank & credit card feeds",
                     "Payroll all worker types",
                     "W-2 & 1099 issuance",
-                    "Invoice management",
+                    "AP/AR automation (Enterprise)",
                     "Receipt capture — upload or email",
                     "Monthly bookkeeping",
                     "We cover all software costs",
@@ -252,8 +252,8 @@ export default async function HomePage() {
                   { icon: Landmark, label: "Bank Feeds", sub: "Auto-fetch & reconcile" },
                   { icon: FileBadge, label: "W-2 & 1099s", sub: "All worker types covered" },
                   { icon: ScanLine, label: "Receipt Capture", sub: "Upload, email or snap a photo" },
-                  { icon: ClipboardList, label: "Quarterly Filings", sub: "Payroll & unemployment" },
-                  { icon: X, label: "No QuickBooks", sub: "We cover the software" },
+                  { icon: ClipboardList, label: "AP/AR Automation", sub: "Bills paid, invoices collected" },
+                  { icon: X, label: "No QuickBooks Bill", sub: "We cover the software" },
                 ].map(({ icon: Icon, label, sub }) => (
                   <div key={label} className="p-4 rounded-2xl bg-background border border-border space-y-2">
                     <div className="h-9 w-9 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
