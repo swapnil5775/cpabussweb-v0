@@ -96,43 +96,82 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "ProfessionalService",
+              "@type": ["ProfessionalService", "AccountingService"],
               "name": "BookKeeping.business",
               "url": "https://www.bookkeeping.business",
               "logo": "https://www.bookkeeping.business/icon.svg",
               "email": "hello@bookkeeping.business",
-              "description": "Monthly bookkeeping, tax preparation, and business services for restaurants, hotels, childcare centers, realtors, home-based businesses, and small businesses. AI-assisted, human-reviewed. Clients never pay for software subscriptions.",
-              "slogan": "AI-assisted bookkeeping and tax prep. Human-reviewed. No software subscriptions for clients.",
-              "areaServed": { "@type": "Country", "name": "United States" },
+              "telephone": "+1-641-429-4519",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "1221 Brickell Avenue, Suite 900",
+                "addressLocality": "Miami",
+                "addressRegion": "FL",
+                "postalCode": "33131",
+                "addressCountry": "US"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 25.7617,
+                "longitude": -80.1918
+              },
+              "description": "Monthly bookkeeping, accounts payable & receivable, tax preparation, and payroll for restaurants, hotels, law firms, startups, property management companies, childcare centers, realtors, and small businesses. AI-assisted, human-reviewed. QuickBooks and all software included — one flat monthly fee, no add-ons.",
+              "slogan": "AI-assisted. Human-reviewed. No software subscriptions for clients.",
+              "priceRange": "$$",
+              "areaServed": [
+                { "@type": "Country", "name": "United States" },
+                { "@type": "Country", "name": "Canada" },
+                { "@type": "City", "name": "Miami" },
+                { "@type": "City", "name": "Tampa" },
+                { "@type": "City", "name": "New York" }
+              ],
               "serviceType": [
                 "Bookkeeping",
                 "Tax Preparation",
                 "Payroll Administration",
+                "Accounts Payable Management",
+                "Accounts Receivable Management",
+                "Cash Flow Forecasting",
+                "Receipt Capture",
                 "Business Consulting",
                 "LLC Formation Assistance"
               ],
               "knowsAbout": [
                 "Restaurant bookkeeping",
                 "Hotel accounting",
+                "Law firm bookkeeping",
+                "Startup bookkeeping",
+                "Property management accounting",
                 "Childcare center bookkeeping",
                 "Realtor tax preparation",
                 "Home-based business accounting",
                 "S-Corp tax filing",
                 "Small business bookkeeping",
                 "Monthly reconciliation",
-                "QuickBooks alternative"
+                "QuickBooks managed service",
+                "AP AR automation",
+                "AI receipt capture"
               ],
               "hasOfferCatalog": {
                 "@type": "OfferCatalog",
-                "name": "Bookkeeping and Tax Services",
+                "name": "Bookkeeping, Tax & Business Services",
                 "itemListElement": [
                   {
                     "@type": "Offer",
                     "itemOffered": {
                       "@type": "Service",
                       "name": "Monthly Bookkeeping",
-                      "description": "Monthly reconciliation, transaction categorization, financial reports, dedicated bookkeeper, and owner's personal tax prep included.",
+                      "description": "Monthly reconciliation, transaction categorization, financial reports, dedicated bookkeeper. QuickBooks included. Plans from $249/month.",
                       "url": "https://www.bookkeeping.business/bookkeeping"
+                    }
+                  },
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Service",
+                      "name": "Accounts Payable & Receivable Management",
+                      "description": "Fully managed AP/AR — vendor bill processing, customer invoicing, automated collections, cash flow forecasting. QuickBooks included on Enterprise plan.",
+                      "url": "https://www.bookkeeping.business/ap-ar"
                     }
                   },
                   {
@@ -142,6 +181,15 @@ export default function RootLayout({
                       "name": "Tax Preparation",
                       "description": "Individual and business tax returns — W-2, self-employed, S-Corp, C-Corp, Partnership — with federal and state e-filing included.",
                       "url": "https://www.bookkeeping.business/tax-prep"
+                    }
+                  },
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Service",
+                      "name": "AI Receipt Capture",
+                      "description": "Upload, email, or snap receipts. AI extracts vendor, date, amount and category automatically. No Dext or QBO add-on needed. Included in every plan.",
+                      "url": "https://www.bookkeeping.business/receipt-capture"
                     }
                   },
                   {
