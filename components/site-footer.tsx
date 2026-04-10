@@ -1,6 +1,6 @@
 import Link from "next/link"
-import { BookOpenCheck, Mail } from "lucide-react"
-import { CONTACT_EMAIL, SITE_NAME } from "@/lib/constants"
+import { BookOpenCheck, Mail, MapPin } from "lucide-react"
+import { CONTACT_EMAIL, SITE_NAME, OFFICE_MIAMI, OFFICE_TAMPA, OFFICE_NEW_YORK } from "@/lib/constants"
 
 export function SiteFooter() {
   return (
@@ -26,6 +26,20 @@ export function SiteFooter() {
               <Mail aria-hidden="true" className="h-4 w-4" />
               {CONTACT_EMAIL}
             </a>
+            <div className="space-y-1">
+              <div className="flex items-start gap-2 text-sm text-muted-foreground">
+                <MapPin aria-hidden="true" className="h-4 w-4 shrink-0 mt-0.5 text-primary" />
+                <div>
+                  <p className="text-xs font-medium text-foreground">{OFFICE_MIAMI.name}</p>
+                  <p className="text-xs">{OFFICE_MIAMI.street}</p>
+                  <p className="text-xs">{OFFICE_MIAMI.city}</p>
+                </div>
+              </div>
+              <div className="flex gap-3 pl-6 pt-1">
+                <span className="text-[10px] text-muted-foreground/60 border border-dashed border-border rounded px-1.5 py-0.5">{OFFICE_TAMPA.name} — Soon</span>
+                <span className="text-[10px] text-muted-foreground/60 border border-dashed border-border rounded px-1.5 py-0.5">{OFFICE_NEW_YORK.name} — Soon</span>
+              </div>
+            </div>
           </div>
 
           {/* Services */}

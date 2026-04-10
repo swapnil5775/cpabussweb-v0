@@ -12,8 +12,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Mail, Calendar, ArrowRight, ArrowLeft, Check, Shield, ExternalLink } from "lucide-react"
-import { CALENDLY_URL } from "@/lib/constants"
+import { Mail, MapPin, ArrowRight, ArrowLeft, Check, Shield } from "lucide-react"
+import { OFFICE_MIAMI, OFFICE_TAMPA, OFFICE_NEW_YORK } from "@/lib/constants"
 
 export default function ContactPage() {
   const [step, setStep] = useState(1)
@@ -141,20 +141,6 @@ export default function ContactPage() {
                   If we need any documents, we'll send you a secure upload link—no need to attach anything now.
                 </p>
                 
-                <div className="border-t border-border pt-6 mt-6">
-                  <h2 className="text-lg font-semibold mb-2">Want to get started faster?</h2>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Schedule a free 15-minute consultation call right now.
-                  </p>
-                  <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer">
-                    <Button className="gap-2">
-                      <Calendar aria-hidden="true" className="h-4 w-4" />
-                      Schedule a Call
-                      <ExternalLink aria-hidden="true" className="h-3 w-3" />
-                    </Button>
-                  </a>
-                </div>
-
                 <div className="pt-4">
                   <Button variant="outline" onClick={() => window.location.href = "/"} className="bg-transparent">
                     Return to Home
@@ -624,31 +610,27 @@ export default function ContactPage() {
               <Card>
                 <CardContent className="pt-6 space-y-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary mx-auto">
-                    <Calendar aria-hidden="true" className="h-6 w-6" />
+                    <MapPin aria-hidden="true" className="h-6 w-6" />
                   </div>
-                  <div className="text-center space-y-2">
-                    <h3 className="font-semibold">Book a Call</h3>
-                    <p className="text-sm text-muted-foreground">15-min consultation</p>
+                  <div className="text-center">
+                    <h3 className="font-semibold">Our Offices</h3>
                   </div>
-                  <div className="space-y-3 pt-2">
-                    <div className="text-left">
-                      <p className="text-xs font-medium text-foreground">New Customers</p>
-                      <p className="text-xs text-muted-foreground">
-                        Please submit the intake form above first. After submission, you'll be able to schedule a call.
-                      </p>
+                  <div className="space-y-3 text-sm">
+                    <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3">
+                      <p className="font-semibold text-xs text-primary mb-1">{OFFICE_MIAMI.name}</p>
+                      <p className="text-muted-foreground text-xs">{OFFICE_MIAMI.street}</p>
+                      <p className="text-muted-foreground text-xs">{OFFICE_MIAMI.city}</p>
+                      <p className="text-muted-foreground text-xs">{OFFICE_MIAMI.country}</p>
                     </div>
-                    <div className="text-left border-t border-border pt-3">
-                      <p className="text-xs font-medium text-foreground">Existing Clients</p>
-                      <p className="text-xs text-muted-foreground mb-2">
-                        Schedule directly using the link below.
-                      </p>
-                      <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer">
-                        <Button variant="outline" size="sm" className="w-full bg-transparent gap-2">
-                          <Calendar aria-hidden="true" className="h-3 w-3" />
-                          Schedule a Call
-                          <ExternalLink aria-hidden="true" className="h-3 w-3" />
-                        </Button>
-                      </a>
+                    <div className="flex gap-2">
+                      <div className="flex-1 rounded-lg border border-dashed border-border px-3 py-2.5 text-center">
+                        <p className="text-xs font-medium text-muted-foreground">{OFFICE_TAMPA.name}</p>
+                        <p className="text-[10px] text-muted-foreground/60 mt-0.5">Coming Soon</p>
+                      </div>
+                      <div className="flex-1 rounded-lg border border-dashed border-border px-3 py-2.5 text-center">
+                        <p className="text-xs font-medium text-muted-foreground">{OFFICE_NEW_YORK.name}</p>
+                        <p className="text-[10px] text-muted-foreground/60 mt-0.5">Coming Soon</p>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
