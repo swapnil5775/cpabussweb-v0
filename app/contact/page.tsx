@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Mail, MapPin, ArrowRight, ArrowLeft, Check, Shield } from "lucide-react"
+import { Mail, MapPin, Phone, ArrowRight, ArrowLeft, Check, Shield } from "lucide-react"
 import { OFFICE_MIAMI, OFFICE_TAMPA, OFFICE_NEW_YORK } from "@/lib/constants"
 
 export default function ContactPage() {
@@ -604,6 +604,10 @@ export default function ContactPage() {
                   </div>
                   <h3 className="font-semibold">Email Us</h3>
                   <p className="text-sm text-muted-foreground">hello@bookkeeping.business</p>
+                  <div className="flex items-center justify-center gap-2 pt-1">
+                    <Phone aria-hidden="true" className="h-4 w-4 text-primary" />
+                    <a href="tel:+16414294519" className="text-sm text-muted-foreground hover:text-primary transition-colors">+1-641-429-4519</a>
+                  </div>
                 </CardContent>
               </Card>
 
