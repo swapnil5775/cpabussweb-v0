@@ -327,7 +327,7 @@ export default async function HomePage() {
                   ))}
                 </ul>
                 <Link href="/bookkeeping" className="w-full py-3.5 rounded-xl border border-primary text-primary font-bold text-sm text-center hover:bg-primary hover:text-primary-foreground transition-all">
-                  Learn More
+                  Explore Bookkeeping Plans
                 </Link>
               </div>
 
@@ -368,7 +368,7 @@ export default async function HomePage() {
                   ))}
                 </ul>
                 <Link href="/business-services" className="w-full py-3.5 rounded-xl border border-primary text-primary font-bold text-sm text-center hover:bg-primary hover:text-primary-foreground transition-all">
-                  Learn More
+                  View Business Services
                 </Link>
               </div>
 
