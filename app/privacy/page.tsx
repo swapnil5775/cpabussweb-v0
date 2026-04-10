@@ -151,7 +151,7 @@ export default function PrivacyPage() {
                   at:
                 </p>
                 <div className="text-muted-foreground">
-                  <p>Email: privacy@bookkeeping.business</p>
+                  <p>Email: hello@bookkeeping.business</p>
                 </div>
               </section>
             </div>

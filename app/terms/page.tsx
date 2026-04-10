@@ -178,7 +178,7 @@ export default function TermsPage() {
                   For questions about these Terms of Service, please contact:
                 </p>
                 <div className="text-muted-foreground">
-                  <p>Email: legal@bookkeeping.business</p>
+                  <p>Email: hello@bookkeeping.business</p>
                 </div>
               </section>
             </div>

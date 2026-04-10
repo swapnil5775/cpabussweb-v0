@@ -58,6 +58,7 @@ export default function ServicesPage() {
       href: "/bookkeeping",
       features: ["Monthly reconciliation", "Payroll included per plan", "Personal tax prep as Add-On", "Quarterly check-ins"],
       highlight: true,
+      region: "US / Canada / UK / AUS / India",
     },
     {
       title: "Catchup Bookkeeping",
@@ -65,6 +66,7 @@ export default function ServicesPage() {
       icon: FileText,
       href: "/contact",
       features: ["Historical reconciliation", "Transaction categorization", "Clean financial records", "Smooth transition to monthly"],
+      region: "US / Canada / UK / AUS / India",
     },
     {
       title: "Financial Analysis",
@@ -72,6 +74,7 @@ export default function ServicesPage() {
       icon: TrendingUp,
       href: "/business-services",
       features: ["P&L analysis", "Cash flow review", "KPI tracking", "Growth recommendations"],
+      region: "US / Canada / UK / AUS / India",
     },
     {
       title: "LLC Formation Assistance",
@@ -79,6 +82,7 @@ export default function ServicesPage() {
       icon: Building2,
       href: "/business-services",
       features: ["Formation guidance", "EIN assistance", "Document prep help", "State filing support"],
+      region: "US Only",
     },
     {
       title: "Registered Agent Services",
@@ -86,6 +90,7 @@ export default function ServicesPage() {
       icon: Shield,
       href: "/business-services",
       features: ["Agent updates", "Compliance reminders", "Document handling", "State coordination"],
+      region: "US Only",
     },
     {
       title: "State Filings Support",
@@ -93,6 +98,7 @@ export default function ServicesPage() {
       icon: Calculator,
       href: "/business-services",
       features: ["Annual reports", "State amendments", "Compliance tracking", "Deadline reminders"],
+      region: "US Only",
     },
     {
       title: "Business Consultation",
@@ -100,6 +106,7 @@ export default function ServicesPage() {
       icon: Users,
       href: "/business-services",
       features: ["Quarterly check-ins", "Strategic planning", "Tax strategy", "Growth planning"],
+      region: "US Only",
     },
     {
       title: "Acquisition File Review",
@@ -107,6 +114,7 @@ export default function ServicesPage() {
       icon: BarChart3,
       href: "/business-services",
       features: ["Financial review", "Risk flag identification", "Due diligence support", "Report delivery"],
+      region: "US Only",
     },
   ]
 
@@ -216,6 +224,9 @@ export default function ServicesPage() {
                       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                         <Icon aria-hidden="true" className="h-5 w-5" />
                       </div>
+                      <Badge variant={service.region === "US Only" ? "secondary" : "outline"} className="text-xs">
+                        {service.region}
+                      </Badge>
                     </div>
                     <CardTitle className="mt-4">{service.title}</CardTitle>
                     <CardDescription>{service.description}</CardDescription>
