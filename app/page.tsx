@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+import Script from "next/script"
 import { createClient } from "@/lib/supabase/server"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
@@ -30,6 +31,7 @@ import {
   Mail,
   Smartphone,
   AlertCircle,
+  BookOpen,
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { CALENDLY_URL, CONTACT_EMAIL } from "@/lib/constants"
@@ -69,6 +71,42 @@ export default async function HomePage() {
   if (user) redirect("/dashboard")
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      <Script
+        id="homepage-faq-schema"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: [
+              { "@type": "Question", name: "Is my financial data safe?", acceptedAnswer: { "@type": "Answer", text: "Yes. We use 256-bit SSL encryption and comply with SOC 2 security protocols. Your data is never sold or shared with third parties." } },
+              { "@type": "Question", name: "Do I get a dedicated bookkeeper?", acceptedAnswer: { "@type": "Answer", text: "Yes. Every client is assigned a dedicated account representative who learns your business and is your primary point of contact." } },
+              { "@type": "Question", name: "What accounting software do you support?", acceptedAnswer: { "@type": "Answer", text: "We work with QuickBooks Online and Xero. All software subscriptions are included in your monthly fee — you never pay for QuickBooks, Gusto, or Bill.com separately." } },
+              { "@type": "Question", name: "Do you offer bookkeeping for restaurants?", acceptedAnswer: { "@type": "Answer", text: "Yes. BookKeeping.business specializes in restaurant bookkeeping — including COGS tracking, tip reporting, payroll, and POS reconciliation. We serve restaurants across the US, Canada, and internationally." } },
+              { "@type": "Question", name: "How do I get started?", acceptedAnswer: { "@type": "Answer", text: "Sign up free, complete a short onboarding quiz, and pick the plan that fits your business. No waiting for a callback, no credit card required to start." } },
+            ],
+          }),
+        }}
+      />
+      <Script
+        id="homepage-speakable-schema"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            name: "Online Bookkeeping & Tax Services for Small Business | BookKeeping.business",
+            speakable: {
+              "@type": "SpeakableSpecification",
+              cssSelector: ["h1", "h2", ".speakable-summary"],
+            },
+            url: "https://www.bookkeeping.business",
+          }),
+        }}
+      />
+
       <SiteHeader />
 
       <main className="flex-1">
@@ -624,6 +662,57 @@ export default async function HomePage() {
                   <div className="px-5 pb-5 text-sm text-muted-foreground leading-relaxed">{a}</div>
                 </details>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Articles Preview ── */}
+        <section className="py-20 px-6 lg:px-8 bg-muted/20">
+          <div className="mx-auto max-w-7xl">
+            <div className="flex items-center justify-between mb-10">
+              <div>
+                <h2 className="text-2xl font-bold text-primary dark:text-foreground">Bookkeeping Guides & Resources</h2>
+                <p className="text-sm text-muted-foreground mt-1">Expert articles for small business owners</p>
+              </div>
+              <Link href="/articles" className="hidden sm:flex items-center gap-2 text-sm font-medium text-primary hover:opacity-80 transition-opacity">
+                View all articles <ArrowRight aria-hidden="true" className="h-4 w-4" />
+              </Link>
+            </div>
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                {
+                  href: "/articles/bookkeeping-for-restaurants-guide",
+                  category: "Industry Guides",
+                  title: "Complete Bookkeeping Guide for Restaurant Owners",
+                  desc: "COGS tracking, tip reporting, payroll, and QuickBooks for restaurants — everything you need.",
+                },
+                {
+                  href: "/articles/bookkeeping-mistakes-small-business",
+                  category: "Best Practices",
+                  title: "7 Bookkeeping Mistakes Small Business Owners Make",
+                  desc: "The most common errors that cost owners money and how to fix each one.",
+                },
+                {
+                  href: "/articles/llc-bookkeeping-guide",
+                  category: "Business Structure",
+                  title: "LLC Bookkeeping Guide: Single & Multi-Member LLCs",
+                  desc: "Owner draws, capital accounts, S-Corp election — what LLC owners must track.",
+                },
+              ].map(({ href, category, title, desc }) => (
+                <Link key={href} href={href} className="group block p-6 rounded-2xl bg-card border border-border hover:shadow-md transition-all hover:-translate-y-0.5">
+                  <span className="text-xs font-medium text-primary">{category}</span>
+                  <h3 className="font-semibold text-sm mt-2 mb-2 leading-snug group-hover:text-primary transition-colors">{title}</h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
+                  <span className="mt-3 flex items-center gap-1 text-xs text-primary font-medium">
+                    Read article <ArrowRight aria-hidden="true" className="h-3 w-3" />
+                  </span>
+                </Link>
+              ))}
+            </div>
+            <div className="mt-6 text-center sm:hidden">
+              <Link href="/articles" className="text-sm font-medium text-primary flex items-center gap-1 justify-center">
+                View all articles <ArrowRight aria-hidden="true" className="h-4 w-4" />
+              </Link>
             </div>
           </div>
         </section>

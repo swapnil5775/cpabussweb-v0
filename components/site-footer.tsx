@@ -83,6 +83,7 @@ export function SiteFooter() {
             <h3 className="font-semibold text-sm mb-5">Resources</h3>
             <ul className="space-y-3.5 text-sm text-muted-foreground">
               {[
+                { href: "/articles", label: "Articles" },
                 { href: "/faqs", label: "FAQs" },
                 { href: "/client-portal", label: "Platform" },
                 { href: "/privacy", label: "Privacy Policy" },

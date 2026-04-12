@@ -37,6 +37,7 @@ export function SiteHeader() {
             { href: "/bookkeeping", label: "Bookkeeping" },
             { href: "/ap-ar", label: "AP/AR" },
             { href: "/about", label: "About" },
+            { href: "/articles", label: "Articles" },
             { href: "/faqs", label: "FAQs" },
             { href: "/contact", label: "Contact" },
           ].map(({ href, label }) => (
