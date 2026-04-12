@@ -35,8 +35,15 @@ export function SiteFooter() {
                   <p className="text-xs">{OFFICE_MIAMI.city}</p>
                 </div>
               </div>
+              <div className="flex items-start gap-2 text-sm text-muted-foreground mt-3">
+                <MapPin aria-hidden="true" className="h-4 w-4 shrink-0 mt-0.5 text-muted-foreground/50" />
+                <div>
+                  <p className="text-xs font-medium text-foreground/70">{OFFICE_TAMPA.name}</p>
+                  <p className="text-xs">{OFFICE_TAMPA.street}</p>
+                  <p className="text-xs">{OFFICE_TAMPA.city}</p>
+                </div>
+              </div>
               <div className="flex gap-3 pl-6 pt-1">
-                <span className="text-[10px] text-muted-foreground/60 border border-dashed border-border rounded px-1.5 py-0.5">{OFFICE_TAMPA.name} — Soon</span>
                 <span className="text-[10px] text-muted-foreground/60 border border-dashed border-border rounded px-1.5 py-0.5">{OFFICE_NEW_YORK.name} — Soon</span>
               </div>
             </div>

@@ -102,14 +102,24 @@ export default function RootLayout({
               "logo": "https://www.bookkeeping.business/icon.svg",
               "email": "hello@bookkeeping.business",
               "telephone": "+1-641-429-4519",
-              "address": {
-                "@type": "PostalAddress",
-                "streetAddress": "1221 Brickell Avenue, Suite 900",
-                "addressLocality": "Miami",
-                "addressRegion": "FL",
-                "postalCode": "33131",
-                "addressCountry": "US"
-              },
+              "address": [
+                {
+                  "@type": "PostalAddress",
+                  "streetAddress": "1221 Brickell Avenue, Suite 900",
+                  "addressLocality": "Miami",
+                  "addressRegion": "FL",
+                  "postalCode": "33131",
+                  "addressCountry": "US"
+                },
+                {
+                  "@type": "PostalAddress",
+                  "streetAddress": "401 East Jackson Street, 33rd Floor",
+                  "addressLocality": "Tampa",
+                  "addressRegion": "FL",
+                  "postalCode": "33602",
+                  "addressCountry": "US"
+                }
+              ],
               "geo": {
                 "@type": "GeoCoordinates",
                 "latitude": 25.7617,
@@ -123,7 +133,8 @@ export default function RootLayout({
                 { "@type": "Country", "name": "Canada" },
                 { "@type": "City", "name": "Miami" },
                 { "@type": "City", "name": "Tampa" },
-                { "@type": "City", "name": "New York" }
+                { "@type": "City", "name": "New York" },
+                { "@type": "City", "name": "Tampa Bay" }
               ],
               "serviceType": [
                 "Bookkeeping",

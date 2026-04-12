@@ -9,7 +9,13 @@ export const OFFICE_MIAMI = {
   country: "United States",
   full: "1221 Brickell Avenue, Suite 900, Miami, Florida 33131, USA",
 }
-export const OFFICE_TAMPA = { name: "Tampa, FL", status: "upcoming" as const }
+export const OFFICE_TAMPA = {
+  name: "Tampa, FL",
+  street: "401 East Jackson Street, 33rd Floor",
+  city: "Tampa, Florida 33602",
+  country: "United States",
+  full: "401 East Jackson Street, 33rd Floor, Tampa, Florida 33602, USA",
+}
 export const OFFICE_NEW_YORK = { name: "New York, NY", status: "upcoming" as const }
 
 // Contact information

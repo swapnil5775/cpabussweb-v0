@@ -626,15 +626,14 @@ export default function ContactPage() {
                       <p className="text-muted-foreground text-xs">{OFFICE_MIAMI.city}</p>
                       <p className="text-muted-foreground text-xs">{OFFICE_MIAMI.country}</p>
                     </div>
-                    <div className="flex gap-2">
-                      <div className="flex-1 rounded-lg border border-dashed border-border px-3 py-2.5 text-center">
-                        <p className="text-xs font-medium text-muted-foreground">{OFFICE_TAMPA.name}</p>
-                        <p className="text-[10px] text-muted-foreground/60 mt-0.5">Coming Soon</p>
-                      </div>
-                      <div className="flex-1 rounded-lg border border-dashed border-border px-3 py-2.5 text-center">
-                        <p className="text-xs font-medium text-muted-foreground">{OFFICE_NEW_YORK.name}</p>
-                        <p className="text-[10px] text-muted-foreground/60 mt-0.5">Coming Soon</p>
-                      </div>
+                    <div className="rounded-lg border border-border bg-muted/30 px-4 py-3">
+                      <p className="font-semibold text-xs text-foreground mb-1">{OFFICE_TAMPA.name}</p>
+                      <p className="text-muted-foreground text-xs">{OFFICE_TAMPA.street}</p>
+                      <p className="text-muted-foreground text-xs">{OFFICE_TAMPA.city}</p>
+                    </div>
+                    <div className="rounded-lg border border-dashed border-border px-3 py-2.5 text-center">
+                      <p className="text-xs font-medium text-muted-foreground">{OFFICE_NEW_YORK.name}</p>
+                      <p className="text-[10px] text-muted-foreground/60 mt-0.5">Coming Soon</p>
                     </div>
                   </div>
                 </CardContent>
